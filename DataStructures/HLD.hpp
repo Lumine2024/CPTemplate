@@ -5,15 +5,66 @@ using ll = long long;
 using ull = unsigned long long;
 
 struct SegTree {
-	void assign(const vector<ll> &nums) {
+    int n;
 
-	}
-	void modify(ll val) {
 
-	}
-	ll query_sum(int u, int v) const {
-		return 0;
-	}
+    SegTree() = default;
+    SegTree(int size) : n(size), s(size * 4, 0) {}
+
+    void assign(const vector<ll> &nums) {
+        s.assign(nums.size() * 4, 0);
+        _build(nums, 0, 0, nums.size());
+    }
+
+    void modify(int x, ll val) {
+        _modify(x, val, 0, 0, n);
+    }
+
+    ll query_sum(int l, int r) const {
+        return _query(l, r, 0, 0, n);
+    }
+
+private:
+    vector<ll> s;
+    void _build(const vector<ll> &nums, int i, int l, int r) {
+        if (r - l == 1) {
+            s[i] = nums[l];
+            return;
+        }
+        int mid = (l + r) / 2;
+        _build(nums, i * 2 + 1, l, mid);
+        _build(nums, i * 2 + 2, mid, r);
+        s[i] = s[i * 2 + 1] + s[i * 2 + 2];
+    }
+
+    void _modify(int x, ll val, int i, int l, int r) {
+        if (r - l == 1) {
+            s[i] = val;
+            return;
+        }
+        int mid = (l + r) / 2;
+        if (x < mid) {
+            _modify(x, val, i * 2 + 1, l, mid);
+        } else {
+            _modify(x, val, i * 2 + 2, mid, r);
+        }
+        s[i] = s[i * 2 + 1] + s[i * 2 + 2];
+    }
+
+    ll _query(int ql, int qr, int i, int l, int r) const {
+        if (ql <= l && qr >= r) {
+            return s[i];
+        }
+        int mid = (l + r) / 2;
+        ll ans = 0;
+        if (ql < mid) {
+            ans += _query(ql, qr, i * 2 + 1, l, mid);
+        }
+        if (qr > mid) {
+            ans += _query(ql, qr, i * 2 + 2, mid, r);
+        }
+        return ans;
+    }
 };
 struct Node {
 	ll w;
