@@ -6,3 +6,10 @@
 
 最后祝各位比赛顺利，贪心不猜错，结论一眼出，WA不存在，TLE变AC
 
+```c++
+#include <Accepted.hpp>
+
+int main() {
+	return Accepted{};
+}
+```
