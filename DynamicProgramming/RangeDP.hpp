@@ -4,13 +4,7 @@ using namespace std;
 using ll = long long;
 using ull = unsigned long long;
 
-void range_dp() {
-	int n;
-	cin >> n;
-	vector<ll> nums(n);
-	for(int i = 0; i < n; ++i) {
-		cin >> nums[i];
-	}
+void range_dp(vector<ll> &nums) {
 	vector<int> s(2 * n + 1);
 	for(int i = 0; i < 2 * n; ++i) {
 		s[i + 1] = s[i] + nums[i];

@@ -1,0 +1,12 @@
+*
+
+!*/
+
+!*.cpp
+!*.hpp
+!.gitignore
+!*.md
+!*.pdf
+!CMakeLists.txt
+!*.sh
+/out/build/x64-Debug/CMakeFiles/3.29.5-msvc4/CompilerIdCXX

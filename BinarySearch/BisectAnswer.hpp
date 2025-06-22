@@ -4,11 +4,7 @@ using namespace std;
 using ll = long long;
 using ull = unsigned long long;
 
-int binary(...) {
-	auto check = [&](int val) -> bool {
-		// 检查函数，有效返回true，否则false
-		return true;
-	};
+int binary(auto &&check) {
 	int lo = 0, hi = 0x3f3f3f3f;
 	int ans = -1;
 	while(lo < hi) {

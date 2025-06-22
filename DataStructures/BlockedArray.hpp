@@ -72,5 +72,6 @@ struct BlockedArray {
 		}
 		return ans;
 	}
+private:
 	vector<Block> blocks;
 };

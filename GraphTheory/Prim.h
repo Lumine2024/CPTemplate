@@ -1,16 +1,14 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "Constants.hpp"
 using namespace std;
 using ll = long long;
 using ull = unsigned long long;
 
-namespace _prim {
-constexpr ll inf = 0x3f3f3f3f3f3f3f3f;
-}
 ll prim(const vector<vector<pair<int, ll>>> &graph) {
 	int n = graph.size();
 	vector<bool> visited(n, false);
-	vector<ll> dist(n, _prim::inf);
+	vector<ll> dist(n, inf);
 	dist[0] = 0;
 	priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<>> pq;
 	pq.emplace(0, 0);
@@ -30,7 +28,7 @@ ll prim(const vector<vector<pair<int, ll>>> &graph) {
 	}
 	for(bool b : visited) {
 		if(!b) {
-			return _prim::inf;
+			return inf;
 		}
 	}
 	return ret;

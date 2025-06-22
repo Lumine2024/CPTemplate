@@ -6,24 +6,22 @@ using ull = unsigned long long;
 
 struct SegTree {
     int n;
-
-
-    SegTree() = default;
-    SegTree(int size) : n(size), s(size * 4, 0) {}
-
+	SegTree() : n(0) {}
+    SegTree(int sz) : n(sz), s(sz * 4, 0) {}
+	SegTree(const vector<ll> &nums) : n(nums.size()), s(nums.size() * 4) {
+		build(nums, 0, 0, n);
+	}
     void assign(const vector<ll> &nums) {
         s.assign(nums.size() * 4, 0);
-        _build(nums, 0, 0, nums.size());
+		n = nums.size();
+        _build(nums, 0, 0, n);
     }
-
     void modify(int x, ll val) {
         _modify(x, val, 0, 0, n);
     }
-
     ll query_sum(int l, int r) const {
         return _query(l, r, 0, 0, n);
     }
-
 private:
     vector<ll> s;
     void _build(const vector<ll> &nums, int i, int l, int r) {
@@ -36,7 +34,6 @@ private:
         _build(nums, i * 2 + 2, mid, r);
         s[i] = s[i * 2 + 1] + s[i * 2 + 2];
     }
-
     void _modify(int x, ll val, int i, int l, int r) {
         if (r - l == 1) {
             s[i] = val;
@@ -50,7 +47,6 @@ private:
         }
         s[i] = s[i * 2 + 1] + s[i * 2 + 2];
     }
-
     ll _query(int ql, int qr, int i, int l, int r) const {
         if (ql <= l && qr >= r) {
             return s[i];

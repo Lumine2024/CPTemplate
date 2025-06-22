@@ -1,11 +1,11 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "Constants.hpp"
 using namespace std;
 using ll = long long;
 using ull = unsigned long long;
 
 struct Dinic {
-	static constexpr ll inf = 0x3f3f3f3f3f3f3f3f;
 	Dinic(int n, int s, int e)
 		: graph(n), level(n), start(s), end(e), n(n) {}
 	void addedge(int u, int v, ll w) {

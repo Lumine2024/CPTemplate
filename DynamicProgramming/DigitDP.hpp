@@ -1,11 +1,11 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "Constants.hpp"
 using namespace std;
 using ll = long long;
 using ull = unsigned long long;
 
 ll digit_dp(string k, int d) {
-	constexpr ll modulo = 10'0000'0007;
 	vector<vector<ll>> memo(k.size(), vector<ll>(d, -1));
 	auto dfs = [&](auto &&dfs, int idx, ll psum, bool isnum, bool islimit) -> ll {
 		if(idx == k.size()) {

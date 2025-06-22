@@ -26,7 +26,7 @@ vector<pair<int, int>> max_range_1(const vector<int> &nums) {
 	}
 	return ret;
 }
-// 可以有相同元素
+// 有相同元素时，总取最近的一端
 vector<pair<int, int>> max_range_2(const vector<int> &nums) {
 	int n = nums.size();
 	vector ret(n, pair(0, n));
