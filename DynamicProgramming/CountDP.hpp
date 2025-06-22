@@ -1,10 +1,10 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "Constants.hpp"
 using namespace std;
 using ll = long long;
 using ull = unsigned long long;
 
-constexpr ll modulo = 10'0000'0007;
 ll count_dp(string s) {
 	int n = s.size();
 	vector<vector<ll>> dp(n, vector<ll>(n, 0));

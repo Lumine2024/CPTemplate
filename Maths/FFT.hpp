@@ -1,11 +1,11 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "Constants.hpp"
 using namespace std;
 using ll = long long;
 using ull = unsigned long long;
 
 using cd = complex<double>;
-constexpr double pi = 3.14159265358979323846264338327950288;
 vector<int> multiply(const vector<int> &a, const vector<int> &b) {
 	int n = 1;
 	while(n < (a.size() + b.size())) {

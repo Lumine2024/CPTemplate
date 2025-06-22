@@ -1,5 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "Constants.hpp"
 using namespace std;
 using ll = long long;
 using ull = unsigned long long;
@@ -12,20 +13,10 @@ template<class T> bool chkmin(T &x, const T &y) {
 	return false;
 }
 
-namespace _rmd {
-constexpr ll inf = 0x3f3f3f3f3f3f3f3f;
-}
-
 // 跑的dijkstra
-inline void kiana_1() noexcept {
-	ll k;
-	vector<ll> dist(4);
-	cin >> k;
-	for(int i = 0; i < 4; ++i) {
-		cin >> dist[i];
-	}
+ll remainder_mindist(ll k, vector<ll> dist) {
 	ll modulo = 2 * min(dist[0], dist[3]);
-	vector<vector<ll>> dp(4, vector<ll>(modulo, _rmd::inf));
+	vector<vector<ll>> dp(4, vector<ll>(modulo, inf));
 	vector<vector<bool>> visited(4, vector<bool>(modulo, false));
 	dp[0][0] = 0;
 	priority_queue<tuple<ll, ll, ll>, vector<tuple<ll, ll, ll>>, greater<>> pq;
@@ -53,7 +44,7 @@ inline void kiana_1() noexcept {
 			pq.emplace(w + w2, (w + w2) % modulo, d2);
 		}
 	}
-	ll ans = _rmd::inf;
+	ll ans = inf;
 	for(ll i = 0; i < modulo; ++i) {
 		ll required = (k / modulo) * modulo + i;
 		while(required < k) {
@@ -61,5 +52,5 @@ inline void kiana_1() noexcept {
 		}
 		chkmin(ans, max(required, dp[0][i]));
 	}
-	cout << ans << '\n';
+	return ans;
 }

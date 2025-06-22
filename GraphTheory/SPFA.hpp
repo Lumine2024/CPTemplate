@@ -1,15 +1,14 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "Constants.hpp"
 using namespace std;
 using ll = long long;
 using ull = unsigned long long;
-namespace _spfa {
-constexpr ll inf = 0x3f3f3f3f3f3f3f3f;
-}
+
 // 返回空vector说明有负环
 vector<ll> spfa(const vector<vector<pair<int, ll>>> &graph, int s) {
 	int n = graph.size();
-	vector<ll> dist(n, _spfa::inf);
+	vector<ll> dist(n, inf);
 	vector<int> count(n, 0);
 	vector<bool> inqueue(n, false);
 	queue<int> q;

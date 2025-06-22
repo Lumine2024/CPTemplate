@@ -14,7 +14,7 @@ struct SegTree {
     }
 
     void update(int x, ll v) {
-        __u(x, v, 0, 0, n);
+        _u(x, v, 0, 0, n);
     }
 
 private:
@@ -28,16 +28,16 @@ private:
         return ret;
     }
 
-    void __u(int x, ll v, int r, int rl, int rr) {
+    void _u(int x, ll v, int r, int rl, int rr) {
         if (rl == rr - 1) {
             s[r] = max(s[r], v);
             return;
         }
         int m = (rl + rr) / 2;
         if (x < m) {
-            __u(x, v, r * 2 + 1, rl, m);
+            _u(x, v, r * 2 + 1, rl, m);
         } else {
-            __u(x, v, r * 2 + 2, m, rr);
+            _u(x, v, r * 2 + 2, m, rr);
         }
         s[r] = max(s[r * 2 + 1], s[r * 2 + 2]);
     }

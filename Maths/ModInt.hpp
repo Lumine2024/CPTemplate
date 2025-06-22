@@ -1,10 +1,10 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "Constants.hpp"
 using namespace std;
 using ll = long long;
 using ull = unsigned long long;
 
-constexpr ll modulo = 9'9824'4353, maxn = 50005;
 ll qpow(ll x, ll n) {
 	ll ret = 1;
 	while(n) {

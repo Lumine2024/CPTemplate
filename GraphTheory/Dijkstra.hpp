@@ -1,14 +1,12 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "Constants.hpp"
 using namespace std;
 using ll = long long;
 using ull = unsigned long long;
-namespace _dijkstra {
-constexpr ll inf = 0x3f3f3f3f3f3f3f3f;
-}
 vector<ll> dijkstra(vector<vector<pair<int, ll>>> &graph, int start) noexcept {
 	int v = graph.size();
-	vector<ll> dist(v, _dijkstra::inf);
+	vector<ll> dist(v, inf);
 	dist[start] = 0;
 	vector<bool> visited(v, false);
 	priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<>> pq;

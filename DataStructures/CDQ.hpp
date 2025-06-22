@@ -9,15 +9,10 @@ struct Data {
 	int x, y, z;
 	int cnt;
 	int ans;
+	Data(int x_, int y_, int z_) :x(x_), y(y_), z(z_), cnt(1), ans(-1) {}
 };
-inline void kiana_1() noexcept {
-	int n, k;
-	cin >> n >> k;
+inline void cdq_partition(int n, int k, vector<Data> &_datas) noexcept {
 	Fenwick fwk(k);
-	vector<Data> _datas(n + 1, Data{ -1, -1, -1, 1 });
-	for(int i = 0; i < n; ++i) {
-		cin >> _datas[i].x >> _datas[i].y >> _datas[i].z;
-	}
 	sort(_datas.begin(), _datas.end() - 1, [](const Data &l, const Data &r) {
 		if(l.x != r.x) return l.x < r.x;
 		if(l.y != r.y) return l.y < r.y;
@@ -32,7 +27,7 @@ inline void kiana_1() noexcept {
 		if((_datas[i].x != _datas[i + 1].x) ||
 			(_datas[i].y != _datas[i + 1].y) ||
 			(_datas[i].z != _datas[i + 1].z)) {
-			datas.emplace_back(Data{ _datas[i].x, _datas[i].y, _datas[i].z, cnt });
+			datas.emplace_back(_datas[i].x, _datas[i].y, _datas[i].z);
 			cnt = 0;
 			}
 	}

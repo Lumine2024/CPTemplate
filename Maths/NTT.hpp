@@ -1,20 +1,17 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "Constants.hpp"
 using namespace std;
 using ll = long long;
 using ull = unsigned long long;
 
-namespace _ntt {
-constexpr ll modulo = 9'9824'4353, g = 3;
-// constexpr ll modulo = 10'0000'0007, g = 5; 不可以
-}
 ll qpow(ll x, ll n) {
 	ll ret = 1;
 	while(n) {
 		if(n & 1) {
-			ret = ret * x % _ntt::modulo;
+			ret = ret * x % modulo;
 		}
-		x = x * x % _ntt::modulo;
+		x = x * x % modulo;
 		n >>= 1;
 	}
 	return ret;
@@ -41,25 +38,25 @@ vector<ll> multiply(const vector<ll> &a, const vector<ll> &b) {
 		}
 		ntt(ntt, f0, invert);
 		ntt(ntt, f1, invert);
-		ll w = 1, wn = qpow(_ntt::g, (_ntt::modulo - 1) / n);
+		ll w = 1, wn = qpow(g, (modulo - 1) / n);
 		if(invert) {
-			wn = qpow(wn, _ntt::modulo - 2);
+			wn = qpow(wn, modulo - 2);
 		}
 		for(int t = 0; t < n / 2; ++t) {
-			ll u = f0[t], v = w * f1[t] % _ntt::modulo;
-			f[t] = (u + v) % _ntt::modulo;
-			f[t + n / 2] = (u - v + _ntt::modulo) % _ntt::modulo;
-			w = w * wn % _ntt::modulo;
+			ll u = f0[t], v = w * f1[t] % modulo;
+			f[t] = (u + v) % modulo;
+			f[t + n / 2] = (u - v + modulo) % modulo;
+			w = w * wn % modulo;
 		}
 	};
 	ntt(ntt, ca, false);
 	ntt(ntt, cb, false);
 	for(int i = 0; i < n; ++i) {
-		ca[i] = ca[i] * cb[i] % _ntt::modulo;
+		ca[i] = ca[i] * cb[i] % modulo;
 	}
 	ntt(ntt, ca, true);
 	for(int i = 0; i < n; ++i) {
-		ca[i] = ca[i] * qpow(n, _ntt::modulo - 2) % _ntt::modulo;
+		ca[i] = ca[i] * qpow(n, modulo - 2) % modulo;
 	}
 	while(ca.size() > (a.size() + b.size() - 1)) {
 		ca.pop_back();
