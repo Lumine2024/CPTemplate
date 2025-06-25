@@ -12,6 +12,6 @@
 #include <Accepted.hpp>
 
 int main() {
-	return Accepted{};
+	return Accepted{}.get_accepted();
 }
 ```
