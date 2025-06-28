@@ -9,9 +9,9 @@ struct Data {
 	int x, y, z;
 	int cnt;
 	int ans;
-	Data(int x_, int y_, int z_) :x(x_), y(y_), z(z_), cnt(1), ans(-1) {}
+	Data(int x_, int y_, int z_) : x(x_), y(y_), z(z_), cnt(1), ans(-1) {}
 };
-inline void cdq_partition(int n, int k, vector<Data> &_datas) noexcept {
+vector<int> threed_partial(int n, int k, vector<Data> &_datas) {
 	Fenwick fwk(k);
 	sort(_datas.begin(), _datas.end() - 1, [](const Data &l, const Data &r) {
 		if(l.x != r.x) return l.x < r.x;
@@ -64,7 +64,5 @@ inline void cdq_partition(int n, int k, vector<Data> &_datas) noexcept {
 	for(int i = 0; i < m; ++i) {
 		ans[datas[i].ans + datas[i].cnt - 1] += datas[i].cnt;
 	}
-	for(int i : ans) {
-		cout << i << '\n';
-	}
+	return ans;
 }
