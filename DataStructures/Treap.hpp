@@ -1,5 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "Constants.hpp"
 using namespace std;
 using ll = long long;
 using ull = unsigned long long;
@@ -40,24 +41,30 @@ struct Treap {
 		}
 		rt = _merge(l.first, tmp.second);
 	}
-	// 注意1-based
-	int qrv(int v) {
+	// 注意0-based
+	int qrv(int v) const {
 		return _qrv(rt, v);
 	}
-	// 注意1-based
-	int qvr(int r) {
+	// 注意0-based
+	int qvr(int r) const {
 		return _qvr(rt, r);
 	}
-	// 注意是小于的，而不是大于等于的
-	int lower_bound(int v) {
+	// 注意是小于的，不是大于等于的
+	int lower_bound(int v) const {
 		auto tmp = _sval(rt, v - 1);
-		int ret = _qvr(tmp.first, tmp.first->size);
+		int ret = -inf;
+		if(tmp.first) {
+			ret = _qvr(tmp.first, tmp.first->size - 1);
+		}
 		rt = _merge(tmp.first, tmp.second);
 		return ret;
 	}
-	int upper_bound(int v) {
+	int upper_bound(int v) const {
 		auto tmp = _sval(rt, v);
-		int ret = _qvr(tmp.second, 1);
+		int ret = -inf;
+		if(tmp.second) {
+			ret = _qvr(tmp.second, 0);
+		}
 		rt = _merge(tmp.first, tmp.second);
 		return ret;
 	}
@@ -68,8 +75,9 @@ private:
 		int size;
 		int prio;
 		Node *left, *right;
+		static inline random_device rnd{};
 		Node(int v)
-			: val(v), cnt(1), size(1), prio(random_device{}()), left(nullptr), right(nullptr) {}
+			: val(v), cnt(1), size(1), prio(rnd()), left(nullptr), right(nullptr) {}
 		void usize() {
 			size = cnt;
 			if(left) {
@@ -80,7 +88,7 @@ private:
 			}
 		}
 	};
-	Node *rt;
+	mutable Node *rt;
 	static void _dtor(Node *ptr) {
 		if(ptr->left) {
 			_dtor(ptr->left);
@@ -111,13 +119,14 @@ private:
 	static tuple<Node *, Node *, Node *> _srnk(Node *const ptr, int rnk) {
 		if(!ptr) return { nullptr, nullptr, nullptr };
 		int lsize = (ptr->left ? ptr->left->size : 0);
-		if(rnk <= lsize) {
+		if(rnk < lsize) {
 			auto [lptr, mptr, rptr] = _srnk(ptr->left, rnk);
 			ptr->left = rptr;
 			ptr->usize();
 			return { lptr, mptr, ptr };
-		} else if(rnk <= lsize + ptr->cnt) {
-			auto lptr = ptr->left, rptr = ptr->right;
+		} else if(rnk < lsize + ptr->cnt) {
+			Node *lptr = ptr->left;
+			Node *rptr = ptr->right;
 			ptr->left = ptr->right = nullptr;
 			return { lptr, ptr, rptr };
 		} else {
@@ -140,14 +149,14 @@ private:
 			return v;
 		}
 	}
-	int _qrv(Node *const ptr, int val) {
+	int _qrv(Node *const ptr, int val) const {
 		auto [l, r] = _sval(ptr, val - 1);
-		int ret = (l == nullptr ? 0 : l->size) + 1;
+		int ret = (l ? l->size : 0);
 		rt = _merge(l, r);
 		return ret;
 	}
-	int _qvr(Node *const ptr, int rnk) {
-		auto [lptr, mptr, rptr] = _srnk(ptr, rnk);
+	int _qvr(Node *const ptr, int r) const {
+		auto [lptr, mptr, rptr] = _srnk(ptr, r);
 		int ret = mptr->val;
 		rt = _merge(_merge(lptr, mptr), rptr);
 		return ret;
