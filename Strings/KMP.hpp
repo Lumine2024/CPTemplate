@@ -5,22 +5,17 @@ using ll = long long;
 using ull = unsigned long long;
 
 // 得到用于KMP的数组
-vector<int> kmp_f(const string &str) {
-	vector<int> f(str.size());
-	int l = 0, r = 1;
-	while(r < str.size()) {
-		if(str[r] != str[l]) {
-			if(l == 0) {
-				f[r] = 0;
-				++r;
-			} else {
-				l = f[l - 1];
-			}
-		} else {
-			f[r] = l + 1;
-			++r;
-			++l;
+vector<int> kmp_f(const string &s) {
+	int n = s.size();
+	vector<int> f(n, 0);
+	for(int i = 1, j = 0; i < n; ++i) {
+		while(j > 0 && s[i] != s[j]) {
+			j = f[j - 1];
 		}
+		if(s[i] == s[j]) {
+			++j;
+		}
+		f[i] = j;
 	}
 	return f;
 }
@@ -28,8 +23,7 @@ vector<int> kmp_f(const string &str) {
 int kmp_find(const string &haystack, const string &needle, int off = 0) {
 	int n = needle.size(), m = haystack.size();
 	vector<int> f = kmp_f(needle);
-	int i = 0, j = off;
-	while(j < m) {
+	for(int i = 0, j = off; j < m;) {
 		if(haystack[j] == needle[i]) {
 			++i;
 			++j;
@@ -51,8 +45,7 @@ int kmp_count(const string &haystack, const string &needle) {
 	int n = needle.size(), m = haystack.size();
 	int ret = 0;
 	vector<int> f = kmp_f(needle);
-	int i = 0, j = 0;
-	while(j < m) {
+	for(int i = 0, j = 0; j < m;) {
 		if(haystack[j] == needle[i]) {
 			++i;
 			++j;
