@@ -181,6 +181,7 @@ private:
 				carry = 1;
 				a[i] -= 10;
 			}
+			++i;
 		}
 	}
 	static void _sub(vector<int> &a, const vector<int> &b) {
