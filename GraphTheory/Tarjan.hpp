@@ -5,20 +5,20 @@ using ll = long long;
 using ull = unsigned long long;
 
 // 强连通分量
-struct Tarjan_SCC {
-	Tarjan_SCC(int n) : nodes(n), graph(n) {}
+struct SCC {
+	SCC(int n) : nodes(n), graph(n) {}
 	void addedge(int u, int v) {
 		if(u == v) return;
 		graph[u].push_back(v);
 	}
 	void solve() {
-		int now_dfn = 0, scc_count = 0;
+		int dfn = 0, cnt = 0;
 		for(int i = 0; i < nodes.size(); i++) {
 			if(nodes[i].dfn == -1) {
-				dfs(now_dfn, scc_count, i);
+				dfs(dfn, cnt, i);
 			}
 		}
-		dag.assign(scc_count, {});
+		dag.assign(cnt, {});
 		set<pair<int, int>> edges;
 		for(int u = 0; u < graph.size(); ++u) {
 			for(int v : graph[u]) {
@@ -33,9 +33,9 @@ struct Tarjan_SCC {
 	struct Node {
 		int dfn;
 		int low;
-		bool instack;
+		bool ins;
 		int inscc;
-		Node() : dfn(-1), low(-1), instack(false), inscc(-1) {}
+		Node() : dfn(-1), low(-1), ins(false), inscc(-1) {}
 	};
 	vector<Node> nodes;
 	vector<vector<int>> graph;
@@ -43,17 +43,17 @@ struct Tarjan_SCC {
 	vector<vector<int>> dag;
 private:
 	stack<int> scc_stack;
-	void dfs(int &now_dfn, int &scc_count, int u) {
-		nodes[u].dfn = now_dfn;
-		nodes[u].low = now_dfn;
-		++now_dfn;
+	void dfs(int &dfn, int &cnt, int u) {
+		nodes[u].dfn = dfn;
+		nodes[u].low = dfn;
+		++dfn;
 		scc_stack.push(u);
-		nodes[u].instack = true;
+		nodes[u].ins = true;
 		for(int v : graph[u]) {
 			if(nodes[v].dfn == -1) {
-				dfs(now_dfn, scc_count, v);
+				dfs(dfn, cnt, v);
 				nodes[u].low = min(nodes[u].low, nodes[v].low);
-			} else if(nodes[v].instack) {
+			} else if(nodes[v].ins) {
 				nodes[u].low = min(nodes[u].low, nodes[v].low);
 			}
 		}
@@ -63,55 +63,61 @@ private:
 			while(v != u) {
 				v = scc_stack.top();
 				scc_stack.pop();
-				nodes[v].instack = false;
-				nodes[v].inscc = scc_count;
+				nodes[v].ins = false;
+				nodes[v].inscc = cnt;
 				scc.emplace_back(v);
 			}
 			sccs.emplace_back(move(scc));
-			++scc_count;
+			++cnt;
 		}
 	}
 };
 // 边双
-struct Tarjan_BCC {
-	Tarjan_BCC(int n)
-		: nodes(n), graph(n) {}
+struct EBCC {
+	EBCC(int n) : nodes(n), graph(n), in_ebcc(n) {}
 	void addedge(int u, int v) {
-		if(u == v) return;
+		if(u == v)
+			return;
 		graph[u].emplace_back(v);
 		graph[v].emplace_back(u);
 	}
 	void solve() {
-		int dfn_now = 0;
+		int dfn = 0;
 		for(int i = 0; i < nodes.size(); ++i) {
 			if(nodes[i].dfn == -1) {
-				dfs(i, -1, dfn_now);
+				dfs(i, -1, dfn);
+			}
+		}
+		for(int i = 0; i < ebcc.size(); ++i) {
+			for(int u : ebcc[i]) {
+				in_ebcc[u] = i;
 			}
 		}
 	}
+	vector<vector<int>> graph;
+	vector<vector<int>> ebcc;
+	vector<int> in_ebcc;
+private:
 	struct Node {
 		int dfn;
 		int low;
-		bool instack;
-		Node() :dfn(-1), low(-1), instack(false) {}
+		bool ins;
+		Node() : dfn(-1), low(-1), ins(false) {}
 	};
 	vector<Node> nodes;
-	vector<vector<int>> graph;
-	vector<vector<int>> dcc;
-private:
 	stack<int> stk;
-	void dfs(int u, int father, int &dfn_now) {
-		nodes[u].dfn = dfn_now;
-		nodes[u].low = dfn_now;
-		nodes[u].instack = true;
-		dfn_now++;
+	void dfs(int u, int fa, int &dfn) {
+		nodes[u].dfn = nodes[u].low = dfn;
+		nodes[u].ins = true;
+		dfn++;
 		stk.push(u);
 		for(int v : graph[u]) {
-			if(v == father) continue;
+			if(v == fa)
+				continue;
 			if(nodes[v].dfn == -1) {
-				dfs(v, u, dfn_now);
+				dfs(v, u, dfn);
 				nodes[u].low = min(nodes[u].low, nodes[v].low);
-			} else if(nodes[v].instack) {
+			} else if(nodes[v].ins) {
 				nodes[u].low = min(nodes[u].low, nodes[v].dfn);
 			}
 		}
@@ -122,9 +128,9 @@ private:
 				n = stk.top();
 				stk.pop();
 				t.emplace_back(n);
-				nodes[n].instack = false;
+				nodes[n].ins = false;
 			}
-			dcc.emplace_back(move(t));
+			ebcc.emplace_back(move(t));
 		}
 	}
 };

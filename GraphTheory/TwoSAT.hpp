@@ -9,7 +9,7 @@ using ull = unsigned long long;
 // 请打一个Tarjan_SCC下来
 // 注意：蕴含式也要加另一条边，A->B要加B'->A'
 void solve_twosat(int n, const vector<tuple<int, int, int, int>> &conds) {
-	Tarjan_SCC solver(2 * n);
+	SCC solver(2 * n);
 	for(auto [i, flag_i, j, flag_j] : conds) {
 		solver.addedge(2 * i + 1 - flag_i, 2 * j + flag_j);
 		solver.addedge(2 * j + 1 - flag_j, 2 * i + flag_i);
