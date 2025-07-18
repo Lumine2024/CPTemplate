@@ -13,6 +13,7 @@ int cmp(ld a, ld b) {
 	return sign(a - b);
 }
 constexpr ld pi = 3.1415926535897932384626l;
+constexpr ld inf = 1e12l;
 
 struct Point {
 	ld x, y;
@@ -157,3 +158,29 @@ ld dist(const Point &p, const Lineseg &ls) {
 	Line l(ls.a, ls.b - ls.a);
 	return dist(p, l);
 }
+
+struct Polygon {
+	vector<Point> pts;
+	Polygon() {}
+	Polygon(const vector<Point> &p) : pts(p) {}
+	Polygon(const vector<Line> &l) {
+		pts.reserve(l.size());
+		for(int i = 0; i < l.size(); ++i) {
+			pts.emplace_back(inter(l[i], l[(i + 1) % l.size()]));
+		}
+	}
+	ld area() const {
+		ld ret = 0.0l;
+		for(int i = 0; i < pts.size(); ++i) {
+			ret += cross(pts[i], pts[(i + 1) % pts.size()]);
+		}
+		return ret / 2.0l;
+	}
+	ld circ() const {
+		ld ret = 0.0l;
+		for(int i = 0; i < pts.size(); ++i) {
+			ret += (pts[i] - pts[(i + 1) % pts.size()]).len();
+		}
+		return ret;
+	}
+};
