@@ -99,7 +99,8 @@ int is_inter(const Line &l1, const Line &l2) {
 	return parallel(l1, l2) ? 0 : 1;
 }
 Point inter(const Line &a, const Line &b) {
-	assert(!parallel(a, b));
+	if(parallel(a, b))
+		throw invalid_argument("a and b are parallel");
 	Vector v = a.v * (cross(b.v, a.p - b.p) / cross(a.v, b.v));
 	return a.p + v;
 }

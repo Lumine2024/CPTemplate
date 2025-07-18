@@ -18,8 +18,12 @@ vector<Line> half_inter(vector<Line> lines) {
 	});
 	deque<Line> dq;
 	auto bad = [](const Line &l, const Line &b, const Line &c) {
-		auto p = inter(b, c);
-		return to_left(l, p) < 0;
+		try {
+			auto p = inter(b, c);
+			return to_left(l, p) < 0;
+		} catch(const invalid_argument &) {
+			return false;
+		}
 	};
 	for(auto &l : lines) {
 		if(!dq.empty() && cmp(l.v.arg(), dq.back().v.arg()) == 0) {
@@ -37,5 +41,20 @@ vector<Line> half_inter(vector<Line> lines) {
 		dq.pop_back();
 	while(dq.size() > 1 && bad(dq.back(), dq[0], dq[1]))
 		dq.pop_front();
-	return vector<Line>(dq.begin(), dq.end());
+	vector<Line> ret(dq.begin(), dq.end());
+	int m = ret.size();
+	if(m < 3)
+		return {};
+	vector<Point> poly;
+	poly.reserve(m);
+	for(int i = 0; i < m; ++i) {
+		try {
+			poly.emplace_back(inter(ret[i], ret[(i + 1) % m]));
+		} catch(const invalid_argument &) {
+			return {};
+		}
+	}
+	if(poly.size() != m)
+		return {};
+	return ret;
 }
