@@ -184,4 +184,38 @@ struct Polygon {
 		}
 		return ret;
 	}
+	int size() const {
+		return pts.size();
+	}
 };
+
+// todo
+struct Convex : public Polygon {};
+bool is_in(const Convex &convex, const Point &pt) {
+	if(convex.size() == 1) {
+		return pt == convex.pts[0];
+	}
+	if(convex.size() == 2) {
+		return is_on(pt, Lineseg(convex.pts[0], convex.pts[1]));
+	}
+	auto check = [](const Point &a, const Point &b, const Point &c, const Point &p) {
+		ld c1 = cross(b - a, p - a), c2 = cross(c - b, p - b), c3 = cross(a - c, p - c);
+		return (sign(c1) != -1 && sign(c2) != -1 && sign(c3) != -1) || (sign(c1) != 1 && sign(c2) != 1 && sign(c3) != 1);
+	};
+	int n = convex.size();
+	Point pivot = convex.pts[0];
+	if((sign(cross(convex.pts[1] - pivot, pt - pivot)) == -1) || (sign(cross(convex.pts[n - 1] - pivot, pt - pivot)) == 1)) {
+		return false;
+	}
+	int l = 1, r = n - 1;
+	while(l + 1 < r) {
+		int mid = (l + r) >> 1;
+		if(sign(cross(convex.pts[mid] - pivot, pt - pivot)) != -1) {
+			l = mid;
+		} else {
+			r = mid;
+		}
+	}
+	int nxt = (l == n - 1) ? 1 : l + 1;
+	return check(pivot, convex.pts[l], convex.pts[nxt], pt);
+}
