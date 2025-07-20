@@ -5,10 +5,9 @@ using namespace std;
 using ll = long long;
 using ull = unsigned long long;
 
-vector<Point> andrew(vector<Point> &points) {
-	sort(points.begin(), points.end(), [](const Point &a, const Point &b) {
-		return a.x < b.x || (a.x == b.x && a.y < b.y);
-	});
+vector<Point> andrew(vector<Point> points) {
+	sort(points.begin(), points.end(), [](const Point &a, const Point &b) { return a.x < b.x || (a.x == b.x && a.y < b.y); });
+	points.erase(unique(points.begin(), points.end()), points.end());
 	int n = points.size();
 	if(n <= 2) {
 		return points;

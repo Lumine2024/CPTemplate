@@ -194,51 +194,48 @@ private:
 	}
 };
 // 割点
-struct Tarjan_Cutpoint {
-	Tarjan_Cutpoint(int n)
-		: nodes(n), graph(n) {}
+struct Cutpoint {
+	Cutpoint(int n) : nodes(n), graph(n) {}
 	void addedge(int u, int v) {
 		graph[u].emplace_back(v);
 		graph[v].emplace_back(u);
 	}
 	void solve() {
-		int dfn_now = 0;
+		int dfn = 0;
 		for(int i = 0; i < nodes.size(); ++i) {
 			if(nodes[i].dfn == -1) {
-				dfs(i, -1, dfn_now);
+				dfs(i, -1, dfn);
 			}
 		}
 		sort(cutpoints.begin(), cutpoints.end());
 		cutpoints.erase(unique(cutpoints.begin(), cutpoints.end()), cutpoints.end());
 	}
 	struct Node {
-		int dfn;
-		int low;
+		int dfn, low;
 		Node() : dfn(-1), low(-1) {}
 	};
 	vector<Node> nodes;
 	vector<vector<int>> graph;
 	vector<int> cutpoints;
 private:
-	void dfs(int u, int father, int &dfn_now) {
-		nodes[u].dfn = dfn_now;
-		nodes[u].low = dfn_now;
-		dfn_now++;
+	void dfs(int u, int fa, int &dfn) {
+		nodes[u].dfn = nodes[u].low = dfn;
+		++dfn;
 		int child = 0;
 		bool flag = false;
 		for(int v : graph[u]) {
 			if(nodes[v].dfn == -1) {
-				child++;
-				dfs(v, u, dfn_now);
+				++child;
+				dfs(v, u, dfn);
 				nodes[u].low = min(nodes[u].low, nodes[v].low);
-				if(father != -1) {
+				if(fa != -1) {
 					flag |= (nodes[v].low >= nodes[u].dfn);
 				}
-			} else if(v != father) {
+			} else if(v != fa) {
 				nodes[u].low = min(nodes[u].low, nodes[v].dfn);
 			}
 		}
-		if(father == -1) {
+		if(fa == -1) {
 			flag = (child > 1);
 		}
 		if(flag) {
