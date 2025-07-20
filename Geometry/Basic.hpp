@@ -41,6 +41,9 @@ struct Point {
 	bool operator==(const Point &p) const {
 		return cmp(x, p.x) == 0 && cmp(y, p.y) == 0;
 	}
+	ld len2() const {
+		return x * x + y * y;
+	}
 	ld len() const {
 		return sqrt(x * x + y * y);
 	}
