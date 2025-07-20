@@ -1,23 +1,25 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "Geometry/Basic.hpp"
 using namespace std;
 using ll = long long;
 using ull = unsigned long long;
 
 struct Rectangle {
-	int x1, x2, y1, y2;
+	Point p1, p2;
 };
 
 struct Event {
-	int delta, y, l, r;
+	int delta, l, r;
+	ld y;
 };
 
-struct SegTree_SL {
-	SegTree_SL(const vector<int> &_xs) : nodes(4 * _xs.size()), xs(_xs) {
-		int n = _xs.size();
+struct SegTree {
+	SegTree(const vector<ld> &_xs) : nodes(4 * _xs.size()), xs(_xs) {
+		int n = xs.size();
 		_build(0, 0, n);
 	}
-	int query() const {
+	ld query() const {
 		return nodes[0].len;
 	}
 	// 注意左闭右开
@@ -26,22 +28,23 @@ struct SegTree_SL {
 	}
 private:
 	struct Node {
-		int l, r, cnt, len;
+		int l, r, cnt;
+		ld len;
 	};
 	vector<Node> nodes;
-	vector<int> xs;
+	vector<ld> xs;
 	void _pushup(int u) {
 		if(nodes[u].cnt > 0) {
 			nodes[u].len = xs[nodes[u].r] - xs[nodes[u].l];
 		} else if(nodes[u].r - nodes[u].l == 1) {
-			nodes[u].len = 0;
+			nodes[u].len = 0.0l;
 		} else {
 			int lson = (u << 1) + 1, rson = (u << 1) + 2;
 			nodes[u].len = nodes[lson].len + nodes[rson].len;
 		}
 	}
 	void _build(int u, int l, int r) {
-		nodes[u] = {l, r, 0, 0};
+		nodes[u] = { l, r, 0, 0.0l };
 		if(r - l > 1) {
 			int mid = (l + r) >> 1, lson = (u << 1) + 1, rson = (u << 1) + 2;
 			_build(lson, l, mid);
@@ -62,33 +65,33 @@ private:
 	}
 };
 
-ll scanning_line(const vector<Rectangle> &rects) {
+ld scanline(const vector<Rectangle> &rects) {
 	int n = rects.size();
-	vector<int> xs(2 * n);
+	vector<ld> xs(2 * n);
 	vector<Event> events(2 * n);
 	for(int i = 0; i < n; ++i) {
-		xs[2 * i] = rects[i].x1;
-		xs[2 * i + 1] = rects[i].x2;
+		xs[2 * i] = rects[i].p1.x;
+		xs[2 * i + 1] = rects[i].p2.x;
 	}
 	sort(xs.begin(), xs.end());
 	xs.erase(unique(xs.begin(), xs.end()), xs.end());
-	auto getid = [&](int x) -> int {
+	auto getid = [&](ld x) -> int {
 		return lower_bound(xs.begin(), xs.end(), x) - xs.begin();
 	};
 	for(int i = 0; i < n; ++i) {
-		events[2 * i] = {1, rects[i].y1, getid(rects[i].x1), getid(rects[i].x2)}; // 注意这里不需要+1
-		events[2 * i + 1] = {-1, rects[i].y2, getid(rects[i].x1), getid(rects[i].x2)};
+		events[2 * i] = { 1, getid(rects[i].p1.x), getid(rects[i].p2.x), rects[i].p1.y };
+		events[2 * i + 1] = { -1, getid(rects[i].p1.x), getid(rects[i].p2.x), rects[i].p2.y };
 	}
 	sort(events.begin(), events.end(), [](const Event &a, const Event &b) {
-		return a.y < b.y;
+		return cmp(a.y, b.y) == -1;
 	});
-	SegTree_SL seg(xs);
-	ll lasty = events[0].y;
-	ll ans = 0;
-	for(auto &eve : events) {
-		ans += (eve.y - lasty) * seg.query();
-		seg.update(eve.l, eve.r, eve.delta);
-		lasty = eve.y;
+	SegTree seg(xs);
+	ld lasty = events[0].y;
+	ld ans = 0.0l;
+	for(auto &e : events) {
+		ans += seg.query() * (e.y - lasty);
+		seg.update(e.l, e.r, e.delta);
+		lasty = e.y;
 	}
 	return ans;
 }
