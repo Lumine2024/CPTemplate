@@ -55,7 +55,10 @@ struct Point {
 	}
 	int quad() const {
 		int cx = cmp(x, 0), cy = cmp(y, 0);
-		return (cx == 0 && cy == 0) ? 0 : (cx == 1 && cy == 0) ? 1 : (cx == 1 && cy == 1) ? 2 : (cx == 0 && cy == 1) ? 3 : (cx == -1 && cy == 1) ? 4 : (cx == -1 && cy == 0) ? 5 : (cx == -1 && cy == -1) ? 6 : (cx == 0 && cy == -1) ? 7 : 8;
+		return (cx == 0 && cy == 0) ? 0 : (cx == 1 && cy == 0) ? 1 :
+			   (cx == 1 && cy == 1) ? 2 : (cx == 0 && cy == 1) ? 3 :
+			   (cx == -1 && cy == 1) ? 4 : (cx == -1 && cy == 0) ? 5 :
+			   (cx == -1 && cy == -1) ? 6 : (cx == 0 && cy == -1) ? 7 : 8;
 	}
 	Point rotate(ld a) const {
 		return Point(x * cos(a) - y * sin(a), x * sin(a) + y * cos(a));
@@ -73,8 +76,7 @@ ld cross(const Point &o, const Point &a, const Point &b) {
 }
 bool argcmp(const Point &x, const Point &y) {
 	int qx = x.quad(), qy = y.quad();
-	if(qx != qy)
-		return qx < qy;
+	if(qx != qy) return qx < qy;
 	return cmp(cross(x, y), 0.0l) == 1;
 }
 ld dist(const Point &x, const Point &y) {
@@ -150,13 +152,15 @@ int is_inter(const Lineseg &l1, const Lineseg &l2) {
 		return 2;
 	}
 	Line ln1(l1.a, l1.b - l1.a), ln2(l2.a, l2.b - l2.a);
-	return to_left(ln1, l2.a) * to_left(ln1, l2.b) == -1 && to_left(ln2, l1.a) * to_left(ln2, l1.b) == -1;
+	return to_left(ln1, l2.a) * to_left(ln1, l2.b) == -1 
+		&& to_left(ln2, l1.a) * to_left(ln2, l1.b) == -1;
 }
 ld dist(const Point &p, const Lineseg &ls) {
 	if(is_on(p, ls) != 0) {
 		return 0.0l;
 	}
-	if(cmp(dot(p - ls.a, ls.b - ls.a), 0) == -1 || cmp(dot(p - ls.b, ls.a - ls.b), 0) == -1) {
+	if(cmp(dot(p - ls.a, ls.b - ls.a), 0) == -1 ||
+	   cmp(dot(p - ls.b, ls.a - ls.b), 0) == -1) {
 		return min(dist(p, ls.a), dist(p, ls.b));
 	}
 	Line l(ls.a, ls.b - ls.a);
@@ -203,11 +207,13 @@ bool is_in(const Convex &convex, const Point &pt) {
 	}
 	auto check = [](const Point &a, const Point &b, const Point &c, const Point &p) {
 		ld c1 = cross(b - a, p - a), c2 = cross(c - b, p - b), c3 = cross(a - c, p - c);
-		return (sign(c1) != -1 && sign(c2) != -1 && sign(c3) != -1) || (sign(c1) != 1 && sign(c2) != 1 && sign(c3) != 1);
+		return (sign(c1) != -1 && sign(c2) != -1 && sign(c3) != -1) 
+			|| (sign(c1) != 1 && sign(c2) != 1 && sign(c3) != 1);
 	};
 	int n = convex.size();
 	Point pivot = convex.pts[0];
-	if((sign(cross(convex.pts[1] - pivot, pt - pivot)) == -1) || (sign(cross(convex.pts[n - 1] - pivot, pt - pivot)) == 1)) {
+	if((sign(cross(convex.pts[1] - pivot, pt - pivot)) == -1) 
+	|| (sign(cross(convex.pts[n - 1] - pivot, pt - pivot)) == 1)) {
 		return false;
 	}
 	int l = 1, r = n - 1;
