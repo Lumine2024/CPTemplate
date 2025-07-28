@@ -19,3 +19,21 @@ pair<ll, ll> crt(const vector<ll> &rem, const vector<ll> &mod) {
 	}
 	return pair((ans % modulo_ + modulo_) % modulo_, modulo_);
 }
+
+pair<ll, ll> excrt(const vector<ll> &rem, const vector<ll> &mod) {
+	int n = rem.size();
+	ll r1 = rem[0], m1 = mod[0];
+	for(int i = 1; i < n; ++i) {
+		ll r2 = rem[i], m2 = mod[i];
+		auto [g, p, _] = exgcd(m1, m2);
+		if((r2 - r1) % g != 0) {
+			return { -1, -1 };
+		}
+		ll v = m2 / g, x = (r2 - r1) / g;
+		ll u = p % v * x % v;
+		ll w = (u % v + v) % v;
+		r1 += w * m1;
+		m1 = lcm(m1, m2);
+	}
+	return { (r1 % m1 + m1) % m1, m1 };
+}
