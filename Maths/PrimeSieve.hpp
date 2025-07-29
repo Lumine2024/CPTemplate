@@ -1,52 +1,47 @@
 #pragma once
 #include <bits/stdc++.h>
 #include "Constants.hpp"
+#include "ModInt.hpp"
 using namespace std;
 using ll = long long;
 using ull = unsigned long long;
 
-ll 	phi[maxn], // 欧拉函数
-	mu[maxn], // 莫比乌斯函数
-	sigma0[maxn], // 因数个数
-	sigma1[maxn], // 因数和
-	lprime[maxn], // lowest prime，i==lprime[i]等价于i是质数
-	lpower[maxn], // lprime[i]的次数
-	powsum[maxn]; // \sum_{j=0}^{lpower[i]}(lprime[i])^j
-vector<ll> primes;
-int init = [] {
-	primes.reserve(maxn / 10);
-	phi[1] = mu[1] = sigma0[1] = sigma1[1] = powsum[1] = 1;
-	lpower[1] = 0;
-	for(ll i = 2; i < maxn; ++i) {
-		if(lprime[i] == 0) {
-			lprime[i] = i;
+// 为了筛更多的数，需要尽量减少数组的数量，牺牲一点时间
+int lpf[maxn];
+int myf[maxn];
+vector<int> primes;
+
+// 示例：欧拉函数（积性函数）
+int getf(int p, int k) {
+	return qpow(p, k) - qpow(p, k - 1);
+}
+
+int init_myf = [] {
+	myf[1] = 1; // 积性函数首项为1
+	for(int i = 2; i < maxn; ++i) {
+		if(lpf[i] == 0) {
+			lpf[i] = i;
 			primes.push_back(i);
-			phi[i] = i - 1;
-			mu[i] = -1;
-			sigma0[i] = 2;
-			lpower[i] = 1;
-			powsum[i] = i + 1;
-			sigma1[i] = powsum[i];
+			myf[i] = getf(i, 1);
 		}
 		for(ll p : primes) {
-			ll j = i * p;
-			if(j >= maxn) break;
-			lprime[j] = p;
+			if(i * p >= maxn) break;
+			int j = i * p;
+			lpf[j] = p;
 			if(i % p == 0) {
-				phi[j] = phi[i] * p;
-				mu[j] = 0;
-				lpower[j] = lpower[i] + 1;
-				powsum[j] = powsum[i] + qpow(p, lpower[j]);
-				sigma0[j] = sigma0[j / qpow(lprime[j], lpower[j])] * (lpower[j] + 1);
-				sigma1[j] = sigma1[j / qpow(lprime[j], lpower[j])] * powsum[j];
+				int k = 0, t = j;
+				while(t % p == 0) {
+					++k;
+					t /= p;
+				}
+				if(t == 1) {
+					myf[j] = getf(p, k);
+				} else {
+					myf[j] = myf[t] * myf[j / t];
+				}
 				break;
 			} else {
-				phi[j] = phi[i] * (p - 1);
-				mu[j] = -mu[i];
-				lpower[j] = 1;
-				powsum[j] = 1 + p;
-				sigma1[j] = sigma1[i] * powsum[j];
-				sigma0[j] = sigma0[i] * 2;
+				myf[j] = myf[i] * myf[p];
 			}
 		}
 	}

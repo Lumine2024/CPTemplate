@@ -241,6 +241,7 @@ struct Circle {
 		return 2.0l * pi * r;
 	}
 };
+
 vector<Point> inter(const Circle &c1, const Circle &c2) {
 	ld dis = (c2.c - c1.c).len();
 	ld r1 = c1.r, r2 = c2.r;
@@ -259,7 +260,6 @@ vector<Point> inter(const Circle &c1, const Circle &c2) {
 	v = v / v.len() * c1.r;
 	return {c1.c + v.rotate(alp), c1.c + v.rotate(-alp)};
 }
-
 bool inter(const Circle &c, const Line &l, pair<Point, Point> &ret) {
 	ld d = dist(c.c, l);
 	if(sign(d) == 0) {
