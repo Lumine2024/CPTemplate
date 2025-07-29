@@ -6,7 +6,7 @@ using ll = long long;
 using ull = unsigned long long;
 
 // 本题给的是析取式，在这里我转化为了蕴含式求解
-// 请打一个Tarjan_SCC下来
+// 请打一个SCC下来
 // 注意：蕴含式也要加另一条边，A->B要加B'->A'
 void solve_twosat(int n, const vector<tuple<int, int, int, int>> &conds) {
 	SCC solver(2 * n);
