@@ -88,6 +88,14 @@ int to_left(const Vector &a, const Vector &b) {
 int to_left(const Point &a, const Point &b, const Point &c) {
 	return sign(cross(a, b, c));
 }
+ld angle(const Vector &a, const Vector &b) {
+	ld cosa = min(max(dot(a, b) / (a.len() * b.len()), -1.0l), 1.0l);
+	ld ret = acos(cosa);
+	if(to_left(a, b) == -1) {
+		ret = 2 * pi - ret;
+	}
+	return ret;
+}
 
 struct Line {
 	Point p, v;
@@ -242,42 +250,44 @@ struct Circle {
 	}
 };
 
-vector<Point> inter(const Circle &c1, const Circle &c2) {
+bool is_inter(const Circle &c1, const Circle &c2) {
 	ld dis = (c2.c - c1.c).len();
 	ld r1 = c1.r, r2 = c2.r;
 	if(abs(dis) <= eps) {
-		if(r1 == r2) {
-			return {Point{}};
-		}
-		return {};
+		return false;
 	}
-	if (dis > r1 + r2 + eps || dis < abs(r1 - r2) + eps) {
-		return {};
+	if(dis > r1 + r2 + eps || dis < abs(r1 - r2) - eps) {
+		return false;
 	}
+	return true;
+}
+pair<Point, Point> inter(const Circle &c1, const Circle &c2) {
+	if(!is_inter(c1, c2))
+		throw invalid_argument("Circles do not intersect");
+	ld dis = (c2.c - c1.c).len();
+	ld r1 = c1.r, r2 = c2.r;
 	ld cosa = ((r1 * r1 + dis * dis - r2 * r2) / (2 * r1 * dis));
-	ld alp = acos(min(max(cosa, -1.0l), 1.0l));
+	cosa = min(max(cosa, -1.0l), 1.0l);
+	ld alp = acos(cosa);
 	Point v = c2.c - c1.c;
 	v = v / v.len() * c1.r;
-	return {c1.c + v.rotate(alp), c1.c + v.rotate(-alp)};
+	return { c1.c + v.rotate(alp), c1.c + v.rotate(-alp) };
 }
-bool inter(const Circle &c, const Line &l, pair<Point, Point> &ret) {
+
+bool is_inter(const Circle &c, const Line &l) {
 	ld d = dist(c.c, l);
-	if(sign(d) == 0) {
-		ret.first = l.v * (1.0l / l.v.len()) * c.r + c.c;
-		ret.second = l.v * (-1.0l / l.v.len()) * c.r + c.c;
-		return true;
-	}
-	if(cmp(c.r, d) != 1) return false;
-	Point vec;
-	if(to_left(l.v, c.c - l.p) == 1) {
-		vec = Point{ l.v.y, -l.v.x };
-	} else {
-		vec = Point{ -l.v.y, l.v.x };
-	}
-	vec = vec * (1.0l / vec.len()) * c.r;
-	ld cosa = d / c.r;
-	ld a = acos(cosa);
-	ret.first = vec.rotate(-a) + c.c;
-	ret.second = vec.rotate(a) + c.c;
-	return true;
+	return cmp(c.r, d) != -1;
+}
+pair<Point, Point> inter(const Circle &c, const Line &l) {
+	if(!is_inter(c, l))
+		throw invalid_argument("Circle and line do not intersect");
+	Point o = c.c;
+	Vector v = l.v;
+	Point p = l.p - o;
+	ld A = v.len2(), B = 2 * dot(p, v), C = p.len2() - c.r * c.r, D = max(B * B - 4 * A * C, 0.0l);
+	ld s = sqrt(D);
+	ld q = (B > 0 ? -B - s : -B + s) / 2;
+	ld t1 = q / A, t2 = C / q;
+	Point i1 = l.p + v * t1, i2 = l.p + v * t2;
+	return {i1, i2};
 }
