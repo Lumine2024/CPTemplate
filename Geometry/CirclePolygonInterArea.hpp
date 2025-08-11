@@ -10,7 +10,7 @@ ld sector_area(Circle c, Point u, Point v) {
 	if(cmp(alp, pi) == 1) alp -= 2 * pi;
 	return c.r * c.r * alp / 2;
 }
-ld inter_area_helper(Circle c, Point a, Point b) {
+ld inter_helper(Circle c, Point a, Point b) {
 	a = a - c.c, b = b - c.c, c.c = {};
 	ld da = a.len(), db = b.len();
 	if(cmp(da, c.r) <= 0 && cmp(db, c.r) <= 0) {
@@ -36,7 +36,7 @@ ld inter_area(const Polygon &poly, const Circle &c) {
 	ld ret = 0.0l;
 	for(int i = 0; i < poly.size(); ++i) {
 		int j = (i + 1) % poly.size();
-		ret += inter_area_helper(c, poly.pts[i], poly.pts[j]);
+		ret += inter_helper(c, poly.pts[i], poly.pts[j]);
 	}
 	return abs(ret);
 }
