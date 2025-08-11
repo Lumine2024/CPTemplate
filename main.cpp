@@ -11,14 +11,23 @@
   时间复杂度有没有写假？空间足够吗？精度是否正确？
 */
 
-#include <bits/extc++.h>
+#include <bits/stdc++.h>
+#include "all.hpp"
 using namespace std;
 using ll = long long;
 using ull = unsigned long long;
-namespace pbds = __gnu_pbds;
+
+inline void solve() {
+
+}
 
 int main() {
-	cin.tie(nullptr)->sync_with_stdio(false);
-
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+	int n;
+    cin >> n;
+    while(n--) {
+        solve();
+    }
 	return 0;
 }

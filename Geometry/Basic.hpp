@@ -53,13 +53,6 @@ struct Point {
 		int c = cmp(ret, 0);
 		return c == 1 ? ret : c == 0 ? 0.0l : ret + 2 * pi;
 	}
-	int quad() const {
-		int cx = cmp(x, 0), cy = cmp(y, 0);
-		return (cx == 0 && cy == 0) ? 0 : (cx == 1 && cy == 0) ? 1 :
-			   (cx == 1 && cy == 1) ? 2 : (cx == 0 && cy == 1) ? 3 :
-			   (cx == -1 && cy == 1) ? 4 : (cx == -1 && cy == 0) ? 5 :
-			   (cx == -1 && cy == -1) ? 6 : (cx == 0 && cy == -1) ? 7 : 8;
-	}
 	Point rotate(ld a) const {
 		return Point(x * cos(a) - y * sin(a), x * sin(a) + y * cos(a));
 	}
@@ -75,9 +68,10 @@ ld cross(const Point &o, const Point &a, const Point &b) {
 	return cross(a - o, b - o);
 }
 bool argcmp(const Point &x, const Point &y) {
-	int qx = x.quad(), qy = y.quad();
-	if(qx != qy) return qx < qy;
-	return cmp(cross(x, y), 0.0l) == 1;
+	bool bx = sign(x.y) == 1 || (sign(x.y) == 0 && sign(x.x) == 1),
+		 by = sign(y.y) == 1 || (sign(y.y) == 0 && sign(y.x) == 1);
+	if(bx != by) return bx;
+	return sign(cross(x, y)) == 0;
 }
 ld dist(const Point &x, const Point &y) {
 	return (x - y).len();
