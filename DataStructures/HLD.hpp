@@ -4,64 +4,18 @@ using namespace std;
 using ll = long long;
 using ull = unsigned long long;
 
-struct SegTree {
-	int n;
-	SegTree() : n(0) {}
-	SegTree(int sz) : n(sz), s(sz * 4, 0) {}
-	SegTree(const vector<ll> &nums) : n(nums.size()), s(nums.size() * 4) {
-		build(nums, 0, 0, n);
+struct HLDInfo {
+	ll val;
+	explicit HLDInfo(ll v) : val(v) {}
+	HLDInfo() : val(0) {}
+	void update(HLDInfo &dst) const {
+		dst.val = val;
 	}
-	void assign(const vector<ll> &nums) {
-		s.assign(nums.size() * 4, 0);
-		n = nums.size();
-		_build(nums, 0, 0, n);
-	}
-	void modify(int x, ll val) {
-		_modify(x, val, 0, 0, n);
-	}
-	ll query_sum(int l, int r) const {
-		return _query(l, r, 0, 0, n);
-	}
-private:
-	vector<ll> s;
-	void _build(const vector<ll> &nums, int i, int l, int r) {
-		if (r - l == 1) {
-			s[i] = nums[l];
-			return;
-		}
-		int mid = (l + r) / 2;
-		_build(nums, i * 2 + 1, l, mid);
-		_build(nums, i * 2 + 2, mid, r);
-		s[i] = s[i * 2 + 1] + s[i * 2 + 2];
-	}
-	void _modify(int x, ll val, int i, int l, int r) {
-		if (r - l == 1) {
-			s[i] = val;
-			return;
-		}
-		int mid = (l + r) / 2;
-		if (x < mid) {
-			_modify(x, val, i * 2 + 1, l, mid);
-		} else {
-			_modify(x, val, i * 2 + 2, mid, r);
-		}
-		s[i] = s[i * 2 + 1] + s[i * 2 + 2];
-	}
-	ll _query(int ql, int qr, int i, int l, int r) const {
-		if (ql <= l && qr >= r) {
-			return s[i];
-		}
-		int mid = (l + r) / 2;
-		ll ans = 0;
-		if (ql < mid) {
-			ans += _query(ql, qr, i * 2 + 1, l, mid);
-		}
-		if (qr > mid) {
-			ans += _query(ql, qr, i * 2 + 2, mid, r);
-		}
-		return ans;
+	HLDInfo operator+(const HLDInfo &x) const {
+		return HLDInfo(val + x.val);
 	}
 };
+
 struct Node {
 	ll w;
 	vector<int> e;
@@ -72,9 +26,9 @@ struct HLD {
 		dfs1(g, r, -1);
 		int now_index = 0;
 		dfs2(g, r, -1, now_index, r);
-		vector<ll> nums(g.size());
+		vector<HLDInfo> nums(g.size());
 		for(int i = 0; i < g.size(); ++i) {
-			nums[nodes[i].dfn] = g[i].w;
+			nums[nodes[i].dfn] = HLDInfo{g[i].w};
 		}
 		seg.assign(nums);
 	}
@@ -89,7 +43,7 @@ struct HLD {
 		return nodes[u].d < nodes[v].d ? u : v;
 	}
 	void modify(int x, ll v) {
-		seg.modify(nodes[x].dfn, v);
+		seg.update(nodes[x].dfn, HLDInfo{v});
 	}
 	ll query_sum(int u, int v) const {
 		int lca_node = lca(u, v);
@@ -99,17 +53,17 @@ struct HLD {
 				point = nodes[nodes[point].toc].fa) {
 				int pos1 = nodes[point].dfn;
 				int pos2 = nodes[nodes[point].toc].dfn;
-				ans += seg.query_sum(pos2, pos1 + 1);
+				ans += seg.query(pos2, pos1 + 1).val;
 			}
 			int pos1 = nodes[lca_node].dfn;
 			int pos2 = nodes[point].dfn;
-			ans += seg.query_sum(pos1 + 1, pos2 + 1);
+			ans += seg.query(pos1 + 1, pos2 + 1).val;
 			return ans;
 		};
 		ll ans = query_to_lca(u);
 		ans += query_to_lca(v);
 		int lca_pos = nodes[lca_node].dfn;
-		ans += seg.query_sum(lca_pos, lca_pos + 1);
+		ans += seg.query(lca_pos, lca_pos + 1).val;
 		return ans;
 	}
 private:
@@ -156,5 +110,5 @@ private:
 	}
 	vector<_Node> nodes;
 	vector<int> nfd;
-	SegTree seg;
+	SegTree<HLDInfo> seg;
 };

@@ -14,8 +14,8 @@ struct Event {
 	ld y;
 };
 
-struct SegTree {
-	SegTree(const vector<ld> &_xs) : nodes(4 * _xs.size()), xs(_xs) {
+struct SegTree_SL {
+	SegTree_SL(const vector<ld> &_xs) : nodes(4 * _xs.size()), xs(_xs) {
 		int n = xs.size();
 		_build(0, 0, n);
 	}
@@ -85,7 +85,7 @@ ld scanline(const vector<Rectangle> &rects) {
 	sort(events.begin(), events.end(), [](const Event &a, const Event &b) {
 		return cmp(a.y, b.y) == -1;
 	});
-	SegTree seg(xs);
+	SegTree_SL seg(xs);
 	ld lasty = events[0].y;
 	ld ans = 0.0l;
 	for(auto &e : events) {

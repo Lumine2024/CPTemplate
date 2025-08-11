@@ -7,38 +7,35 @@ using ull = unsigned long long;
 
 ll qpow(ll x, ll n) {
 	ll ret = 1;
-	while(n) {
+	for(; n != 0; n >>= 1, x = x * x % modulo) {
 		if(n & 1) ret = ret * x % modulo;
-		x = x * x % modulo;
-		n >>= 1;
 	}
 	return ret;
 }
 struct ModInt {
-	ModInt(ll v = 0) : val(v % modulo) {}
+	ModInt(ll v = 0) : val(v % modulo) {
+		if(val < 0) val += modulo;
+	}
 	ModInt operator+(const ModInt &rhs) const {
-		return ModInt((val + rhs.val) % modulo);
+		return ModInt(val + rhs.val);
 	}
 	ModInt operator-(const ModInt &rhs) const {
-		return ModInt((val - rhs.val + modulo) % modulo);
+		return ModInt(val - rhs.val);
 	}
 	ModInt operator*(const ModInt &rhs) const {
-		return ModInt((val * rhs.val) % modulo);
+		return ModInt(val * rhs.val);
 	}
 	ModInt operator/(const ModInt &rhs) const {
-		return ModInt(val * qpow(rhs.val, modulo - 2) % modulo);
+		return ModInt(val * qpow(rhs.val, modulo - 2));
 	}
-	ModInt power(int N) const {
+	ModInt power(int n) const {
 		ModInt ret = 1;
-		ModInt base = val;
-		while(N) {
-			if(N & 1) ret = ret * base;
-			base = base * base;
-			N >>= 1;
+		for(ModInt base = val; n != 0; n >>= 1, base = base * base) {
+			if(n & 1) ret = ret * base;
 		}
 		return ret;
 	}
-	operator ll &() {
+	operator ll() const {
 		return val;
 	}
 private:

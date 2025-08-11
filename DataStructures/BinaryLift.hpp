@@ -3,12 +3,12 @@
 using namespace std;
 using ll = long long;
 using ull = unsigned long long;
-namespace _increment {
+namespace _binary_lift {
 constexpr int LOG = 20;
 }
 struct BinaryLift {
 	BinaryLift(int n)
-		: tree(n), anc(n, vector<int>(_increment::LOG, -1)), depth(n) {}
+		: tree(n), anc(n, vector<int>(_binary_lift::LOG, -1)), depth(n) {}
 	void addedge(int u, int v) {
 		tree[u].push_back(v);
 		tree[v].push_back(u);
@@ -18,7 +18,7 @@ struct BinaryLift {
 	}
 	int lca(int u, int v) const {
 		if(depth[u] < depth[v]) swap(u, v);
-		for(int k = _increment::LOG - 1; k >= 0; --k) {
+		for(int k = _binary_lift::LOG - 1; k >= 0; --k) {
 			if(anc[u][k] != -1) {
 				if(depth[anc[u][k]] >= depth[v]) {
 					u = anc[u][k];
@@ -26,7 +26,7 @@ struct BinaryLift {
 			}
 		}
 		if(u == v) return u;
-		for(int k = _increment::LOG - 1; k >= 0; --k) {
+		for(int k = _binary_lift::LOG - 1; k >= 0; --k) {
 			if(anc[u][k] != anc[v][k]) {
 				u = anc[u][k];
 				v = anc[v][k];
@@ -35,7 +35,7 @@ struct BinaryLift {
 		return anc[u][0];
 	}
 	int kth_ancestor(int x, int k) const {
-		for(int i = 0; i < _increment::LOG; ++i) {
+		for(int i = 0; i < _binary_lift::LOG; ++i) {
 			if((k >> i) & 1) {
 				x = anc[x][i];
 				if(x == -1) return -1;
@@ -50,7 +50,7 @@ private:
 	void dfs(int root, int fa) {
 		depth[root] = fa != -1 ? depth[fa] + 1 : 0;
 		anc[root][0] = fa;
-		for(int k = 1; k < _increment::LOG; ++k) {
+		for(int k = 1; k < _binary_lift::LOG; ++k) {
 			if(anc[root][k - 1] == -1) {
 				anc[root][k] = -1;
 			} else {
