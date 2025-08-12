@@ -5,7 +5,7 @@ using ll = long long;
 using ull = unsigned long long;
 
 struct SeqAM {
-	SeqAM(const string &s) : n(s.size()), nxt(s.size() + 2, [&] {
+	explicit SeqAM(const string &s) : n(s.size()), nxt(s.size() + 2, [&] {
 		array<int, 26> ret;
 		ret.fill(s.size() + 1);
 		return ret;

@@ -5,7 +5,7 @@ using ll = long long;
 using ull = unsigned long long;
 
 struct DynamicBitSet {
-    DynamicBitSet(int n = 0) : nums((n + 63) >> 6, 0), sz(n) {}
+    explicit DynamicBitSet(int n = 0) : nums((n + 63) >> 6, 0), sz(n) {}
     void resize(int n) {
         nums.resize(n);
         sz = n;

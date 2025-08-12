@@ -12,8 +12,8 @@ template<class Info> concept SegInfo = requires(Info a, Info b) {
 template<class Info> requires(SegInfo<Info>) struct SegTree {
 public:
 	SegTree() : n(0) {}
-	SegTree(int sz) : n(sz), info(sz * 4, Info()) {}
-	SegTree(const vector<Info> &v) : n(v.size()), info(v.size() * 4) {
+	explicit SegTree(int sz) : n(sz), info(sz * 4, Info()) {}
+	explicit SegTree(const vector<Info> &v) : n(v.size()), info(v.size() * 4) {
 		_build(v, 0, 0, n);
 	}
 	void assign(int sz) {
@@ -80,8 +80,8 @@ template<class Info, class Tag> requires LazySegInfoTag<Info, Tag> struct LazySe
 	explicit LazySegTree(const vector<Info> &v) : n(v.size()), info(4 * n), tag(4 * n) {
 		_build(v, 0, 0, n);
 	}
-	void assign(int n) {
-		this->n = n;
+	void assign(int _n) {
+		n = _n;
 		info.assign(4 * n, Info{});
 		tag.assign(4 * n, Tag{});
 	}

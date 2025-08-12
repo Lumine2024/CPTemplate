@@ -6,7 +6,7 @@ using ull = unsigned long long;
 
 // 强连通分量
 struct SCC {
-	SCC(int n) : nodes(n), graph(n) {}
+	explicit SCC(int n) : nodes(n), graph(n) {}
 	void addedge(int u, int v) {
 		if(u == v) return;
 		graph[u].push_back(v);
@@ -74,7 +74,7 @@ private:
 };
 // 边双
 struct EBCC {
-	EBCC(int n) : nodes(n), graph(n), in_ebcc(n) {}
+	explicit EBCC(int n) : nodes(n), graph(n), in_ebcc(n) {}
 	void addedge(int u, int v) {
 		if(u == v)
 			return;
@@ -135,8 +135,8 @@ private:
 	}
 };
 // 点双
-struct Tarjan_DCC {
-	Tarjan_DCC(int n)
+struct DCC {
+	explicit DCC(int n)
 		: nodes(n), graph(n) {}
 	void addedge(int u, int v) {
 		if(u == v) return;
@@ -195,7 +195,7 @@ private:
 };
 // 割点
 struct Cutpoint {
-	Cutpoint(int n) : nodes(n), graph(n) {}
+	explicit Cutpoint(int n) : nodes(n), graph(n) {}
 	void addedge(int u, int v) {
 		graph[u].emplace_back(v);
 		graph[v].emplace_back(u);
@@ -244,8 +244,8 @@ private:
 	}
 };
 // 桥
-struct Tarjan_Bridge {
-	Tarjan_Bridge(int n)
+struct Bridge {
+	explicit Bridge(int n)
 		: nodes(n), graph(n) {}
 	void addedge(int u, int v) {
 		graph[u].emplace_back(v);

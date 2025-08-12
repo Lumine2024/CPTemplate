@@ -7,7 +7,7 @@ using ull = unsigned long long;
 // 单点
 struct Fenwick {
 	const int n;
-	Fenwick(int n)
+	explicit Fenwick(int n)
 		: n(n), nums(n + 1) {}
 	ll query(int x) const {
 		ll ans = 0;

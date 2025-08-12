@@ -12,6 +12,30 @@ ll qpow(ll x, ll n) {
 	}
 	return ret;
 }
+
+struct PreprocessedPow {
+	PreprocessedPow(ll k, ll maxn) {
+		k %= modulo;
+		m = ceil(sqrt(maxn + 1.5));
+		powerk.assign(m, 1);
+		powerkm.assign(m, 1);
+		for(int i = 1; i < m; ++i) {
+			powerk[i] = (ll(powerk[i - 1]) * k) % modulo;
+		}
+		powerkm[1] = ll(powerk[m - 1]) * k % modulo;
+		for(int i = 2; i < m; ++i) {
+			powerkm[i] = ll(powerkm[i - 1]) * ll(powerkm[1]) % modulo;
+		}
+	}
+	ll pow(ll n) const {
+		ll i = n / m, j = n % m;
+		return (ll(powerkm[i]) * ll(powerk[j])) % modulo;
+	}
+private:
+	int m;
+	vector<int> powerk, powerkm;
+};
+
 struct ModInt {
 	ModInt(ll v = 0) : val(v % modulo) {
 		if(val < 0) val += modulo;
@@ -41,20 +65,3 @@ struct ModInt {
 private:
 	ll val;
 };
-// 底数相同时的快速幂，预处理O(sqrtn)，查询O(1)
-ll power2[maxn], power2m[maxn];
-int init_power2 = [] {
-	power2[0] = power2m[0] = 1;
-	for(int i = 1; i < maxn; ++i) {
-		power2[i] = (power2[i - 1] * 2) % modulo;
-	}
-	power2m[1] = (power2[maxn - 1] * 2) % modulo;
-	for(int i = 2; i < maxn; ++i) {
-		power2m[i] = (power2m[i - 1] * power2m[1]) % modulo;
-	}
-	return 0;
-}();
-ll pow2(ll x) {
-	ll i = x / maxn, j = x % maxn;
-	return (power2m[i] * power2[j]) % modulo;
-}

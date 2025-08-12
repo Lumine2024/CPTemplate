@@ -21,7 +21,7 @@ struct Node {
 	vector<int> e;
 };
 struct HLD {
-	HLD(const vector<Node> &g, int r = 0)
+	explicit HLD(const vector<Node> &g, int r = 0)
 		: nodes(g.size()), nfd(g.size()) {
 		dfs1(g, r, -1);
 		int now_index = 0;

@@ -7,7 +7,7 @@ namespace _binary_lift {
 constexpr int LOG = 20;
 }
 struct BinaryLift {
-	BinaryLift(int n)
+	explicit BinaryLift(int n)
 		: tree(n), anc(n, vector<int>(_binary_lift::LOG, -1)), depth(n) {}
 	void addedge(int u, int v) {
 		tree[u].push_back(v);

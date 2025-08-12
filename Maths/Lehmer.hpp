@@ -1,7 +1,7 @@
 #pragma once
 #include <bits/stdc++.h>
 #include "DataStructures/FenwickTree.hpp"
-#include "DataStructures/Treap.hpp"
+#include "DataStructures/ValueSegmentTree.hpp"
 using namespace std;
 using ll = long long;
 using ull = unsigned long long;
@@ -23,14 +23,14 @@ vector<int> lehmer(const vector<int> &a) {
 }
 vector<int> rev_lehmer(const vector<int> &l) {
 	int n = l.size();
-	Treap treap;
+	VST vst(n); // 使用权值线段树实现会快一点
 	for(int i = 0; i < n; ++i) {
-		treap.insert(i);
+		vst.insert(i);
 	}
 	vector<int> ret(n);
 	for(int i = 0; i < n; ++i) {
-		ret[i] = treap.qvr(l[i] + 1);
-		treap.erase(ret[i]);
+		ret[i] = vst.qvr(l[i] + 1);
+		vst.erase(ret[i]);
 	}
 	return ret;
 }

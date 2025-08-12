@@ -5,20 +5,25 @@ using namespace std;
 using ll = long long;
 using ull = unsigned long long;
 
-namespace _sterling {
-constexpr ll maxn = 5005;
-}
-ll sterling[_sterling::maxn][_sterling::maxn];
-int init_sterling = [] {
-	sterling[0][0] = 1;
-	for(int i = 1; i < _sterling::maxn; ++i) {
-		sterling[i][0] = 0;
-		for(int j = 1; j <= i; ++j) {
-			sterling[i][j] = (sterling[i - 1][j - 1] + sterling[i - 1][j] * j) % modulo;
-		}
+struct Sterling {
+	Sterling() = delete;
+	static int get(int n, int m) {
+		return ster[n][m];
 	}
-	return 0;
-}();
+private:
+	static constexpr int maxn = 5005;
+	static inline int ster[maxn][maxn];
+	static inline int init = [&] {
+		ster[0][0] = 1;
+		for(ll i = 1; i < maxn; ++i) {
+			ster[i][0] = 0;
+			for(ll j = 1; j < i; ++j) {
+				ster[i][j] = (ll(ster[i - 1][j - 1]) + ll(ster[i - 1][j]) * j) % modulo;
+			}
+		}
+		return 0;
+	}();
+};
 
 vector<ll> sterling_ntt(int k) {
 	if(k == 0) return {1};

@@ -6,7 +6,7 @@ using ull = unsigned long long;
 
 // 按秩合并
 struct DSU {
-	DSU(int n) : fa(n), rk(n, 1) {
+	explicit DSU(int n) : fa(n), rk(n, 1) {
 		iota(fa.begin(), fa.end(), 0);
 	}
 	int find(int x) {

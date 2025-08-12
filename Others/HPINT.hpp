@@ -6,6 +6,7 @@ using ull = unsigned long long;
 
 struct HPINT {
 	HPINT() : nums(1, 0), neg(false) {}
+	// intentionally implicit, allowing HPINT a = 5
 	HPINT(ll val) : neg(false) {
 		if(val < 0) {
 			neg = true;
@@ -19,6 +20,30 @@ struct HPINT {
 		if(nums.empty()) {
 			nums = vector<int>(1, 0);
 		}
+	}
+	// and HPINT b = "11451419198103141592653589793238462621718281828"
+	HPINT(const string &s) {
+		int off = 0, n = s.size();
+		if(s[0] == '-') {
+			off = 1;
+			neg = true;
+		} else {
+			neg = false;
+		}
+		for(; off < n; ++off) {
+			nums.push_back(s[off] - '0');
+		}
+		reverse(nums.begin(), nums.end());
+	}
+	explicit operator string() const {
+		string ret;
+		if(neg) {
+			ret += '-';
+		}
+		for(int i = nums.size() - 1; i >= 0; --i) {
+			ret += (nums[i] + '0');
+		}
+		return ret;
 	}
 	HPINT &operator+=(const HPINT &r) {
 		if(neg) {
