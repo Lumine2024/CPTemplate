@@ -6,7 +6,7 @@ using ll = long long;
 using ull = unsigned long long;
 
 struct ArithmeticFenwick {
-	ArithmeticFenwick(int n)
+	explicit ArithmeticFenwick(int n)
 		: f1(n + 2), f2(n + 2) {}
 	// a*idx+b
 	void update(int l, int r, ll a, ll b) {

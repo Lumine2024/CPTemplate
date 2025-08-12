@@ -7,7 +7,7 @@ using ull = unsigned long long;
 // persistent segment tree
 struct PST {
 	const int n;
-	PST(int n_) : n(n_) {
+	explicit PST(int n_) : n(n_) {
 		nodes.reserve(2 * n * (int)log2(n));
 		vers.reserve(n + 1);
 		vers.push_back(_build(0, n - 1));
