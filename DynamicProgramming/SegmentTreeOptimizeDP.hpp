@@ -1,5 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "DataStructures/SegmentTree.hpp"
 using namespace std;
 using ll = long long;
 using ull = unsigned long long;
@@ -18,13 +19,12 @@ int lis_seg(const vector<int> &nums) {
 	auto discrete = nums;
 	sort(discrete.begin(), discrete.end());
 	discrete.erase(unique(discrete.begin(), discrete.end()), discrete.end());
-	unordered_map<int, int> mp;
-	for(int i = 0; i < discrete.size(); i++) {
-		mp[discrete[i]] = i;
-	}
+	auto getid = [&](int x) -> int {
+		return lower_bound(discrete.begin(), discrete.end(), x) - discrete.begin();
+	};
 	SegTree<LisInfo> seg(discrete.size());
 	for(int i = 0; i < nums.size(); i++) {
-		int x = mp[nums[i]];
+		int x = getid(nums[i]);
 		int v = seg.query(0, x).val + 1;
 		seg.update(x, LisInfo{ v });
 	}

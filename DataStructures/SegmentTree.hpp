@@ -9,7 +9,7 @@ template<class Info> concept SegInfo = requires(Info a, Info b) {
 	{ a.update(b) } -> same_as<void>;
 };
 
-template<class Info> requires(SegInfo<Info>) struct SegTree {
+template<SegInfo Info> struct SegTree {
 public:
 	SegTree() : n(0) {}
 	explicit SegTree(int sz) : n(sz), info(sz * 4, Info()) {}

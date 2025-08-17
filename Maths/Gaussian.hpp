@@ -4,41 +4,57 @@ using namespace std;
 using ll = long long;
 using ull = unsigned long long;
 
-vector<double> gauss(const vector<vector<double>> &A, const vector<double> &B) {
-	int n = A.size();
-	if(n == 0 || A[0].size() != n) return {};
-	vector<vector<double>> aug(n, vector<double>(n + 1));
-	for(int i = 0; i < n; ++i) {
-		for(int j = 0; j < n; ++j) {
-			aug[i][j] = A[i][j];
-		}
-		aug[i][n] = B[i];
-	}
-	for(int i = 0; i < n; ++i) {
-		int pivot = -1;
-		double mx = 0;
-		for(int j = i; j < n; ++j) {
-			if(abs(aug[j][i]) > mx) {
-				mx = abs(aug[j][i]);
-				pivot = j;
-			}
-		}
-		if(pivot == -1 || mx < 1e-10) return {};
-		swap(aug[i], aug[pivot]);
-		for(int j = i + 1; j < n; ++j) {
-			double factor = aug[j][i] / aug[i][i];
-			for(int k = i; k <= n; ++k) {
-				aug[j][k] -= factor * aug[i][k];
-			}
-		}
-	}
-	vector<double> X(n);
-	for(int i = n - 1; i >= 0; --i) {
-		X[i] = aug[i][n];
-		for(int j = i + 1; j < n; ++j) {
-			X[i] -= aug[i][j] * X[j];
-		}
-		X[i] /= aug[i][i];
-	}
-	return X;
+vector<vector<ll>> gauss(const vector<vector<ll>> &a, const vector<vector<ll>> &b) {
+    int r = a.size(), n = a[0].size(), m = b[0].size(), row = 0;
+    vector<vector<ll>> aug(r, vector<ll>(n + m));
+    for(int i = 0; i < r; ++i) {
+        for(int j = 0; j < m + n; ++j) {
+            aug[i][j] = (j < n) ? a[i][j] : b[i][j - n];
+        }
+    }
+    vector<int> where(n, -1);
+    for(int col = 0; col < n && row < r; ++col) {
+        int sel = row;
+        while(sel < r && aug[sel][col] == 0) ++sel;
+        if(sel == r) continue;
+        swap(aug[row], aug[sel]);
+        ll inv = qpow(aug[row][col], modulo - 2);
+        for(int j = col; j < n + m; ++j) {
+            aug[row][j] = aug[row][j] * inv % modulo;
+        }
+        for(int i = 0; i < r; ++i) {
+            if(i != row && aug[i][col]) {
+                ll f = aug[i][col];
+                for(int j = col; j < n + m; ++j) {
+                    aug[i][j] = (aug[i][j] - f * aug[row][j] % modulo + modulo) % modulo;
+                }
+            }
+        }
+        where[col] = row;
+        ++row;
+    }
+    for(int i = row; i < r; ++i) {
+        bool flag = true;
+        for(int j = 0; j < n; ++j) {
+            if(aug[i][j] != 0) {
+                flag = false;
+                break;
+            }
+        }
+        if(flag) {
+            for(int j = 0; j < m; ++j) {
+                if(aug[i][n + j]) throw runtime_error("No solution");
+            }
+        }
+    }
+    for(int col = 0; col < n; ++col) {
+        if(where[col] == -1) throw runtime_error("Multiple solutions");
+    }
+    vector<vector<ll>> ret(n, vector<ll>(m, 0));
+    for(int col = 0; col < n; ++col) {
+        for(int j = 0; j < m; ++j) {
+            ret[col][j] = aug[where[col]][n + j];
+        }
+    }
+    return ret;
 }

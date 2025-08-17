@@ -12,21 +12,22 @@ struct Qread {
 			return *this;
 		}
 		T x = 0, f = 1;
-		char ch = getchar();
+		char ch = cin.rdbuf()->sbumpc();
 		while(ch < '0' || ch > '9') {
 			if(ch == EOF) {
 				state = false;
-				val = 0;
+				cin.setstate(ios_base::eofbit);
+				val = x * f;
 				return *this;
 			}
 			if(ch == '-') {
 				f = -1;
 			}
-			ch = getchar();
+			ch = cin.rdbuf()->sbumpc();
 		}
 		while(ch >= '0' && ch <= '9') {
 			x = x * 10 + ch - '0';
-			ch = getchar();
+			ch = cin.rdbuf()->sbumpc();
 		}
 		val = x * f;
 		return *this;
