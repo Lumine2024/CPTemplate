@@ -35,7 +35,7 @@ private:
 };
 // 随机合并
 struct DSU_Random {
-	DSU_Random(int n) : fa(n) {
+	explicit DSU_Random(int n) : fa(n) {
 		iota(fa.begin(), fa.end(), 0);
 	}
 	int find(int x) {

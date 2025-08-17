@@ -6,9 +6,7 @@ using ull = unsigned long long;
 
 // 单点
 struct Fenwick {
-	const int n;
-	explicit Fenwick(int n)
-		: n(n), nums(n + 1) {}
+	explicit Fenwick(int n) : n(n), nums(n + 1, 0) {}
 	ll query(int x) const {
 		ll ans = 0;
 		for(; x; x -= lbit(x)) {
@@ -23,6 +21,7 @@ struct Fenwick {
 	}
 private:
 	vector<ll> nums;
+	int n;
 	static int lbit(int x) {
 		return x & -x;
 	}

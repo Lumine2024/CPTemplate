@@ -1,5 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "DataStructures/SegmentTree.hpp"
 using namespace std;
 using ll = long long;
 using ull = unsigned long long;
@@ -34,13 +35,13 @@ struct HLD {
 	}
 	int lca(int u, int v) const {
 		while(nodes[u].toc != nodes[v].toc) {
-			if(nodes[nodes[u].toc].d < nodes[nodes[v].toc].d) {
+			if(nodes[nodes[u].toc].dep < nodes[nodes[v].toc].dep) {
 				v = nodes[nodes[v].toc].fa;
 			} else {
 				u = nodes[nodes[u].toc].fa;
 			}
 		}
-		return nodes[u].d < nodes[v].d ? u : v;
+		return nodes[u].dep < nodes[v].dep ? u : v;
 	}
 	void modify(int x, ll v) {
 		seg.update(nodes[x].dfn, HLDInfo{v});
@@ -68,18 +69,13 @@ struct HLD {
 	}
 private:
 	struct _Node {
-		int d;
-		int fa;
-		int toc;
-		int dfn;
-		int sz;
-		int hs;
+		int dep, fa, toc, dfn, sz, hs;
 	};
 	void dfs1(const vector<Node> &g, int x, int fa) {
 		if(fa == -1) {
-			nodes[x].d = 0;
+			nodes[x].dep = 0;
 		} else {
-			nodes[x].d = nodes[fa].d + 1;
+			nodes[x].dep = nodes[fa].dep + 1;
 		}
 		nodes[x].fa = fa;
 		nodes[x].sz = 1;
