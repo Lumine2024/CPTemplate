@@ -1,5 +1,8 @@
 #pragma once
 
+// Common constants and types
+#include "Constants.hpp"
+
 // DataStructures
 #include "DataStructures/ArithmeticFenwick.hpp"
 #include "DataStructures/BinaryLift.hpp"

@@ -1,10 +1,6 @@
 #pragma once
-#include <bits/stdc++.h>
 #include "Constants.hpp"
 #include "Maths/ModInt.hpp"
-using namespace std;
-using ll = long long;
-using ull = unsigned long long;
 
 struct Comb {
 	Comb() = delete;
@@ -21,7 +17,7 @@ struct Comb {
 private:
 	static constexpr int _maxn = 500005;
 	static inline int _fact[_maxn], _invfact[_maxn];
-	static inline int init = [&] {
+	static inline int init = [] {
 		_fact[0] = 1;
 		for(ll i = 1; i < _maxn; ++i) {
 			_fact[i] = (ll(_fact[i - 1]) * i) % modulo;

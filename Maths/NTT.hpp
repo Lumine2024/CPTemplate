@@ -1,21 +1,5 @@
 #pragma once
-#include <bits/stdc++.h>
 #include "Constants.hpp"
-using namespace std;
-using ll = long long;
-using ull = unsigned long long;
-
-ll qpow(ll x, ll n) {
-	ll ret = 1;
-	while(n) {
-		if(n & 1) {
-			ret = ret * x % modulo;
-		}
-		x = x * x % modulo;
-		n >>= 1;
-	}
-	return ret;
-}
 vector<ll> multiply(const vector<ll> &a, const vector<ll> &b) {
 	int n = 1;
 	while(n < a.size() + b.size()) {

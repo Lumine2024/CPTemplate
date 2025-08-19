@@ -1,19 +1,17 @@
 #pragma once
-#include <bits/stdc++.h>
 #include "DataStructures/DSU.hpp"
 #include "Constants.hpp"
-using namespace std;
-using ll = long long;
-using ull = unsigned long long;
 
-struct Edge {
-	int u, v;
-	ll w;
-};
-ll kruskal(vector<Edge> &edges, int n) {
+namespace KruskalAlgorithm {
+    struct Edge {
+        int u, v;
+        ll w;
+    };
+}
+ll kruskal(vector<KruskalAlgorithm::Edge> &edges, int n) {
 	DSU dsu(n);
 	ll ans = 0;
-	sort(edges.begin(), edges.end(), [](const Edge &a, const Edge &b) {
+	sort(edges.begin(), edges.end(), [](const KruskalAlgorithm::Edge &a, const KruskalAlgorithm::Edge &b) {
 		return a.w < b.w;
 	});
 	for(auto &e : edges) {
