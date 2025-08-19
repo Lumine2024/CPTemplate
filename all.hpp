@@ -62,7 +62,7 @@
 #include "Maths/MatMul.hpp"
 #include "Maths/ModInt.hpp"
 #include "Maths/NTT.hpp"
-#include "Maths/PrimeSieve.hpp"
+#include "Maths/EularSieve.hpp"
 #include "Maths/Sterling.hpp"
 
 // Others

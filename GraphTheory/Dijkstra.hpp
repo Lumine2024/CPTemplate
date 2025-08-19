@@ -4,7 +4,7 @@
 using namespace std;
 using ll = long long;
 using ull = unsigned long long;
-vector<ll> dijkstra(vector<vector<pair<int, ll>>> &graph, int start) noexcept {
+vector<ll> dijkstra(vector<vector<pair<int, ll>>> &graph, int start) {
 	int v = graph.size();
 	vector<ll> dist(v, inf);
 	dist[start] = 0;

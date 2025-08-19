@@ -4,6 +4,10 @@ using namespace std;
 using ll = long long;
 using ull = unsigned long long;
 
+#ifdef ONLINE_JUDGE
+#define debug(...) (void(0))
+#else
+
 string trim(string s) {
     int l = 0, r = s.size() - 1;
     while(l <= r && isspace(s[l])) ++l;
@@ -29,7 +33,7 @@ vector<string> split_args(const string &s) {
             cur += ch;
         }
     }
-    if(!cur.empty()) ret.push_back(trim(cur));
+    if(!(trim(cur).empty())) ret.push_back(trim(cur));
     return ret;
 }
 
@@ -46,7 +50,8 @@ template<class ... Args> void debug_helper(const string &s, Args &&... args) {
     auto names = split_args(s);
     auto tp = forward_as_tuple(forward<Args>(args)...);
     print_tuple(names, tp, make_index_sequence<sizeof...(Args)>{});
-    cerr << '\n';
+    cerr << endl;
 }
 
 #define debug(...) debug_helper(#__VA_ARGS__, __VA_ARGS__)
+#endif

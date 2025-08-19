@@ -15,6 +15,9 @@ struct DSU {
 		}
 		return fa[x];
 	}
+	bool is_connected(int x, int y) {
+		return find(x) == find(y);
+	}
 	void connect(int x, int y) {
 		x = find(x);
 		y = find(y);
@@ -26,9 +29,6 @@ struct DSU {
 			rk[x]++;
 		}
 		fa[y] = x;
-	}
-	bool is_connected(int x, int y) {
-		return find(x) == find(y);
 	}
 private:
 	vector<int> fa, rk;

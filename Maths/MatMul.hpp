@@ -4,8 +4,7 @@ using namespace std;
 using ll = long long;
 using ull = unsigned long long;
 
-template<class T>
-vector<vector<T>> matmul(const vector<vector<T>> &lhs, const vector<vector<T>> &rhs) {
+template<class T> vector<vector<T>> matmul(const vector<vector<T>> &lhs, const vector<vector<T>> &rhs) {
 	int M = lhs.size(), N = lhs[0].size(), P = rhs[0].size();
 	vector<vector<T>> ret(M, vector<T>(P, 0));
 	for(int i = 0; i < M; ++i) {
@@ -19,8 +18,7 @@ vector<vector<T>> matmul(const vector<vector<T>> &lhs, const vector<vector<T>> &
 	}
 	return ret;
 }
-template<class T>
-vector<vector<T>> matpow(vector<vector<T>> mat, ll N) {
+template<class T> vector<vector<T>> matpow(vector<vector<T>> mat, ll N) {
 	int M = mat.size();
 	vector<vector<T>> ret(M, vector<T>(M, 0));
 	for(int i = 0; i < M; ++i) {
