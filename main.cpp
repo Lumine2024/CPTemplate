@@ -11,23 +11,19 @@
   时间复杂度有没有写假？空间足够吗？精度是否正确？
 */
 
-#include <bits/stdc++.h>
-#include "all.hpp"
-using namespace std;
-using ll = long long;
-using ull = unsigned long long;
+#include "inc/all.hpp"
 
 inline void solve() {
-
+    // Your solution here
 }
 
 int main() {
-	ios_base::sync_with_stdio(false);
-	cin.tie(nullptr);
-	int n;
-    cin >> n;
-    while(n--) {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int t = 1;
+    // cin >> t;  // Uncomment for multiple test cases
+    while(t--) {
         solve();
     }
-	return 0;
+    return 0;
 }

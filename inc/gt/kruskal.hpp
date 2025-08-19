@@ -1,0 +1,29 @@
+#pragma once
+#include "../ds/dsu.hpp"
+#include "../constants.hpp"
+
+namespace KruskalAlgorithm {
+    struct Edge {
+        int u, v;
+        ll w;
+    };
+}
+ll kruskal(vector<KruskalAlgorithm::Edge> &edges, int n) {
+	DSU dsu(n);
+	ll ans = 0;
+	sort(edges.begin(), edges.end(), [](const KruskalAlgorithm::Edge &a, const KruskalAlgorithm::Edge &b) {
+		return a.w < b.w;
+	});
+	for(auto &e : edges) {
+		if(!dsu.is_connected(e.u, e.v)) {
+			dsu.connect(e.u, e.v);
+			ans += e.w;
+		}
+	}
+	for(int i = 1; i < n; ++i) {
+		if(!dsu.is_connected(i, 0)) {
+			return inf;
+		}
+	}
+	return ans;
+}
