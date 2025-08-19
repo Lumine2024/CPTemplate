@@ -278,6 +278,52 @@ pair<Point, Point> tangent(const Point &pt, const Convex &convex) {
 	return { convex.pts[i1], convex.pts[i2] };
 }
 
+pair<Point, Point> tangent(const Line &ln, const Convex &convex) {
+	int n = convex.size();
+	if(n == 1) {
+		return { convex.pts[0], convex.pts[0] };
+	}
+	if(n == 2) {
+		return { convex.pts[0], convex.pts[1] };
+	}
+	
+	// Direction perpendicular to the line
+	Vector perp = Vector(-ln.v.y, ln.v.x);
+	
+	// Find extreme points using ternary search approach
+	auto find_extreme = [&](bool find_max) -> int {
+		int l = 0, r = n - 1;
+		while(r - l > 2) {
+			int m1 = l + (r - l) / 3;
+			int m2 = r - (r - l) / 3;
+			ld dot1 = dot(convex.pts[m1], perp);
+			ld dot2 = dot(convex.pts[m2], perp);
+			if(find_max ? (cmp(dot1, dot2) == 1) : (cmp(dot1, dot2) == -1)) {
+				r = m2;
+			} else {
+				l = m1;
+			}
+		}
+		
+		int best = l;
+		ld best_dot = dot(convex.pts[l], perp);
+		for(int i = l; i <= r; ++i) {
+			ld curr_dot = dot(convex.pts[i], perp);
+			if(find_max ? (cmp(curr_dot, best_dot) == 1) : (cmp(curr_dot, best_dot) == -1)) {
+				best = i;
+				best_dot = curr_dot;
+			}
+		}
+		
+		return best;
+	};
+	
+	int max_idx = find_extreme(true);
+	int min_idx = find_extreme(false);
+	
+	return { convex.pts[min_idx], convex.pts[max_idx] };
+}
+
 struct Circle {
 	Point c;
 	ld r;
