@@ -1,5 +1,5 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 
 // 得到用于KMP的数组
 vector<int> kmp_f(const string &s) {

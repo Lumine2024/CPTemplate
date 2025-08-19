@@ -1,5 +1,5 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 
 // 返回空vector说明有负环
 vector<ll> spfa(const vector<vector<pair<int, ll>>> &graph, int start) {

@@ -1,5 +1,5 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 
 // @returns (gcd, x, y) so that gcd = ax + by
 tuple<ll, ll, ll> exgcd(ll a, ll b) {

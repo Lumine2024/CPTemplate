@@ -1,6 +1,5 @@
 #pragma once
-#include "../constants.hpp"
-#include "modint.hpp"
+#include "constants.hpp"
 
 ll __qpow(ll x, ll n) {
 	ll ret = 1;

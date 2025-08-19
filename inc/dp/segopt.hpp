@@ -1,5 +1,6 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
+#include "ds/seg.hpp"
 
 struct LisInfo {
 	int val;

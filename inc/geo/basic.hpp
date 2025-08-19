@@ -3,10 +3,10 @@
 
 // Use geometry constants in local scope
 namespace {
-    using ld = Geometry::ld;
-    constexpr ld eps = Geometry::eps;
-    constexpr ld geo_pi = Geometry::pi;  
-    constexpr ld geo_inf = Geometry::inf;
+    using ld = geo::ld;
+    constexpr ld eps = geo::eps;
+    constexpr ld geo_pi = geo::pi;  
+    constexpr ld geo_inf = geo::inf;
 }
 
 int sign(ld a) {

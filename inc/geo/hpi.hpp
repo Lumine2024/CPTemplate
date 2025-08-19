@@ -1,5 +1,6 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
+#include "geo/basic.hpp"
 
 vector<Line> half_inter(vector<Line> lines) {
 	lines.push_back({{-inf, 0.0l}, {0.0l, -1.0l}});

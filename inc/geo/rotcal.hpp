@@ -1,8 +1,7 @@
 #pragma once
-#include "../constants.hpp"
-
-#include "basic.hpp"
-#include "andrew.hpp"
+#include "constants.hpp"
+#include "geo/basic.hpp"
+#include "geo/andrew.hpp"
 
 ld farthest_dist(const vector<Point> &pts) {
     int n = pts.size();

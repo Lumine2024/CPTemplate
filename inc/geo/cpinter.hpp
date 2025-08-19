@@ -1,7 +1,7 @@
 
 #pragma once
-#include "../constants.hpp"
-#include "basic.hpp"
+#include "constants.hpp"
+#include "geo/basic.hpp"
 
 ld sector_area(Circle c, Point u, Point v) {
 	u = u - c.c, v = v - c.c, c.c = {};

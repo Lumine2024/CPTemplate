@@ -1,5 +1,6 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
+#include "geo/basic.hpp"
 
 struct Rectangle {
 	Point p1, p2;

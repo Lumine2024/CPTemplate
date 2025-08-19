@@ -1,5 +1,5 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 
 // 操作后，graph就变成了最短路
 void floyd(vector<vector<ll>> &graph) {

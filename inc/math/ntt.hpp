@@ -1,5 +1,5 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 vector<ll> multiply(const vector<ll> &a, const vector<ll> &b) {
 	int n = 1;
 	while(n < a.size() + b.size()) {

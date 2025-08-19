@@ -1,5 +1,5 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 
 // 单调栈：[l, r)，且有相同元素时，左边取最左端，右边取下一个自己
 vector<pair<int, int>> max_range_1(const vector<int> &nums) {

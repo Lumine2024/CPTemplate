@@ -1,5 +1,5 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 
 bool cross_all(const vector<Point> &points) {
 	bool okx = true, oky = true;

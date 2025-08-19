@@ -1,5 +1,5 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 
 pair<int, stack<int>> iddfs(array<array<int, 3>, 3> src, const array<array<int, 3>, 3> &dst) {
 	constexpr int dx[] = { -1, 1, 0, 0 };

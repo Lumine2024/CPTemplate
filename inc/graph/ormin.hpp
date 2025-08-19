@@ -1,5 +1,5 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 
 int or_mindist(vector<tuple<int, int, int>> &edges, int n) {
 	int ans = (1 << 30) - 1;

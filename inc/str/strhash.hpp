@@ -1,5 +1,5 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 
 struct StringHash {
 	explicit StringHash(const string &s) : p1(s.size() + 1, 0), p2(s.size() + 1, 0) {

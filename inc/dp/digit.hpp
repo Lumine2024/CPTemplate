@@ -1,5 +1,5 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 
 ll digit_dp(string k, int d) {
 	vector<vector<ll>> memo(k.size(), vector<ll>(d, -1));

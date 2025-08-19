@@ -1,5 +1,5 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 
 struct SeqAM {
 	explicit SeqAM(const string &s) : n(s.size()), nxt(s.size() + 2, [&] {

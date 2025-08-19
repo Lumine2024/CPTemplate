@@ -1,5 +1,5 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 
 vector<ll> dijkstra(vector<vector<pair<int, ll>>> &graph, int start) {
 	int v = graph.size();

@@ -1,5 +1,5 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 
 string minstr(const string &str) {
 	int n = str.size(), i = 0, j = 1, k = 0;
