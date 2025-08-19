@@ -105,33 +105,82 @@ After:
 
 ## Usage Examples
 
-### Basic Usage
+### Updated Usage (NEW)
 ```cpp
-#include "all.hpp"  // Includes everything including Constants.hpp
+#include "CPTemplate/inc/all.hpp"  // New recommended usage
 
 int main() {
-    vector<int> arr(maxn);  // Uses maxn from Constants.hpp
-    int result = arr[0] != inf_int ? arr[0] : -1;  // Use inf_int for int operations
-    ll bigResult = someFunction() != inf ? someFunction() : -1;  // Use inf for ll operations
+    // Use abbreviated data structures
+    DSU dsu(maxn);
+    dsu.connect(0, 1);
+    
+    // All constants work as before
+    vector<int> arr(maxn);
+    int result = arr[0] != inf_int ? arr[0] : -1;
+    ll bigResult = someFunction() != inf ? someFunction() : -1;
+}
+```
+
+### Legacy Usage (Still Works)
+```cpp
+#include "all.hpp"  // Old style - includes everything
+
+int main() {
+    vector<int> arr(maxn);
+    int result = arr[0] != inf_int ? arr[0] : -1;
+    ll bigResult = someFunction() != inf ? someFunction() : -1;
 }
 ```
 
 ### Geometry Usage
 ```cpp
-#include "Geometry/Basic.hpp"
+#include "CPTemplate/inc/geo/basic.hpp"  // New path
 
-Point p1(0, 0), p2(Geometry::inf, Geometry::inf);  // Use geometry-specific inf
-double angle = 2 * Geometry::pi;  // Use geometry-specific pi
+Point p1(0, 0), p2(Geometry::inf, Geometry::inf);
+double angle = 2 * Geometry::pi;
 ```
 
-### Graph Theory Usage
+### Individual Algorithm Usage
 ```cpp
-#include "GraphTheory/Kruskal.hpp"
-#include "GraphTheory/Boruvka.hpp"
+#include "CPTemplate/inc/gt/kruskal.hpp"  // New path
+#include "CPTemplate/inc/gt/boruvka.hpp"
 
-vector<KruskalAlgorithm::Edge> edges1;  // Kruskal edges
-vector<BoruvkaAlgorithm::Edge> edges2; // Boruvka edges
+vector<KruskalAlgorithm::Edge> edges1;
+vector<BoruvkaAlgorithm::Edge> edges2;
 ```
+
+## New File Structure (ADDED)
+
+### Reorganized into `inc/` folder:
+```
+inc/
+├── all.hpp              # Master include file  
+├── constants.hpp        # Centralized constants and types
+├── bs/                  # BinarySearch → bs
+│   ├── bisect.hpp       # BisectAnswer.hpp → bisect.hpp
+│   ├── lis.hpp          # LIS.hpp → lis.hpp
+│   └── peak.hpp         # Peak.hpp → peak.hpp
+├── ds/                  # DataStructures → ds
+│   ├── seg.hpp          # SegmentTree.hpp → seg.hpp (as requested)
+│   ├── fenwick.hpp      # FenwickTree.hpp → fenwick.hpp
+│   ├── dsu.hpp          # DSU.hpp → dsu.hpp
+│   └── ... (16 total files with abbreviated names)
+├── gt/                  # GraphTheory → gt
+│   ├── dijk.hpp         # Dijkstra.hpp → dijk.hpp
+│   ├── kruskal.hpp      # Kruskal.hpp → kruskal.hpp
+│   └── ... (13 total graph algorithms)
+├── math/                # Maths → math
+│   ├── modint.hpp       # ModInt.hpp → modint.hpp
+│   ├── fft.hpp          # FFT.hpp → fft.hpp
+│   └── ... (13 total math algorithms)
+└── ... (9 categories total)
+```
+
+### Benefits of New Structure:
+1. **Shorter Paths**: `ds/seg.hpp` vs `DataStructures/SegmentTree.hpp`
+2. **Logical Organization**: Everything in `inc/` folder
+3. **Easy Integration**: `#include "CPTemplate/inc/all.hpp"`
+4. **Consistent Abbreviations**: Clear patterns for all categories
 
 ## Backward Compatibility
 
