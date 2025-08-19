@@ -1,8 +1,5 @@
 #pragma once
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-using ull = unsigned long long;
+#include "Constants.hpp"
 
 #ifdef ONLINE_JUDGE
 #define debug(...) (void(0))

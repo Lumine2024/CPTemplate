@@ -1,8 +1,5 @@
 #pragma once
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-using ull = unsigned long long;
+#include "Constants.hpp"
 
 struct BinaryLift {
 	explicit BinaryLift(int n) : tree(n), anc(n, vector<int>(LOG, -1)), depth(n) {}

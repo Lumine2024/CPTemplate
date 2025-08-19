@@ -1,8 +1,5 @@
 #pragma once
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-using ull = unsigned long long;
+#include "Constants.hpp"
 
 pair<int, stack<int>> iddfs(array<array<int, 3>, 3> src, const array<array<int, 3>, 3> &dst) {
 	constexpr int dx[] = { -1, 1, 0, 0 };

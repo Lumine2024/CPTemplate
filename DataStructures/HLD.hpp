@@ -1,9 +1,6 @@
 #pragma once
-#include <bits/stdc++.h>
+#include "Constants.hpp"
 #include "DataStructures/SegmentTree.hpp"
-using namespace std;
-using ll = long long;
-using ull = unsigned long long;
 
 struct HLDInfo {
 	ll val;

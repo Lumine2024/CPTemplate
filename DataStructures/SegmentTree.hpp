@@ -1,8 +1,5 @@
 #pragma once
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-using ull = unsigned long long;
+#include "Constants.hpp"
 
 template<class Info> concept SegInfo = requires(Info a, Info b) {
 	{ a + b } -> same_as<Info>;
