@@ -7,69 +7,69 @@ using ull = unsigned long long;
 
 struct EK {
     struct Edge {
-        int u, v, ne;
-        ll flow, weight;
+        int dst, rev;
+        ll weight, flow;
+        bool neg;
     };
-    vector<Edge> edges;
-    vector<int> h, pre;
+    vector<vector<Edge>> graph;
+    vector<int> pv, pe;
     vector<ll> mf, d;
-    vector<bool> vis;
+    vector<bool> inq;
     int n;
 
-    EK(int _n) : n(_n), h(_n, -1), d(_n, inf), mf(_n, 0), pre(_n, 0), vis(_n, 0) {}
+    explicit EK(int _n) : n(_n), graph(_n), pv(_n, -1), pe(_n, -1), d(_n, inf), mf(_n, 0), inq(_n, false) {}
 
-    void add(int u, int v, ll flow, ll weight) {
-        edges.push_back({u, v, h[u], flow, weight});
-        h[u] = edges.size() - 1;
-        edges.push_back({v, u, h[v], 0, -weight});
-        h[v] = edges.size() - 1;
+    void addedge(int u, int v, ll flow, ll weight) {
+        int iu = graph[u].size(), iv = graph[v].size();
+        graph[u].push_back({ v, iv, weight, flow, false });
+        graph[v].push_back({ u, iu, -weight, 0, true });
     }
 
     pair<ll, ll> solve() {
         ll cost = 0, flow = 0;
-        while(_spfa()) {
-            for(int v = n - 1; v > 0;) {
-                int i = pre[v];
-                edges[i].flow -= mf[n - 1];
-                edges[i ^ 1].flow += mf[n - 1];
-                v = edges[i].u;
+        while(true) {
+            for(int i = 0; i < n; ++i) {
+                d[i] = inf;
+                mf[i] = 0;
+                inq[i] = false;
+                pv[i] = -1;
+                pe[i] = -1;
             }
-            flow += mf[n - 1];
-            cost += mf[n - 1] * d[n - 1];
-        }
-        return { cost, flow };
-    }
-
-private:
-    bool _spfa() {
-        for(int i = 0; i < n; ++i) {
-            mf[i] = 0;
-            d[i] = inf;
-            vis[i] = false;
-        }
-        queue<int> q;
-        q.push(0);
-        d[0] = 0;
-        mf[0] = inf;
-        vis[0] = true;
-        while(!q.empty()) {
-            int u = q.front();
-            q.pop();
-            vis[u] = false;
-            for(int i = h[u]; i != -1; i = edges[i].ne) {
-                int v = edges[i].v;
-                ll f = edges[i].flow, w = edges[i].weight;
-                if(f > 0 && d[v] > d[u] + w) {
-                    d[v] = d[u] + w;
-                    pre[v] = i;
-                    mf[v] = min(mf[u], f);
-                    if(!vis[v]) {
-                        q.push(v);
-                        vis[v] = true;
+            queue<int> q;
+            q.push(0);
+            d[0] = 0;
+            mf[0] = inf;
+            inq[0] = true;
+            while(!q.empty()) {
+                int u = q.front();
+                q.pop();
+                inq[u] = false;
+                for(int i = 0; i < graph[u].size(); ++i) {
+                    auto &e = graph[u][i];
+                    int v = e.dst;
+                    ll f = e.flow, w = e.weight;
+                    if(f > 0 && d[v] > d[u] + w) {
+                        d[v] = d[u] + w;
+                        pv[v] = u;
+                        pe[v] = i;
+                        mf[v] = min(mf[u], f);
+                        if(!inq[v]) {
+                            q.push(v);
+                            inq[v] = true;
+                        }
                     }
                 }
             }
+            if(mf[n - 1] <= 0) break;
+            ll add = mf[n - 1];
+            for(int v = n - 1; v != 0; v = pv[v]) {
+                int u = pv[v], e = pe[v];
+                graph[u][e].flow -= add;
+                graph[v][graph[u][e].rev].flow += add;
+            }
+            flow += add;
+            cost += add * d[n - 1];
         }
-        return mf[n - 1] > 0;
+        return { cost, flow };
     }
 };
