@@ -1,19 +1,20 @@
 #pragma once
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-using ull = unsigned long long;
+#include "Constants.hpp"
 
-using ld = long double;
-constexpr ld eps = 1e-9;
+// Use geometry constants in local scope
+namespace {
+    using ld = Geometry::ld;
+    constexpr ld eps = Geometry::eps;
+    constexpr ld geo_pi = Geometry::pi;  
+    constexpr ld geo_inf = Geometry::inf;
+}
+
 int sign(ld a) {
 	return (a < -eps) ? -1 : (a > eps) ? 1 : 0;
 }
 int cmp(ld a, ld b) {
 	return sign(a - b);
 }
-constexpr ld pi = 3.1415926535897932384626l;
-constexpr ld inf = 1e12l;
 
 struct Point {
 	ld x, y;
@@ -47,11 +48,11 @@ struct Point {
 	ld len() const {
 		return sqrt(x * x + y * y);
 	}
-	// [0, 2pi)
+	// [0, 2*geo_pi)
 	ld arg() const {
 		ld ret = atan2(y, x);
 		int c = cmp(ret, 0);
-		return c == 1 ? ret : c == 0 ? 0.0l : ret + 2 * pi;
+		return c == 1 ? ret : c == 0 ? 0.0l : ret + 2 * geo_pi;
 	}
 	Point rotate(ld a) const {
 		return Point(x * cos(a) - y * sin(a), x * sin(a) + y * cos(a));
@@ -86,7 +87,7 @@ ld angle(const Vector &a, const Vector &b) {
 	ld cosa = min(max(dot(a, b) / (a.len() * b.len()), -1.0l), 1.0l);
 	ld ret = acos(cosa);
 	if(to_left(a, b) == -1) {
-		ret = 2 * pi - ret;
+		ret = 2 * geo_pi - ret;
 	}
 	return ret;
 }
@@ -330,10 +331,10 @@ struct Circle {
 	Circle() : r(0.0l) {}
 	Circle(const Point &_c, ld _r) : c(_c), r(_r) {}
 	ld area() const {
-		return pi * r * r;
+		return geo_pi * r * r;
 	}
 	ld circ() const {
-		return 2.0l * pi * r;
+		return 2.0l * geo_pi * r;
 	}
 };
 

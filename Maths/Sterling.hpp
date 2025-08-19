@@ -1,9 +1,6 @@
 #pragma once
-#include <bits/stdc++.h>
+#include "Constants.hpp"
 #include "Maths/ModInt.hpp"
-using namespace std;
-using ll = long long;
-using ull = unsigned long long;
 
 struct Sterling {
 	Sterling() = delete;
@@ -13,7 +10,7 @@ struct Sterling {
 private:
 	static constexpr int maxn = 5005;
 	static inline int ster[maxn][maxn];
-	static inline int init = [&] {
+	static inline int init = [] {
 		ster[0][0] = 1;
 		for(ll i = 1; i < maxn; ++i) {
 			ster[i][0] = 0;
