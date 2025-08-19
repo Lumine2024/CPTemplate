@@ -50,7 +50,7 @@ private:
 	int l, r;
 };
 struct BlockedArray {
-	BlockedArray(const vector<ll> &nums) {
+	explicit BlockedArray(const vector<ll> &nums) {
 		int r = nums.size();
 		int len = sqrt(r + 0.5);
 		int size = (r + len - 1) / len;

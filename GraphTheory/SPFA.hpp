@@ -6,29 +6,27 @@ using ll = long long;
 using ull = unsigned long long;
 
 // 返回空vector说明有负环
-vector<ll> spfa(const vector<vector<pair<int, ll>>> &graph, int s) {
+vector<ll> spfa(const vector<vector<pair<int, ll>>> &graph, int start) {
 	int n = graph.size();
 	vector<ll> dist(n, inf);
-	vector<int> count(n, 0);
-	vector<bool> inqueue(n, false);
+	vector<int> cnt(n, 0);
+	vector<bool> inq(n, false);
 	queue<int> q;
-	q.push(s);
-	dist[s] = 0;
-	inqueue[s] = true;
+	q.push(start);
+	dist[start] = 0;
+	inq[start] = true;
 	while(!q.empty()) {
 		int u = q.front();
 		q.pop();
-		inqueue[u] = false;
+		inq[u] = false;
 		for(auto [v, w] : graph[u]) {
 			if(dist[v] > dist[u] + w) {
 				dist[v] = dist[u] + w;
-				if(!inqueue[v]) {
-					inqueue[v] = true;
+				if(!inq[v]) {
+					inq[v] = true;
 					q.push(v);
-					count[v] = count[u] + 1;
-					if(count[v] > n) {
-						return {};
-					}
+					cnt[v] = cnt[u] + 1;
+					if(cnt[v] > n) return {};
 				}
 			}
 		}
