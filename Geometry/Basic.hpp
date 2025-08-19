@@ -198,9 +198,12 @@ struct Polygon {
 	}
 };
 
-// todo
-struct Convex : public Polygon {};
-bool is_in(const Convex &convex, const Point &pt) {
+struct Convex : public Polygon {
+	using Polygon::Polygon;
+	// todo
+};
+
+bool is_in(const Point &pt, const Convex &convex) {
 	if(convex.size() == 1) {
 		return pt == convex.pts[0];
 	}
@@ -229,6 +232,50 @@ bool is_in(const Convex &convex, const Point &pt) {
 	}
 	int nxt = (l == n - 1) ? 1 : l + 1;
 	return check(pivot, convex.pts[l], convex.pts[nxt], pt);
+}
+
+pair<Point, Point> tangent(const Point &pt, const Convex &convex) {
+	if(is_in(pt, convex)) throw runtime_error("pt is in the convex");
+	int n = convex.size();
+	auto peak = [&](int l, int r, bool find_r) {
+		while(l < r - 1) {
+			int mid = (l + r) / 2;
+			if(find_r ^ (to_left(convex.pts[(mid + n - 1) % n] - pt, convex.pts[mid] - pt) == 1)) {
+				r = mid;
+			} else {
+				l = mid;
+			}
+		}
+		return l;
+	};
+	if(to_left(convex.pts[0] - pt, convex.pts[1] - pt) == 0) {
+		int idx = peak(2, n, cmp(dist(convex.pts[0], pt), dist(convex.pts[1], pt)) == -1);
+		return { convex.pts[0], convex.pts[idx] };
+	}
+	bool all_left = true, all_right = true;
+	auto fun = [&](int x) {
+		if(x == 1) all_right = false;
+		if(x == -1) all_left = false;
+	};
+	fun(to_left(convex.pts[0] - pt, convex.pts[1] - pt));
+	fun(to_left(convex.pts[0] - pt, convex.pts[n - 1] - pt));
+	if(all_left || all_right) {
+		int idx = peak(1, n, all_left);
+		return { convex.pts[0], convex.pts[idx] };
+	}
+	int l = 1, r = n;
+	while(l < r - 1) {
+		int mid = (l + r) / 2;
+		if(to_left(convex.pts[0] - pt, convex.pts[mid] - pt) == 1) {
+			l = mid;
+		} else {
+			r = mid;
+		}
+	}
+	int split = l;
+	bool flag = (to_left(convex.pts[0] - pt, convex.pts[1] - pt) == 1);
+	int i1 = peak(0, split + 1, flag), i2 = peak(split, n, !flag);
+	return { convex.pts[i1], convex.pts[i2] };
 }
 
 struct Circle {

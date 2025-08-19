@@ -22,7 +22,7 @@ private:
 	static inline const ull c = (ull)chrono::steady_clock::now().time_since_epoch().count();
 	static inline const ull mul1 = c % 131 + 131, mul2 = c % 13331 + 13331;
 	static inline ull pmul1[maxn], pmul2[maxn];
-	static inline int init_stringhash = [&] {
+	static inline int init = [&] {
 		pmul1[0] = pmul2[0] = 1;
 		for(int i = 1; i < maxn; ++i) {
 			pmul1[i] = pmul1[i - 1] * mul1 % modulo;
