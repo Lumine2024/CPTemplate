@@ -1,5 +1,5 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 
 string manacher(const string &_s) {
 	string s = "$";

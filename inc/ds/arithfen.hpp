@@ -1,5 +1,5 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 #include "fenwick.hpp"
 
 struct ArithmeticFenwick {

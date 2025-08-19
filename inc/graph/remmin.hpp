@@ -1,13 +1,5 @@
 #pragma once
-#include "../constants.hpp"
-
-template<class T> bool chkmin(T &x, const T &y) {
-	if(x > y) {
-		x = y;
-		return true;
-	}
-	return false;
-}
+#include "constants.hpp"
 
 // 跑的dijkstra
 ll remainder_mindist(ll k, vector<ll> dist) {

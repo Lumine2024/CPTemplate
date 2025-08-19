@@ -1,5 +1,5 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 
 vector<string> duval(const string &s) {
     int n = s.size();

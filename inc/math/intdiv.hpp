@@ -1,5 +1,5 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 
 // 要计算\sum floor(n/i)
 ll intdiv(ll n) {

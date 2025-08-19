@@ -1,31 +1,26 @@
 #pragma once
-#include "../ds/dsu.hpp"
-#include "../constants.hpp"
+#include "constants.hpp"
+#include "ds/dsu.hpp"
+#include "graph/common.hpp"
 
-namespace BoruvkaAlgorithm {
-    struct Edge {
-        int u, v;
-        ll w;
-    };
-}
-ll boruvka(const vector<BoruvkaAlgorithm::Edge> &edges, int n) {
+ll boruvka(const vector<Edge> &edges, int n) {
 	DSU dsu(n);
 	ll ans = 0;
 	int c = n;
-	vector<BoruvkaAlgorithm::Edge> mst(n);
+	vector<Edge> mst(n);
 	while(c > 1) {
 		for(int i = 0; i < n; ++i) {
 			if(dsu.find(i) != i) continue;
-			mst[i] = BoruvkaAlgorithm::Edge{-1, -1, inf};
+			mst[i] = Edge{-1, -1, inf};
 		}
 		for(auto [u, v, w] : edges) {
 			int fu = dsu.find(u), fv = dsu.find(v);
 			if(fu == fv) continue;
 			if(mst[fu].w > w) {
-				mst[fu] = BoruvkaAlgorithm::Edge{u, v, w};
+				mst[fu] = Edge{u, v, w};
 			}
 			if(mst[fv].w > w) {
-				mst[fv] = BoruvkaAlgorithm::Edge{u, v, w};
+				mst[fv] = Edge{u, v, w};
 			}
 		}
 		bool flag = false;

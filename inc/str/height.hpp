@@ -1,4 +1,5 @@
 #pragma once
+#include "constants.hpp"
 #include "sa.hpp"
 
 vector<int> height(const string &str) {

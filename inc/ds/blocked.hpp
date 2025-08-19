@@ -1,5 +1,5 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 
 struct Block {
 	Block() : l(-1), r(-1) {}

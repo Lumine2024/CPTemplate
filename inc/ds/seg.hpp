@@ -1,5 +1,5 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 
 template<class Info> concept SegInfo = requires(Info a, Info b) {
 	{ a + b } -> same_as<Info>;

@@ -1,5 +1,5 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 
 vector<vector<ll>> gauss(const vector<vector<ll>> &a, const vector<vector<ll>> &b) {
     int r = a.size(), n = a[0].size(), m = b[0].size(), row = 0;

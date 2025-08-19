@@ -1,5 +1,5 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 
 using cd = complex<double>;
 vector<int> multiply(const vector<int> &a, const vector<int> &b) {

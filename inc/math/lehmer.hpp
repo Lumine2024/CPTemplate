@@ -1,8 +1,8 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 
-#include "../ds/fenwick.hpp"
-#include "../ds/vseg.hpp"
+#include "ds/fenwick.hpp"
+#include "ds/vst.hpp"
 
 // 均为0-based排列
 vector<int> lehmer(const vector<int> &a) {

@@ -1,5 +1,5 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 
 void range_dp(vector<ll> &nums) {
 	int n = nums.size();

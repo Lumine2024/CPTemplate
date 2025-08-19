@@ -1,5 +1,5 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 
 struct PAM {
 	PAM() : s("#"), last(1) {

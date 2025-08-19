@@ -1,5 +1,5 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 
 template<class T> struct Sparse {
 	using func_type = function<T(T, T)>;

@@ -1,5 +1,5 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 
 vector<int> zfn(const string &s) {
 	int n = s.size();

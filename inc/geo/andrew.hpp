@@ -1,5 +1,6 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
+#include "geo/basic.hpp"
 
 vector<Point> andrew(vector<Point> points) {
 	sort(points.begin(), points.end(), [](const Point &a, const Point &b) {

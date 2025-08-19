@@ -1,6 +1,6 @@
 #pragma once
-#include "../constants.hpp"
-#include "../ds/seg.hpp"
+#include "constants.hpp"
+#include "ds/seg.hpp"
 
 struct HLDInfo {
 	ll val;

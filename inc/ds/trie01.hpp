@@ -1,5 +1,5 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 
 struct Trie01 {
 	Trie01() : nodes(1) {}

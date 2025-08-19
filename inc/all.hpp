@@ -4,9 +4,9 @@
 #include "constants.hpp"
 
 // BinarySearch
-#include "bs/bisect.hpp"
-#include "bs/lis.hpp"
-#include "bs/peak.hpp"
+#include "binary/bisect.hpp"
+#include "binary/lis.hpp"
+#include "binary/peak.hpp"
 
 // DataStructures
 #include "ds/arithfen.hpp"
@@ -19,12 +19,12 @@
 #include "ds/hld.hpp"
 #include "ds/mo.hpp"
 #include "ds/mono.hpp"
-#include "ds/pseg.hpp"
+#include "ds/pst.hpp"
 #include "ds/seg.hpp"
 #include "ds/sparse.hpp"
 #include "ds/treap.hpp"
 #include "ds/trie01.hpp"
-#include "ds/vseg.hpp"
+#include "ds/vst.hpp"
 
 // DynamicProgramming
 #include "dp/count.hpp"
@@ -42,19 +42,19 @@
 #include "geo/scanline.hpp"
 
 // GraphTheory
-#include "gt/boruvka.hpp"
-#include "gt/dijk.hpp"
-#include "gt/dinic.hpp"
-#include "gt/floyd.hpp"
-#include "gt/hung.hpp"
-#include "gt/kruskal.hpp"
-#include "gt/mcmf.hpp"
-#include "gt/ormin.hpp"
-#include "gt/prim.hpp"
-#include "gt/remmin.hpp"
-#include "gt/spfa.hpp"
-#include "gt/tarjan.hpp"
-#include "gt/twosat.hpp"
+#include "graph/boruvka.hpp"
+#include "graph/dijk.hpp"
+#include "graph/dinic.hpp"
+#include "graph/floyd.hpp"
+#include "graph/hung.hpp"
+#include "graph/kruskal.hpp"
+#include "graph/mcmf.hpp"
+#include "graph/ormin.hpp"
+#include "graph/prim.hpp"
+#include "graph/remmin.hpp"
+#include "graph/spfa.hpp"
+#include "graph/tarjan.hpp"
+#include "graph/twosat.hpp"
 
 // Greedy
 #include "greedy/cross.hpp"
@@ -75,12 +75,12 @@
 #include "math/sterling.hpp"
 
 // Others
-#include "misc/hpint.hpp"
-#include "misc/hash.hpp"
-#include "misc/qread.hpp"
+#include "others/hpint.hpp"
+#include "others/hash.hpp"
+#include "others/qread.hpp"
 
 // RunTheCode
-#include "rtc/debug.hpp"
+#include "run/debug.hpp"
 
 // Search
 #include "search/iddfs.hpp"
