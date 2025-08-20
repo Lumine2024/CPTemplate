@@ -1,4 +1,4 @@
-// Standalone C++ file generated from ds/fenwick.hpp
+// Standalone C++ file generated from math/comb.hpp
 // Can be directly submitted to online judges
 
 #include <bits/stdc++.h>
@@ -34,51 +34,34 @@ template<class T> bool chkmax(T &x, const T &y) {
     return chkf(x, y, greater{});
 }
 
-// === ds/fenwick.hpp ===
+// === math/comb.hpp ===
 
-// 单点
-struct Fenwick {
-	explicit Fenwick(int n) : n(n), nums(n + 1, 0) {}
-	ll query(int x) const {
-		ll ans = 0;
-		for(; x; x -= lbit(x)) {
-			ans += nums[x];
-		}
-		return ans;
+struct Comb {
+	Comb() = delete;
+	static ll fact(ll n) {
+		return _fact[n];
 	}
-	void update(int x, ll v) {
-		for(; x <= n; x += lbit(x)) {
-			nums[x] += v;
-		}
+	static ll invfact(ll n) {
+		return _invfact[n];
+	}
+	static ll binom(ll n, ll m) {
+		if(m < 0 || m > n || n < 0) return 0;
+		return (((ll(_fact[n]) * ll(_invfact[m])) % modulo) * ll(_invfact[n - m])) % modulo;
 	}
 private:
-	vector<ll> nums;
-	int n;
-	static int lbit(int x) {
-		return x & -x;
-	}
-};
-// 区间
-struct RangeFenwick {
-	const int n;
-	explicit RangeFenwick(int n)
-		: n(n), f1(n), f2(n) {}
-	void update(int l, int r, ll v) {
-		_update(l, v);
-		_update(r + 1, -v);
-	}
-	ll query(int l, int r) const {
-		return _query(r) - _query(l - 1);
-	}
-private:
-	Fenwick f1, f2;
-	void _update(int x, ll v) {
-		f1.update(x, v);
-		f2.update(x, v * (x - 1));
-	}
-	ll _query(int x) const {
-		return f1.query(x) * x - f2.query(x);
-	}
+	static constexpr int _maxn = 500005;
+	static inline int _fact[_maxn], _invfact[_maxn];
+	static inline int init = [] {
+		_fact[0] = 1;
+		for(ll i = 1; i < _maxn; ++i) {
+			_fact[i] = (ll(_fact[i - 1]) * i) % modulo;
+		}
+		_invfact[_maxn - 1] = qpow(_fact[_maxn - 1], modulo - 2);
+		for(ll i = _maxn - 2; i >= 0; --i) {
+			_invfact[i] = (ll(_invfact[i + 1]) * (i + 1)) % modulo;
+		}
+		return 0;
+	}();
 };
 
 // Example usage:

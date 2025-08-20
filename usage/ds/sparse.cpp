@@ -1,4 +1,4 @@
-// Standalone C++ file generated from ds/fenwick.hpp
+// Standalone C++ file generated from ds/sparse.hpp
 // Can be directly submitted to online judges
 
 #include <bits/stdc++.h>
@@ -34,51 +34,38 @@ template<class T> bool chkmax(T &x, const T &y) {
     return chkf(x, y, greater{});
 }
 
-// === ds/fenwick.hpp ===
+// === ds/sparse.hpp ===
 
-// 单点
-struct Fenwick {
-	explicit Fenwick(int n) : n(n), nums(n + 1, 0) {}
-	ll query(int x) const {
-		ll ans = 0;
-		for(; x; x -= lbit(x)) {
-			ans += nums[x];
+template<class T> struct Sparse {
+	using func_type = function<T(T, T)>;
+	Sparse(const vector<T> &vec, func_type fn) : func(fn) {
+		int n = vec.size();
+		_log.resize(n + 1);
+		_log[0] = -1;
+		for(int i = 1; i <= n; ++i) {
+			_log[i] = _log[i >> 1] + 1;
 		}
-		return ans;
+		int k = _log[n] + 1;
+		table.resize(n, vector<T>(k));
+		for(int i = 0; i < n; ++i) {
+			table[i][0] = vec[i];
+		}
+		for(int j = 1; j < k; ++j) {
+			int step = 1 << (j - 1);
+			for(int i = 0; i + step < n; ++i) {
+				table[i][j] = func(table[i][j - 1], table[i + step][j - 1]);
+			}
+		}
 	}
-	void update(int x, ll v) {
-		for(; x <= n; x += lbit(x)) {
-			nums[x] += v;
-		}
+	T query(int l, int r) const {
+		int len = r - l + 1;
+		int j = _log[len];
+		return func(table[l][j], table[r - (1 << j) + 1][j]);
 	}
 private:
-	vector<ll> nums;
-	int n;
-	static int lbit(int x) {
-		return x & -x;
-	}
-};
-// 区间
-struct RangeFenwick {
-	const int n;
-	explicit RangeFenwick(int n)
-		: n(n), f1(n), f2(n) {}
-	void update(int l, int r, ll v) {
-		_update(l, v);
-		_update(r + 1, -v);
-	}
-	ll query(int l, int r) const {
-		return _query(r) - _query(l - 1);
-	}
-private:
-	Fenwick f1, f2;
-	void _update(int x, ll v) {
-		f1.update(x, v);
-		f2.update(x, v * (x - 1));
-	}
-	ll _query(int x) const {
-		return f1.query(x) * x - f2.query(x);
-	}
+	vector<vector<T>> table;
+	vector<int> _log;
+	func_type func;
 };
 
 // Example usage:

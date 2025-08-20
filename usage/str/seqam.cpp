@@ -1,4 +1,4 @@
-// Standalone C++ file generated from ds/fenwick.hpp
+// Standalone C++ file generated from str/seqam.hpp
 // Can be directly submitted to online judges
 
 #include <bits/stdc++.h>
@@ -34,51 +34,29 @@ template<class T> bool chkmax(T &x, const T &y) {
     return chkf(x, y, greater{});
 }
 
-// === ds/fenwick.hpp ===
+// === str/seqam.hpp ===
 
-// 单点
-struct Fenwick {
-	explicit Fenwick(int n) : n(n), nums(n + 1, 0) {}
-	ll query(int x) const {
-		ll ans = 0;
-		for(; x; x -= lbit(x)) {
-			ans += nums[x];
+struct SeqAM {
+	explicit SeqAM(const string &s) : n(s.size()), nxt(s.size() + 2, [&] {
+		array<int, 26> ret;
+		ret.fill(s.size() + 1);
+		return ret;
+	}()) {
+		for(int i = n - 1; i >= 0; --i) {
+			nxt[i] = nxt[i + 1];
+			nxt[i][s[i] - 'a'] = i + 1;
 		}
-		return ans;
 	}
-	void update(int x, ll v) {
-		for(; x <= n; x += lbit(x)) {
-			nums[x] += v;
+	bool match(const string &t) const {
+		int now = 0;
+		for(char c : t) {
+			now = nxt[now][c - 'a'];
 		}
+		return now != (n + 1);
 	}
 private:
-	vector<ll> nums;
 	int n;
-	static int lbit(int x) {
-		return x & -x;
-	}
-};
-// 区间
-struct RangeFenwick {
-	const int n;
-	explicit RangeFenwick(int n)
-		: n(n), f1(n), f2(n) {}
-	void update(int l, int r, ll v) {
-		_update(l, v);
-		_update(r + 1, -v);
-	}
-	ll query(int l, int r) const {
-		return _query(r) - _query(l - 1);
-	}
-private:
-	Fenwick f1, f2;
-	void _update(int x, ll v) {
-		f1.update(x, v);
-		f2.update(x, v * (x - 1));
-	}
-	ll _query(int x) const {
-		return f1.query(x) * x - f2.query(x);
-	}
+	vector<array<int, 26>> nxt;
 };
 
 // Example usage:

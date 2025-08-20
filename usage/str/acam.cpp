@@ -1,0 +1,151 @@
+// Standalone C++ file generated from str/acam.hpp
+// Can be directly submitted to online judges
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+using ull = unsigned long long;
+using ld = long double;
+
+inline constexpr ll modulo = 998244353, g = 3, inf = 0x3f3f3f3f3f3f3f3f;
+inline constexpr int maxn = 100005, infint = 0x3f3f3f3f;
+inline constexpr ld eps = 1e-9l, pi = 3.14159265358979323846264338327950288l, infld = 1e12l;
+
+inline ll qpow(ll x, ll n) {
+    ll ret = 1;
+    for(; n != 0; n >>= 1, x = x * x % modulo) {
+        if(n & 1) ret = ret * x % modulo;
+    }
+    return ret;
+}
+
+template<class T, class F> bool chkf(T &x, const T &y, F &&f) {
+    if(f(y, x)) {
+        x = y;
+        return true;
+    }
+    return false;
+}
+template<class T> bool chkmin(T &x, const T &y) {
+    return chkf(x, y, less{});
+}
+template<class T> bool chkmax(T &x, const T &y) {
+    return chkf(x, y, greater{});
+}
+
+// === str/acam.hpp ===
+
+struct ACAM {
+	ACAM() : nodes(1) {}
+	void insert(const string &str) {
+		int now = 0;
+		for(char ch : str) {
+			int id = ch - 'a';
+			int v = nodes[now].nxt1[id];
+			if(v == -1) {
+				v = nodes[now].nxt1[id] = nodes[now].nxt2[id] = nodes.size();
+				nodes.emplace_back();
+			}
+			now = v;
+		}
+		nodes[now].cnt++;
+	}
+	void build() {
+		queue<int> q;
+		nodes[0].fail = 0;
+		for(int i = 0; i < 26; ++i) {
+			int v = nodes[0].nxt2[i];
+			if(v == -1) {
+				nodes[0].nxt2[i] = 0;
+			} else {
+				nodes[v].fail = 0;
+				q.push(v);
+			}
+		}
+		while(!q.empty()) {
+			int now = q.front();
+			q.pop();
+			for(int i = 0; i < 26; ++i) {
+				int v = nodes[now].nxt2[i];
+				if(v == -1) {
+					nodes[now].nxt2[i] = nodes[nodes[now].fail].nxt2[i];
+				} else {
+					nodes[v].fail = nodes[nodes[now].fail].nxt2[i];
+					q.push(v);
+				}
+			}
+		}
+		q.push(0);
+		while(!q.empty()) {
+			int u = q.front();
+			q.pop();
+			for(int i = 0; i < 26; ++i) {
+				int v = nodes[u].nxt1[i];
+				if(v == -1) {
+					continue;
+				}
+				q.push(v);
+				int fu = nodes[u].fail;
+				if(fu != 0 && nodes[fu].cnt == 0) {
+					nodes[u].fail = nodes[fu].fail;
+				}
+			}
+		}
+	}
+	int find(const string &s) const {
+		int now = 0;
+		for(char ch : s) {
+			int v = nodes[now].nxt1[ch - 'a'];
+			if(v == -1) {
+				return -1;
+			}
+			now = v;
+		}
+		return now;
+	}
+	vector<int> query(const string &str) const {
+		int now = 0;
+		vector<int> ret(nodes.size(), 0);
+		for(char ch : str) {
+			int id = ch - 'a';
+			now = nodes[now].nxt2[id];
+			int u = now;
+			while(u != 0) {
+				ret[u]++;
+				u = nodes[u].fail;
+			}
+		}
+		return ret;
+	}
+	int size() const {
+		return nodes.size();
+	}
+private:
+	struct Node {
+		int cnt;
+		int fail;
+		array<int, 26> nxt1, nxt2;
+		Node() : cnt(0), fail(0) {
+			nxt1.fill(-1);
+			nxt2.fill(-1);
+		}
+	};
+	vector<Node> nodes;
+};
+
+// Example usage:
+inline void solve() {
+    // Add your solution code here using the template above
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int t = 1;
+    // cin >> t;
+    while(t--) {
+        solve();
+    }
+    return 0;
+}

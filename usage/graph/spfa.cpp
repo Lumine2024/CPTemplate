@@ -1,4 +1,4 @@
-// Standalone C++ file generated from ds/fenwick.hpp
+// Standalone C++ file generated from graph/spfa.hpp
 // Can be directly submitted to online judges
 
 #include <bits/stdc++.h>
@@ -34,52 +34,35 @@ template<class T> bool chkmax(T &x, const T &y) {
     return chkf(x, y, greater{});
 }
 
-// === ds/fenwick.hpp ===
+// === graph/spfa.hpp ===
 
-// 单点
-struct Fenwick {
-	explicit Fenwick(int n) : n(n), nums(n + 1, 0) {}
-	ll query(int x) const {
-		ll ans = 0;
-		for(; x; x -= lbit(x)) {
-			ans += nums[x];
+// 返回空vector说明有负环
+vector<ll> spfa(const vector<vector<pair<int, ll>>> &graph, int start) {
+	int n = graph.size();
+	vector<ll> dist(n, inf);
+	vector<int> cnt(n, 0);
+	vector<bool> inq(n, false);
+	queue<int> q;
+	q.push(start);
+	dist[start] = 0;
+	inq[start] = true;
+	while(!q.empty()) {
+		int u = q.front();
+		q.pop();
+		inq[u] = false;
+		for(auto [v, w] : graph[u]) {
+			if(chkmin(dist[v], dist[u] + w)) {
+				if(!inq[v]) {
+					inq[v] = true;
+					q.push(v);
+					cnt[v] = cnt[u] + 1;
+					if(cnt[v] > n) return {};
+				}
+			}
 		}
-		return ans;
 	}
-	void update(int x, ll v) {
-		for(; x <= n; x += lbit(x)) {
-			nums[x] += v;
-		}
-	}
-private:
-	vector<ll> nums;
-	int n;
-	static int lbit(int x) {
-		return x & -x;
-	}
-};
-// 区间
-struct RangeFenwick {
-	const int n;
-	explicit RangeFenwick(int n)
-		: n(n), f1(n), f2(n) {}
-	void update(int l, int r, ll v) {
-		_update(l, v);
-		_update(r + 1, -v);
-	}
-	ll query(int l, int r) const {
-		return _query(r) - _query(l - 1);
-	}
-private:
-	Fenwick f1, f2;
-	void _update(int x, ll v) {
-		f1.update(x, v);
-		f2.update(x, v * (x - 1));
-	}
-	ll _query(int x) const {
-		return f1.query(x) * x - f2.query(x);
-	}
-};
+	return dist;
+}
 
 // Example usage:
 inline void solve() {

@@ -1,4 +1,4 @@
-// Standalone C++ file generated from ds/fenwick.hpp
+// Standalone C++ file generated from ds/arithfen.hpp
 // Can be directly submitted to online judges
 
 #include <bits/stdc++.h>
@@ -79,6 +79,25 @@ private:
 	ll _query(int x) const {
 		return f1.query(x) * x - f2.query(x);
 	}
+};
+
+// === ds/arithfen.hpp ===
+
+struct ArithmeticFenwick {
+	explicit ArithmeticFenwick(int n)
+		: f1(n + 2), f2(n + 2) {}
+	// a*idx+b
+	void update(int l, int r, ll a, ll b) {
+		f1.update(l, b);
+		f1.update(r + 1, -b - a * (r - l + 1));
+		f2.update(l, a);
+		f2.update(r + 1, -a);
+	}
+	ll query(ll idx) const {
+		return f1.query(idx) + idx * f2.query(idx);
+	}
+private:
+	Fenwick f1, f2;
 };
 
 // Example usage:
