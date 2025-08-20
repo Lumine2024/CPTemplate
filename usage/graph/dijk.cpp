@@ -1,0 +1,65 @@
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+using ull = unsigned long long;
+using ld = long double;
+
+inline constexpr ll inf = 0x3f3f3f3f3f3f3f3f;
+
+template<class T, class F> bool chkf(T &x, const T &y, F &&f) {
+    if(f(y, x)) {
+        x = y;
+        return true;
+    }
+    return false;
+}
+template<class T> bool chkmin(T &x, const T &y) {
+    return chkf(x, y, less{});
+}
+template<class T> bool chkmax(T &x, const T &y) {
+    return chkf(x, y, greater{});
+}
+
+
+vector<ll> dijkstra(vector<vector<pair<int, ll>>> &graph, int start) {
+	int v = graph.size();
+	vector<ll> dist(v, inf);
+	dist[start] = 0;
+	vector<bool> visited(v, false);
+	priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<>> pq;
+	for(auto [vtx, w] : graph[start]) {
+		dist[vtx] = w;
+		pq.emplace(w, vtx);
+	}
+	while(!pq.empty()) {
+		auto [w, vtx] = pq.top();
+		pq.pop();
+		if(visited[vtx]) continue;
+		visited[vtx] = true;
+		for(auto [vt, ww] : graph[vtx]) {
+			if(!visited[vt]) {
+				if(chkmin(dist[vt], dist[vtx] + ww)) {
+					pq.emplace(dist[vt], vt);
+				}
+			}
+		}
+	}
+	return dist;
+}
+
+inline void solve() {
+    // Add your solution code here using the template above
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int t = 1;
+    // cin >> t;
+    while(t--) {
+        solve();
+    }
+    return 0;
+}
