@@ -10,7 +10,7 @@ using ld = long double;
 
 inline constexpr ll modulo = 998244353, g = 3, inf = 0x3f3f3f3f3f3f3f3f;
 inline constexpr int maxn = 100005, infint = 0x3f3f3f3f;
-inline constexpr ld eps = 1e-9l, pi = 3.14159265358979323846264338327950288l, infld = 1e12l;
+inline constexpr ld eps = 1e-9l, infld = 1e12l;
 
 inline ll qpow(ll x, ll n) {
     ll ret = 1;
