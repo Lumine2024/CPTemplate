@@ -1,6 +1,5 @@
 #pragma once
 #include "constants.hpp"
-#include "math/modint.hpp"
 
 struct Comb {
 	Comb() = delete;

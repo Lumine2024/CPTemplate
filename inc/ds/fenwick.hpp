@@ -26,7 +26,7 @@ private:
 // 区间
 struct RangeFenwick {
 	const int n;
-	RangeFenwick(int n)
+	explicit RangeFenwick(int n)
 		: n(n), f1(n), f2(n) {}
 	void update(int l, int r, ll v) {
 		_update(l, v);

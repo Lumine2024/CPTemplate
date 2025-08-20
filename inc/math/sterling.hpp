@@ -1,6 +1,5 @@
 #pragma once
 #include "constants.hpp"
-#include "modint.hpp"
 
 struct Sterling {
 	Sterling() = delete;
