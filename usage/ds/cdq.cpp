@@ -1,5 +1,3 @@
-// Standalone C++ file generated from ds/cdq.hpp
-// Can be directly submitted to online judges
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -8,9 +6,6 @@ using ll = long long;
 using ull = unsigned long long;
 using ld = long double;
 
-inline constexpr ll inf = 0x3f3f3f3f3f3f3f3f;
-inline constexpr int maxn = 100005, infint = 0x3f3f3f3f;
-inline constexpr ld eps = 1e-9l, infld = 1e12l;
 
 template<class T, class F> bool chkf(T &x, const T &y, F &&f) {
     if(f(y, x)) {
@@ -26,7 +21,6 @@ template<class T> bool chkmax(T &x, const T &y) {
     return chkf(x, y, greater{});
 }
 
-// === ds/fenwick.hpp (Fenwick tree needed for CDQ) ===
 template<class T> struct Fenwick {
 	explicit Fenwick(int n) : tree(n + 1, 0), n(n) {}
 	void update(int i, T delta) {
@@ -51,7 +45,6 @@ private:
 	int n;
 };
 
-// === ds/cdq.hpp ===
 
 struct Data {
 	int x, y, z;
@@ -115,7 +108,6 @@ vector<int> threed_partial(int n, int k, vector<Data> &_datas) {
 	return ans;
 }
 
-// Example usage:
 inline void solve() {
     // Add your solution code here using the template above
 }

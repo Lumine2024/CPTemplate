@@ -1,5 +1,3 @@
-// Standalone C++ file generated from math/crt.hpp
-// Can be directly submitted to online judges
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -9,8 +7,6 @@ using ull = unsigned long long;
 using ld = long double;
 
 inline constexpr ll modulo = 998244353, inf = 0x3f3f3f3f3f3f3f3f;
-inline constexpr int maxn = 100005, infint = 0x3f3f3f3f;
-inline constexpr ld eps = 1e-9l, infld = 1e12l;
 
 inline ll qpow(ll x, ll n) {
     ll ret = 1;
@@ -34,7 +30,6 @@ template<class T> bool chkmax(T &x, const T &y) {
     return chkf(x, y, greater{});
 }
 
-// === math/exgcd.hpp ===
 
 // @returns (gcd, x, y) so that gcd = ax + by
 tuple<ll, ll, ll> exgcd(ll a, ll b) {
@@ -43,7 +38,6 @@ tuple<ll, ll, ll> exgcd(ll a, ll b) {
 	return tuple(g, y, x - (a / b) * y);
 }
 
-// === math/crt.hpp ===
 
 // @returns (a, b) so that answer is a + kb, k\in N_+
 pair<ll, ll> crt(const vector<ll> &rem, const vector<ll> &mod) {
@@ -78,7 +72,6 @@ pair<ll, ll> excrt(const vector<ll> &rem, const vector<ll> &mod) {
 	return { (r1 % m1 + m1) % m1, m1 };
 }
 
-// Example usage:
 inline void solve() {
     // Add your solution code here using the template above
 }

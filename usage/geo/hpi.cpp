@@ -1,5 +1,3 @@
-// Standalone C++ file generated from geo/hpi.hpp
-// Can be directly submitted to online judges
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -9,7 +7,6 @@ using ull = unsigned long long;
 using ld = long double;
 
 inline constexpr ll inf = 0x3f3f3f3f3f3f3f3f;
-inline constexpr int maxn = 100005, infint = 0x3f3f3f3f;
 inline constexpr ld eps = 1e-9l, pi = 3.14159265358979323846264338327950288l, infld = 1e12l;
 
 template<class T, class F> bool chkf(T &x, const T &y, F &&f) {
@@ -26,7 +23,6 @@ template<class T> bool chkmax(T &x, const T &y) {
     return chkf(x, y, greater{});
 }
 
-// === geo/basic.hpp ===
 
 using ld = long double;
 int sign(ld a) {
@@ -377,7 +373,6 @@ pair<Point, Point> inter(const Circle &c, const Line &l) {
 	return {i1, i2};
 }
 
-// === geo/hpi.hpp ===
 
 vector<Line> half_inter(vector<Line> lines) {
 	lines.push_back({{-inf, 0.0l}, {0.0l, -1.0l}});
@@ -433,7 +428,6 @@ vector<Line> half_inter(vector<Line> lines) {
 	return ret;
 }
 
-// Example usage:
 inline void solve() {
     // Add your solution code here using the template above
 }
