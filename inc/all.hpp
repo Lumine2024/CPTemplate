@@ -18,20 +18,12 @@
 #include "ds/fenwick.hpp"
 #include "ds/hld.hpp"
 #include "ds/mo.hpp"
-#include "ds/mono.hpp"
 #include "ds/pst.hpp"
 #include "ds/seg.hpp"
 #include "ds/sparse.hpp"
 #include "ds/treap.hpp"
 #include "ds/trie01.hpp"
 #include "ds/vst.hpp"
-
-// DynamicProgramming
-#include "dp/count.hpp"
-#include "dp/digit.hpp"
-#include "dp/knap.hpp"
-#include "dp/range.hpp"
-#include "dp/segopt.hpp"
 
 // Geometry
 #include "geo/basic.hpp"
@@ -49,9 +41,7 @@
 #include "graph/hung.hpp"
 #include "graph/kruskal.hpp"
 #include "graph/mcmf.hpp"
-#include "graph/ormin.hpp"
 #include "graph/prim.hpp"
-#include "graph/remmin.hpp"
 #include "graph/spfa.hpp"
 #include "graph/tarjan.hpp"
 #include "graph/twosat.hpp"
@@ -81,9 +71,6 @@
 
 // RunTheCode
 #include "run/debug.hpp"
-
-// Search
-#include "search/iddfs.hpp"
 
 // Strings
 #include "str/acam.hpp"
