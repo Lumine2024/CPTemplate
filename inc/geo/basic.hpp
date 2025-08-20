@@ -1,14 +1,7 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 
-// Use geometry constants in local scope
-namespace {
-    using ld = geo::ld;
-    constexpr ld eps = geo::eps;
-    constexpr ld geo_pi = geo::pi;  
-    constexpr ld geo_inf = geo::inf;
-}
-
+using ld = long double;
 int sign(ld a) {
 	return (a < -eps) ? -1 : (a > eps) ? 1 : 0;
 }
@@ -52,7 +45,7 @@ struct Point {
 	ld arg() const {
 		ld ret = atan2(y, x);
 		int c = cmp(ret, 0);
-		return c == 1 ? ret : c == 0 ? 0.0l : ret + 2 * geo_pi;
+		return c == 1 ? ret : c == 0 ? 0.0l : ret + 2 * pi;
 	}
 	Point rotate(ld a) const {
 		return Point(x * cos(a) - y * sin(a), x * sin(a) + y * cos(a));
@@ -87,7 +80,7 @@ ld angle(const Vector &a, const Vector &b) {
 	ld cosa = min(max(dot(a, b) / (a.len() * b.len()), -1.0l), 1.0l);
 	ld ret = acos(cosa);
 	if(to_left(a, b) == -1) {
-		ret = 2 * geo_pi - ret;
+		ret = 2 * pi - ret;
 	}
 	return ret;
 }
@@ -108,7 +101,7 @@ int is_inter(const Line &l1, const Line &l2) {
 }
 Point inter(const Line &a, const Line &b) {
 	if(parallel(a, b))
-		throw invalid_argument("a and b are parallel");
+		throw runtime_error("a and b are parallel");
 	Vector v = a.v * (cross(b.v, a.p - b.p) / cross(a.v, b.v));
 	return a.p + v;
 }
@@ -198,12 +191,10 @@ struct Polygon {
 		return pts.size();
 	}
 };
-
 struct Convex : public Polygon {
 	using Polygon::Polygon;
 	// todo
 };
-
 bool is_in(const Point &pt, const Convex &convex) {
 	if(convex.size() == 1) {
 		return pt == convex.pts[0];
@@ -234,7 +225,6 @@ bool is_in(const Point &pt, const Convex &convex) {
 	int nxt = (l == n - 1) ? 1 : l + 1;
 	return check(pivot, convex.pts[l], convex.pts[nxt], pt);
 }
-
 pair<Point, Point> tangent(const Point &pt, const Convex &convex) {
 	if(is_in(pt, convex)) throw runtime_error("pt is in the convex");
 	int n = convex.size();
@@ -254,12 +244,12 @@ pair<Point, Point> tangent(const Point &pt, const Convex &convex) {
 		return { convex.pts[0], convex.pts[idx] };
 	}
 	bool all_left = true, all_right = true;
-	auto fun = [&](int x) {
+	auto chk = [&](int x) {
 		if(x == 1) all_right = false;
 		if(x == -1) all_left = false;
 	};
-	fun(to_left(convex.pts[0] - pt, convex.pts[1] - pt));
-	fun(to_left(convex.pts[0] - pt, convex.pts[n - 1] - pt));
+	chk(to_left(convex.pts[0] - pt, convex.pts[1] - pt));
+	chk(to_left(convex.pts[0] - pt, convex.pts[n - 1] - pt));
 	if(all_left || all_right) {
 		int idx = peak(1, n, all_left);
 		return { convex.pts[0], convex.pts[idx] };
@@ -278,51 +268,33 @@ pair<Point, Point> tangent(const Point &pt, const Convex &convex) {
 	int i1 = peak(0, split + 1, flag), i2 = peak(split, n, !flag);
 	return { convex.pts[i1], convex.pts[i2] };
 }
-
 pair<Point, Point> tangent(const Line &ln, const Convex &convex) {
 	int n = convex.size();
-	if(n == 1) {
-		return { convex.pts[0], convex.pts[0] };
-	}
-	if(n == 2) {
-		return { convex.pts[0], convex.pts[1] };
-	}
-	
-	// Direction perpendicular to the line
-	Vector perp = Vector(-ln.v.y, ln.v.x);
-	
-	// Find extreme points using ternary search approach
-	auto find_extreme = [&](bool find_max) -> int {
+	Vector dir(-ln.v.y, ln.v.x);
+	auto find = [&](bool flag) {
 		int l = 0, r = n - 1;
 		while(r - l > 2) {
-			int m1 = l + (r - l) / 3;
-			int m2 = r - (r - l) / 3;
-			ld dot1 = dot(convex.pts[m1], perp);
-			ld dot2 = dot(convex.pts[m2], perp);
-			if(find_max ? (cmp(dot1, dot2) == 1) : (cmp(dot1, dot2) == -1)) {
+			int m1 = l + (r - l) / 3, m2 = r - (r - l) / 3;
+			ld dot1 = dot(convex.pts[m1], dir), dot2 = dot(convex.pts[m2], dir);
+			if(flag ^ (cmp(dot1, dot2) == -1)) {
 				r = m2;
 			} else {
 				l = m1;
 			}
 		}
-		
-		int best = l;
-		ld best_dot = dot(convex.pts[l], perp);
+		int idx = l;
+		ld ret = dot(convex.pts[l], dir);
 		for(int i = l; i <= r; ++i) {
-			ld curr_dot = dot(convex.pts[i], perp);
-			if(find_max ? (cmp(curr_dot, best_dot) == 1) : (cmp(curr_dot, best_dot) == -1)) {
-				best = i;
-				best_dot = curr_dot;
+			ld now = dot(convex.pts[i], dir);
+			if(flag ^ (cmp(now, ret) == -1)) {
+				idx = i;
+				ret = now;
 			}
 		}
-		
-		return best;
+		return idx;
 	};
-	
-	int max_idx = find_extreme(true);
-	int min_idx = find_extreme(false);
-	
-	return { convex.pts[min_idx], convex.pts[max_idx] };
+	int i1 = find(true), i2 = find(false);
+	return { convex.pts[i1], convex.pts[i2] };
 }
 
 struct Circle {
@@ -331,13 +303,12 @@ struct Circle {
 	Circle() : r(0.0l) {}
 	Circle(const Point &_c, ld _r) : c(_c), r(_r) {}
 	ld area() const {
-		return geo_pi * r * r;
+		return pi * r * r;
 	}
 	ld circ() const {
-		return 2.0l * geo_pi * r;
+		return 2.0l * pi * r;
 	}
 };
-
 bool is_inter(const Circle &c1, const Circle &c2) {
 	ld dis = (c2.c - c1.c).len();
 	ld r1 = c1.r, r2 = c2.r;
@@ -351,7 +322,7 @@ bool is_inter(const Circle &c1, const Circle &c2) {
 }
 pair<Point, Point> inter(const Circle &c1, const Circle &c2) {
 	if(!is_inter(c1, c2))
-		throw invalid_argument("Circles do not intersect");
+		throw runtime_error("Circles do not intersect");
 	ld dis = (c2.c - c1.c).len();
 	ld r1 = c1.r, r2 = c2.r;
 	ld cosa = ((r1 * r1 + dis * dis - r2 * r2) / (2 * r1 * dis));
@@ -361,14 +332,13 @@ pair<Point, Point> inter(const Circle &c1, const Circle &c2) {
 	v = v / v.len() * c1.r;
 	return { c1.c + v.rotate(alp), c1.c + v.rotate(-alp) };
 }
-
 bool is_inter(const Circle &c, const Line &l) {
 	ld d = dist(c.c, l);
 	return cmp(c.r, d) != -1;
 }
 pair<Point, Point> inter(const Circle &c, const Line &l) {
 	if(!is_inter(c, l))
-		throw invalid_argument("Circle and line do not intersect");
+		throw runtime_error("Circle and line do not intersect");
 	Point o = c.c;
 	Vector v = l.v;
 	Point p = l.p - o;

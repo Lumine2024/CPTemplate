@@ -6,11 +6,9 @@ using ll = long long;
 using ull = unsigned long long;
 using ld = long double;
 
-constexpr ll modulo = 998244353, g = 3;
-constexpr ll maxn = 100005;
-constexpr int inf_int = 0x3f3f3f3f;
-constexpr ll inf = 0x3f3f3f3f3f3f3f3f;
-constexpr double pi = 3.14159265358979323846264338327950288;
+inline constexpr ll modulo = 998244353, g = 3, inf = 0x3f3f3f3f3f3f3f3f;
+inline constexpr int maxn = 100005, infint = 0x3f3f3f3f;
+inline constexpr ld eps = 1e-9l, pi = 3.14159265358979323846264338327950288l, infld = 1e12l;
 
 inline ll qpow(ll x, ll n) {
 	ll ret = 1;
@@ -19,17 +17,17 @@ inline ll qpow(ll x, ll n) {
 	}
 	return ret;
 }
-template<class T> bool chkmin(T &x, const T &y) {
-	if(x > y) {
+
+template<class T, class F> bool chkf(T &x, const T &y, F &&f) {
+	if(f(y, x)) {
 		x = y;
 		return true;
 	}
 	return false;
 }
-
-namespace geo {
-    using ld = long double;
-    constexpr ld eps = 1e-9;
-    constexpr ld pi = 3.14159265358979323846264338327950288l;
-    constexpr ld inf = 1e12l;
+template<class T> bool chkmin(T &x, const T &y) {
+	return chkf(x, y, less{});
+}
+template<class T> bool chkmax(T &x, const T &y) {
+	return chkf(x, y, greater{});
 }

@@ -1,6 +1,5 @@
 #pragma once
 #include "constants.hpp"
-
 #include "ds/fenwick.hpp"
 #include "ds/vst.hpp"
 

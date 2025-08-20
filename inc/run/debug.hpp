@@ -1,5 +1,5 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 
 #ifdef ONLINE_JUDGE
 #define debug(...) (void(0))

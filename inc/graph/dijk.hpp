@@ -18,8 +18,7 @@ vector<ll> dijkstra(vector<vector<pair<int, ll>>> &graph, int start) {
 		visited[vtx] = true;
 		for(auto [vt, ww] : graph[vtx]) {
 			if(!visited[vt]) {
-				if(dist[vt] > dist[vtx] + ww) {
-					dist[vt] = dist[vtx] + ww;
+				if(chkmin(dist[vt], dist[vtx] + ww)) {
 					pq.emplace(dist[vt], vt);
 				}
 			}

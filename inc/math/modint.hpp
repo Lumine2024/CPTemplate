@@ -29,16 +29,20 @@ struct ModInt {
 		if(val < 0) val += modulo;
 	}
 	ModInt operator+(const ModInt &rhs) const {
-		return ModInt(val + rhs.val);
+		ll retval = val + rhs.val;
+		if(retval >= modulo) retval -= modulo;
+		return ModInt(retval, true);
 	}
 	ModInt operator-(const ModInt &rhs) const {
-		return ModInt(val - rhs.val);
+		ll retval = val - rhs.val;
+		if(retval < 0) retval += modulo;
+		return ModInt(retval, true);
 	}
 	ModInt operator*(const ModInt &rhs) const {
-		return ModInt(val * rhs.val);
+		return ModInt(val * rhs.val % modulo, true);
 	}
 	ModInt operator/(const ModInt &rhs) const {
-		return ModInt(val * qpow(rhs.val, modulo - 2));
+		return ModInt(val * qpow(rhs.val, modulo - 2) % modulo, true);
 	}
 	ModInt power(int n) const {
 		ModInt ret = 1;
@@ -52,4 +56,5 @@ struct ModInt {
 	}
 private:
 	ll val;
+	ModInt(ll v, bool) : val(v) {}
 };

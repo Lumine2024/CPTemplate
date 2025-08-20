@@ -12,15 +12,12 @@ struct EK {
     vector<ll> mf, d;
     vector<bool> inq;
     int n;
-
     explicit EK(int _n) : n(_n), graph(_n), pv(_n, -1), pe(_n, -1), d(_n, inf), mf(_n, 0), inq(_n, false) {}
-
     void addedge(int u, int v, ll flow, ll weight) {
         int iu = graph[u].size(), iv = graph[v].size();
         graph[u].push_back({ v, iv, weight, flow, false });
         graph[v].push_back({ u, iu, -weight, 0, true });
     }
-
     pair<ll, ll> solve() {
         ll cost = 0, flow = 0;
         while(true) {
@@ -44,8 +41,7 @@ struct EK {
                     auto &e = graph[u][i];
                     int v = e.dst;
                     ll f = e.flow, w = e.weight;
-                    if(f > 0 && d[v] > d[u] + w) {
-                        d[v] = d[u] + w;
+                    if(f > 0 && chkmin(d[v], d[u] + w)) {
                         pv[v] = u;
                         pe[v] = i;
                         mf[v] = min(mf[u], f);

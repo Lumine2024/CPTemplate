@@ -1,5 +1,5 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 
 struct MyHash {
 	size_t operator()(ll x) const noexcept {

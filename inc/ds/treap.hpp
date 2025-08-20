@@ -48,7 +48,7 @@ struct Treap {
 	// 注意是小于的，不是大于等于的
 	int lower_bound(int v) const {
 		auto tmp = _sval(rt, v - 1);
-		int ret = -inf_int;
+		int ret = -infint;
 		if(tmp.first) {
 			ret = _qvr(tmp.first, tmp.first->size - 1);
 		}
@@ -57,7 +57,7 @@ struct Treap {
 	}
 	int upper_bound(int v) const {
 		auto tmp = _sval(rt, v);
-		int ret = -inf_int;
+		int ret = -infint;
 		if(tmp.second) {
 			ret = _qvr(tmp.second, 0);
 		}
