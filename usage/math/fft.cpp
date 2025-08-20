@@ -1,5 +1,3 @@
-// Standalone C++ file generated from math/fft.hpp
-// Can be directly submitted to online judges
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -8,8 +6,6 @@ using ll = long long;
 using ull = unsigned long long;
 using ld = long double;
 
-inline constexpr ll inf = 0x3f3f3f3f3f3f3f3f;
-inline constexpr int maxn = 100005, infint = 0x3f3f3f3f;
 inline constexpr ld eps = 1e-9l, pi = 3.14159265358979323846264338327950288l, infld = 1e12l;
 
 template<class T, class F> bool chkf(T &x, const T &y, F &&f) {
@@ -26,7 +22,6 @@ template<class T> bool chkmax(T &x, const T &y) {
     return chkf(x, y, greater{});
 }
 
-// === math/fft.hpp ===
 
 using cd = complex<double>;
 vector<int> multiply(const vector<int> &a, const vector<int> &b) {
@@ -79,7 +74,6 @@ vector<int> multiply(const vector<int> &a, const vector<int> &b) {
 	return ret;
 }
 
-// Example usage:
 inline void solve() {
     // Add your solution code here using the template above
 }

@@ -1,5 +1,3 @@
-// Standalone C++ file generated from graph/twosat.hpp
-// Can be directly submitted to online judges
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -8,9 +6,6 @@ using ll = long long;
 using ull = unsigned long long;
 using ld = long double;
 
-inline constexpr ll inf = 0x3f3f3f3f3f3f3f3f;
-inline constexpr int maxn = 100005, infint = 0x3f3f3f3f;
-inline constexpr ld eps = 1e-9l, infld = 1e12l;
 
 template<class T, class F> bool chkf(T &x, const T &y, F &&f) {
     if(f(y, x)) {
@@ -26,7 +21,6 @@ template<class T> bool chkmax(T &x, const T &y) {
     return chkf(x, y, greater{});
 }
 
-// === graph/tarjan.hpp (SCC implementation needed by twosat) ===
 // 强连通分量
 struct SCC {
 	explicit SCC(int n) : nodes(n), graph(n) {}
@@ -91,7 +85,6 @@ private:
 	}
 };
 
-// === graph/twosat.hpp ===
 
 // 本题给的是析取式，在这里我转化为了蕴含式求解
 // 请打一个SCC下来
@@ -121,7 +114,6 @@ vector<int> twosat(int n, const vector<tuple<int, int, int, int>> &conds) {
 	return ans;
 }
 
-// Example usage:
 inline void solve() {
     // Add your solution code here using the template above
 }

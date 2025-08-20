@@ -1,5 +1,3 @@
-// Standalone C++ file generated from math/modint.hpp
-// Can be directly submitted to online judges
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -10,7 +8,6 @@ using ld = long double;
 
 inline constexpr ll modulo = 998244353, inf = 0x3f3f3f3f3f3f3f3f;
 inline constexpr int maxn = 100005, infint = 0x3f3f3f3f;
-inline constexpr ld eps = 1e-9l, infld = 1e12l;
 
 inline ll qpow(ll x, ll n) {
     ll ret = 1;
@@ -34,7 +31,6 @@ template<class T> bool chkmax(T &x, const T &y) {
     return chkf(x, y, greater{});
 }
 
-// === math/modint.hpp ===
 
 struct PreprocessedPow {
 	PreprocessedPow(ll k, ll maxn) {
@@ -94,7 +90,6 @@ private:
 	ModInt(ll v, bool) : val(v) {}
 };
 
-// Example usage:
 inline void solve() {
     // Add your solution code here using the template above
 }

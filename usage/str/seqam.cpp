@@ -1,5 +1,3 @@
-// Standalone C++ file generated from str/seqam.hpp
-// Can be directly submitted to online judges
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -8,9 +6,6 @@ using ll = long long;
 using ull = unsigned long long;
 using ld = long double;
 
-inline constexpr ll inf = 0x3f3f3f3f3f3f3f3f;
-inline constexpr int maxn = 100005, infint = 0x3f3f3f3f;
-inline constexpr ld eps = 1e-9l, infld = 1e12l;
 
 template<class T, class F> bool chkf(T &x, const T &y, F &&f) {
     if(f(y, x)) {
@@ -26,7 +21,6 @@ template<class T> bool chkmax(T &x, const T &y) {
     return chkf(x, y, greater{});
 }
 
-// === str/seqam.hpp ===
 
 struct SeqAM {
 	explicit SeqAM(const string &s) : n(s.size()), nxt(s.size() + 2, [&] {
@@ -51,7 +45,6 @@ private:
 	vector<array<int, 26>> nxt;
 };
 
-// Example usage:
 inline void solve() {
     // Add your solution code here using the template above
 }

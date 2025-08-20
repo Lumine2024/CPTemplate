@@ -1,5 +1,3 @@
-// Standalone C++ file generated from graph/dinic.hpp
-// Can be directly submitted to online judges
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -9,8 +7,6 @@ using ull = unsigned long long;
 using ld = long double;
 
 inline constexpr ll inf = 0x3f3f3f3f3f3f3f3f;
-inline constexpr int maxn = 100005, infint = 0x3f3f3f3f;
-inline constexpr ld eps = 1e-9l, infld = 1e12l;
 
 template<class T, class F> bool chkf(T &x, const T &y, F &&f) {
     if(f(y, x)) {
@@ -26,7 +22,6 @@ template<class T> bool chkmax(T &x, const T &y) {
     return chkf(x, y, greater{});
 }
 
-// === graph/dinic.hpp ===
 
 struct Dinic {
 	Dinic(int n, int s, int e)
@@ -95,7 +90,6 @@ private:
 	}
 };
 
-// Example usage:
 inline void solve() {
     // Add your solution code here using the template above
 }
