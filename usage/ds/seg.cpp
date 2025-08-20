@@ -169,44 +169,8 @@ private:
 	}
 };
 
-// 使用示例：区间加，区间和
-/*
-struct RangeAddTag;
-struct RangeAddInfo {
-	ll val;
-	RangeAddInfo() : val(0) {}
-	RangeAddInfo(ll v) : val(v) {}
-	RangeAddInfo operator+(const RangeAddInfo &x) const {
-		return RangeAddInfo{ val + x.val };
-	}
-	void update(RangeAddInfo &dst, int l, int r) const {
-		dst.val += val * (r - l);
-	}
-	void update(RangeAddTag &dst) const;
-};
-struct RangeAddTag {
-	ll val;
-	RangeAddTag() : val(0) {}
-	bool is_null() const {
-		return val == 0;
-	}
-	void apply(RangeAddInfo &dst, int l, int r) const {
-		dst.val += val * (r - l);
-	}
-	void apply(RangeAddTag &dst) const {
-		dst.val += val;
-	}
-	void clear() {
-		val = 0;
-	}
-};
-void RangeAddInfo::update(RangeAddTag &dst) const {
-	dst.val += val;
-}
-*/
-
 inline void solve() {
-    // Add your solution code here using the template above
+    
 }
 
 int main() {

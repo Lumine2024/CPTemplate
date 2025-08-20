@@ -39,7 +39,7 @@ int peak(const vector<int> &nums) {
 }
 
 inline void solve() {
-    // Add your solution code here using the template above
+    
 }
 
 int main() {

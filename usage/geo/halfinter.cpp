@@ -6,6 +6,7 @@ using ll = long long;
 using ull = unsigned long long;
 using ld = long double;
 
+inline constexpr ll inf = 0x3f3f3f3f3f3f3f3f;
 inline constexpr ld eps = 1e-9l, pi = 3.14159265358979323846264338327950288l, infld = 1e12l;
 
 template<class T, class F> bool chkf(T &x, const T &y, F &&f) {
@@ -373,46 +374,62 @@ pair<Point, Point> inter(const Circle &c, const Line &l) {
 }
 
 
-
-ld sector_area(Circle c, Point u, Point v) {
-	u = u - c.c, v = v - c.c, c.c = {};
-	ld alp = angle(u, v);
-	if(cmp(alp, pi) == 1) alp -= 2 * pi;
-	return c.r * c.r * alp / 2;
-}
-ld inter_helper(Circle c, Point a, Point b) {
-	a = a - c.c, b = b - c.c, c.c = {};
-	ld da = a.len(), db = b.len();
-	if(cmp(da, c.r) <= 0 && cmp(db, c.r) <= 0) {
-		return cross(a, b) / 2;
+vector<Line> half_inter(vector<Line> lines) {
+	lines.push_back({{-inf, 0.0l}, {0.0l, -1.0l}});
+	lines.push_back({{inf, 0.0l}, {0.0l, 1.0l}});
+	lines.push_back({{0.0l, inf}, {-1.0l, 0.0l}});
+	lines.push_back({{0.0l, -inf}, {1.0l, 0.0l}});
+	sort(lines.begin(), lines.end(), [](const Line &a, const Line &b) {
+		int c = cmp(a.v.arg(), b.v.arg());
+		if(c != 0)
+			return c == -1;
+		return sign(cross(a.v, b.p - a.p)) < 0;
+	});
+	deque<Line> dq;
+	auto bad = [](const Line &l, const Line &b, const Line &c) {
+		try {
+			auto p = inter(b, c);
+			return to_left(l, p) < 0;
+		} catch(const invalid_argument &) {
+			return false;
+		}
+	};
+	for(auto &l : lines) {
+		if(!dq.empty() && cmp(l.v.arg(), dq.back().v.arg()) == 0) {
+			if(to_left(l, dq.back().p + dq.back().v) < 0)
+				dq.back() = l;
+			continue;
+		}
+		while(dq.size() > 1 && bad(l, dq.back(), dq[dq.size() - 2]))
+			dq.pop_back();
+		while(dq.size() > 1 && bad(l, dq[0], dq[1]))
+			dq.pop_front();
+		dq.push_back(l);
 	}
-	ld di = dist(c.c, Lineseg{ a, b });
-	if(cmp(di, c.r) >= 0) {
-		return sector_area(c, a, b);
+	while(dq.size() > 1 && bad(dq[0], dq.back(), dq[dq.size() - 2]))
+		dq.pop_back();
+	while(dq.size() > 1 && bad(dq.back(), dq[0], dq[1]))
+		dq.pop_front();
+	vector<Line> ret(dq.begin(), dq.end());
+	int m = ret.size();
+	if(m < 3)
+		return {};
+	vector<Point> poly;
+	poly.reserve(m);
+	for(int i = 0; i < m; ++i) {
+		try {
+			poly.emplace_back(inter(ret[i], ret[(i + 1) % m]));
+		} catch(const invalid_argument &) {
+			return {};
+		}
 	}
-	auto [ia, ib] = inter(c, Line{ a, b - a });
-	Vector d = (b - a) / (b - a).len();
-	ld ta = dot(ia - a, d), tb = dot(ib - a, d);
-	if(ta > tb) swap(ia, ib);
-	if(cmp(c.r, da) >= 0) {
-		return cross(a, ib) / 2 + sector_area(c, ib, b);
-	} else if(cmp(c.r, db) >= 0) {
-		return cross(ia, b) / 2 + sector_area(c, a, ia);
-	} else {
-		return cross(ia, ib) / 2 + sector_area(c, a, ia) + sector_area(c, ib, b);
-	}
-}
-ld inter_area(const Polygon &poly, const Circle &c) {
-	ld ret = 0.0l;
-	for(int i = 0; i < poly.size(); ++i) {
-		int j = (i + 1) % poly.size();
-		ret += inter_helper(c, poly.pts[i], poly.pts[j]);
-	}
-	return abs(ret);
+	if(poly.size() != m)
+		return {};
+	return ret;
 }
 
 inline void solve() {
-    // Add your solution code here using the template above
+    
 }
 
 int main() {

@@ -114,7 +114,7 @@ int factor_sum_f(int p, int k) {
 }
 
 inline void solve() {
-    // Add your solution code here using the template above
+    
 }
 
 int main() {

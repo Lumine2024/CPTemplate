@@ -45,29 +45,6 @@ private:
 		return x & -x;
 	}
 };
-// 区间
-struct RangeFenwick {
-	const int n;
-	explicit RangeFenwick(int n)
-		: n(n), f1(n), f2(n) {}
-	void update(int l, int r, ll v) {
-		_update(l, v);
-		_update(r + 1, -v);
-	}
-	ll query(int l, int r) const {
-		return _query(r) - _query(l - 1);
-	}
-private:
-	Fenwick f1, f2;
-	void _update(int x, ll v) {
-		f1.update(x, v);
-		f2.update(x, v * (x - 1));
-	}
-	ll _query(int x) const {
-		return f1.query(x) * x - f2.query(x);
-	}
-};
-
 
 // value segment tree
 struct VST {
@@ -178,7 +155,7 @@ vector<int> rev_lehmer(const vector<int> &l) {
 }
 
 inline void solve() {
-    // Add your solution code here using the template above
+    
 }
 
 int main() {

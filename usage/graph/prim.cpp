@@ -53,7 +53,7 @@ ll prim(const vector<vector<pair<int, ll>>> &graph) {
 }
 
 inline void solve() {
-    // Add your solution code here using the template above
+    
 }
 
 int main() {

@@ -51,7 +51,7 @@ int hungarian(const vector<vector<int>> &graph, int vsz) {
 }
 
 inline void solve() {
-    // Add your solution code here using the template above
+    
 }
 
 int main() {

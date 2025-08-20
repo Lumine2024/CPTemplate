@@ -109,7 +109,7 @@ vector<int> threed_partial(int n, int k, vector<Data> &_datas) {
 }
 
 inline void solve() {
-    // Add your solution code here using the template above
+    
 }
 
 int main() {

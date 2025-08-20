@@ -115,7 +115,7 @@ vector<int> twosat(int n, const vector<tuple<int, int, int, int>> &conds) {
 }
 
 inline void solve() {
-    // Add your solution code here using the template above
+    
 }
 
 int main() {

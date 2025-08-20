@@ -7,6 +7,7 @@ using ull = unsigned long long;
 using ld = long double;
 
 inline constexpr ll modulo = 998244353, g = 3, inf = 0x3f3f3f3f3f3f3f3f;
+inline constexpr int maxn = 100005, infint = 0x3f3f3f3f;
 
 inline ll qpow(ll x, ll n) {
     ll ret = 1;
@@ -31,17 +32,47 @@ template<class T> bool chkmax(T &x, const T &y) {
 }
 
 
-vector<ll> multiply(const vector<ll> &a, const vector<ll> &b) {
+vector<ll> sterling_ntt(int k) {
+	if(k == 0) return {1};
+	vector<ll> powk(k + 1, 0);
+	powk[1] = 1;
+	vector<bool> isprime(k + 1, true);
+	isprime[0] = isprime[1] = false;
+	vector<int> primes;
+	for(int i = 2; i <= k; ++i) {
+		if(isprime[i]) {
+			primes.push_back(i);
+			powk[i] = qpow(i, k);
+		}
+		for(ll p : primes) {
+			ll q = i * p;
+			if(q > k) break;
+			isprime[q] = false;
+			powk[q] = powk[i] * powk[p] % modulo;
+			if(i % p == 0) break;
+		}
+	}
+	vector<ll> fact(k + 1), invfact(k + 1);
+	fact[0] = fact[1] = 1;
+	for(ll i = 2; i <= k; ++i) {
+		fact[i] = fact[i - 1] * i % modulo;
+	}
+	invfact[k] = qpow(fact[k], modulo - 2);
+	for(int i = k - 1; i >= 0; --i) {
+		invfact[i] = invfact[i + 1] * (i + 1) % modulo;
+	}
 	int n = 1;
-	while(n < a.size() + b.size()) {
+	while(n < (2 * k + 1)) {
 		n <<= 1;
 	}
-	vector<ll> ca(n), cb(n);
-	for(int i = 0; i < a.size(); ++i) {
-		ca[i] = a[i];
-	}
-	for(int i = 0; i < b.size(); ++i) {
-		cb[i] = b[i];
+	vector<ll> a(n, 0), b(n, 0);
+	for(int i = 0; i <= k; ++i) {
+		a[i] = powk[i] * invfact[i] % modulo;
+		if(i % 2 == 1) {
+			b[i] = (modulo - invfact[i]) % modulo;
+		} else {
+			b[i] = invfact[i];
+		}
 	}
 	auto ntt = [](auto &&ntt, vector<ll> &f, bool invert) -> void {
 		int n = f.size();
@@ -57,26 +88,27 @@ vector<ll> multiply(const vector<ll> &a, const vector<ll> &b) {
 		if(invert) {
 			wn = qpow(wn, modulo - 2);
 		}
-		for(int t = 0; t < n / 2; ++t) {
-			ll u = f0[t], v = w * f1[t] % modulo;
-			f[t] = (u + v) % modulo;
-			f[t + n / 2] = (u - v + modulo) % modulo;
+		for(int i = 0; i < n / 2; ++i) {
+			ll u = f0[i];
+			ll v = w * f1[i] % modulo;
+			f[i] = (u + v) % modulo;
+			f[i + n / 2] = (u - v + modulo) % modulo;
 			w = w * wn % modulo;
 		}
 	};
-	ntt(ntt, ca, false);
-	ntt(ntt, cb, false);
+	ntt(ntt, a, false);
+	ntt(ntt, b, false);
+	vector<ll> c(n);
 	for(int i = 0; i < n; ++i) {
-		ca[i] = ca[i] * cb[i] % modulo;
+		c[i] = a[i] * b[i] % modulo;
 	}
-	ntt(ntt, ca, true);
+	ntt(ntt, c, true);
+	ll invn = qpow(n, modulo - 2);
 	for(int i = 0; i < n; ++i) {
-		ca[i] = ca[i] * qpow(n, modulo - 2) % modulo;
+		c[i] = c[i] * invn % modulo;
 	}
-	while(ca.size() > (a.size() + b.size() - 1)) {
-		ca.pop_back();
-	}
-	return ca;
+	c.resize(k + 1);
+	return c;
 }
 
 inline void solve() {

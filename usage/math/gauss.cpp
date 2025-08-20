@@ -87,7 +87,7 @@ vector<vector<ll>> gauss(const vector<vector<ll>> &a, const vector<vector<ll>> &
 }
 
 inline void solve() {
-    // Add your solution code here using the template above
+    
 }
 
 int main() {

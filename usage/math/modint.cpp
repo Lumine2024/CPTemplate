@@ -32,29 +32,6 @@ template<class T> bool chkmax(T &x, const T &y) {
 }
 
 
-struct PreprocessedPow {
-	PreprocessedPow(ll k, ll maxn) {
-		k %= modulo;
-		m = ceil(sqrt(maxn + 1.5));
-		powerk.assign(m, 1);
-		powerkm.assign(m, 1);
-		for(int i = 1; i < m; ++i) {
-			powerk[i] = (ll(powerk[i - 1]) * k) % modulo;
-		}
-		powerkm[1] = ll(powerk[m - 1]) * k % modulo;
-		for(int i = 2; i < m; ++i) {
-			powerkm[i] = ll(powerkm[i - 1]) * ll(powerkm[1]) % modulo;
-		}
-	}
-	ll pow(ll n) const {
-		ll i = n / m, j = n % m;
-		return (ll(powerkm[i]) * ll(powerk[j])) % modulo;
-	}
-private:
-	int m;
-	vector<int> powerk, powerkm;
-};
-
 struct ModInt {
 	ModInt(ll v = 0) : val(v % modulo) {
 		if(val < 0) val += modulo;
@@ -91,7 +68,7 @@ private:
 };
 
 inline void solve() {
-    // Add your solution code here using the template above
+    
 }
 
 int main() {
