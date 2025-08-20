@@ -1,0 +1,152 @@
+// Standalone C++ file generated from math/sterling.hpp
+// Can be directly submitted to online judges
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+using ull = unsigned long long;
+using ld = long double;
+
+inline constexpr ll modulo = 998244353, g = 3, inf = 0x3f3f3f3f3f3f3f3f;
+inline constexpr int maxn = 100005, infint = 0x3f3f3f3f;
+inline constexpr ld eps = 1e-9l, pi = 3.14159265358979323846264338327950288l, infld = 1e12l;
+
+inline ll qpow(ll x, ll n) {
+    ll ret = 1;
+    for(; n != 0; n >>= 1, x = x * x % modulo) {
+        if(n & 1) ret = ret * x % modulo;
+    }
+    return ret;
+}
+
+template<class T, class F> bool chkf(T &x, const T &y, F &&f) {
+    if(f(y, x)) {
+        x = y;
+        return true;
+    }
+    return false;
+}
+template<class T> bool chkmin(T &x, const T &y) {
+    return chkf(x, y, less{});
+}
+template<class T> bool chkmax(T &x, const T &y) {
+    return chkf(x, y, greater{});
+}
+
+// === math/sterling.hpp ===
+
+struct Sterling {
+	Sterling() = delete;
+	static int get(int n, int m) {
+		return ster[n][m];
+	}
+private:
+	static constexpr int maxn = 5005;
+	static inline int ster[maxn][maxn];
+	static inline int init = [] {
+		ster[0][0] = 1;
+		for(ll i = 1; i < maxn; ++i) {
+			ster[i][0] = 0;
+			for(ll j = 1; j < i; ++j) {
+				ster[i][j] = (ll(ster[i - 1][j - 1]) + ll(ster[i - 1][j]) * j) % modulo;
+			}
+		}
+		return 0;
+	}();
+};
+
+vector<ll> sterling_ntt(int k) {
+	if(k == 0) return {1};
+	vector<ll> powk(k + 1, 0);
+	powk[1] = 1;
+	vector<bool> isprime(k + 1, true);
+	isprime[0] = isprime[1] = false;
+	vector<int> primes;
+	for(int i = 2; i <= k; ++i) {
+		if(isprime[i]) {
+			primes.push_back(i);
+			powk[i] = qpow(i, k);
+		}
+		for(ll p : primes) {
+			ll q = i * p;
+			if(q > k) break;
+			isprime[q] = false;
+			powk[q] = powk[i] * powk[p] % modulo;
+			if(i % p == 0) break;
+		}
+	}
+	vector<ll> fact(k + 1), invfact(k + 1);
+	fact[0] = fact[1] = 1;
+	for(ll i = 2; i <= k; ++i) {
+		fact[i] = fact[i - 1] * i % modulo;
+	}
+	invfact[k] = qpow(fact[k], modulo - 2);
+	for(int i = k - 1; i >= 0; --i) {
+		invfact[i] = invfact[i + 1] * (i + 1) % modulo;
+	}
+	int n = 1;
+	while(n < (2 * k + 1)) {
+		n <<= 1;
+	}
+	vector<ll> a(n, 0), b(n, 0);
+	for(int i = 0; i <= k; ++i) {
+		a[i] = powk[i] * invfact[i] % modulo;
+		if(i % 2 == 1) {
+			b[i] = (modulo - invfact[i]) % modulo;
+		} else {
+			b[i] = invfact[i];
+		}
+	}
+	auto ntt = [](auto &&ntt, vector<ll> &f, bool invert) -> void {
+		int n = f.size();
+		if(n == 1) return;
+		vector<ll> f0(n / 2), f1(n / 2);
+		for(int i = 0; i < n / 2; ++i) {
+			f0[i] = f[2 * i];
+			f1[i] = f[2 * i + 1];
+		}
+		ntt(ntt, f0, invert);
+		ntt(ntt, f1, invert);
+		ll w = 1, wn = qpow(g, (modulo - 1) / n);
+		if(invert) {
+			wn = qpow(wn, modulo - 2);
+		}
+		for(int i = 0; i < n / 2; ++i) {
+			ll u = f0[i];
+			ll v = w * f1[i] % modulo;
+			f[i] = (u + v) % modulo;
+			f[i + n / 2] = (u - v + modulo) % modulo;
+			w = w * wn % modulo;
+		}
+	};
+	ntt(ntt, a, false);
+	ntt(ntt, b, false);
+	vector<ll> c(n);
+	for(int i = 0; i < n; ++i) {
+		c[i] = a[i] * b[i] % modulo;
+	}
+	ntt(ntt, c, true);
+	ll invn = qpow(n, modulo - 2);
+	for(int i = 0; i < n; ++i) {
+		c[i] = c[i] * invn % modulo;
+	}
+	c.resize(k + 1);
+	return c;
+}
+
+// Example usage:
+inline void solve() {
+    // Add your solution code here using the template above
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int t = 1;
+    // cin >> t;
+    while(t--) {
+        solve();
+    }
+    return 0;
+}

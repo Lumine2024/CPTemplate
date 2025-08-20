@@ -1,4 +1,4 @@
-// Standalone C++ file generated from ds/fenwick.hpp
+// Standalone C++ file generated from graph/prim.hpp
 // Can be directly submitted to online judges
 
 #include <bits/stdc++.h>
@@ -34,52 +34,36 @@ template<class T> bool chkmax(T &x, const T &y) {
     return chkf(x, y, greater{});
 }
 
-// === ds/fenwick.hpp ===
+// === graph/prim.hpp ===
 
-// 单点
-struct Fenwick {
-	explicit Fenwick(int n) : n(n), nums(n + 1, 0) {}
-	ll query(int x) const {
-		ll ans = 0;
-		for(; x; x -= lbit(x)) {
-			ans += nums[x];
+ll prim(const vector<vector<pair<int, ll>>> &graph) {
+	int n = graph.size();
+	vector<bool> visited(n, false);
+	vector<ll> dist(n, inf);
+	dist[0] = 0;
+	priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<>> pq;
+	pq.emplace(0, 0);
+	ll ret = 0;
+	while(!pq.empty()) {
+		auto [w, v] = pq.top();
+		pq.pop();
+		if(visited[v]) continue;
+		visited[v] = true;
+		ret += w;
+		for(auto [u, w] : graph[v]) {
+			if(!visited[u] && dist[u] > w) {
+				dist[u] = w;
+				pq.emplace(w, u);
+			}
 		}
-		return ans;
 	}
-	void update(int x, ll v) {
-		for(; x <= n; x += lbit(x)) {
-			nums[x] += v;
+	for(bool b : visited) {
+		if(!b) {
+			return inf;
 		}
 	}
-private:
-	vector<ll> nums;
-	int n;
-	static int lbit(int x) {
-		return x & -x;
-	}
-};
-// 区间
-struct RangeFenwick {
-	const int n;
-	explicit RangeFenwick(int n)
-		: n(n), f1(n), f2(n) {}
-	void update(int l, int r, ll v) {
-		_update(l, v);
-		_update(r + 1, -v);
-	}
-	ll query(int l, int r) const {
-		return _query(r) - _query(l - 1);
-	}
-private:
-	Fenwick f1, f2;
-	void _update(int x, ll v) {
-		f1.update(x, v);
-		f2.update(x, v * (x - 1));
-	}
-	ll _query(int x) const {
-		return f1.query(x) * x - f2.query(x);
-	}
-};
+	return ret;
+}
 
 // Example usage:
 inline void solve() {

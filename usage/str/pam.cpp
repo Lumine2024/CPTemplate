@@ -1,4 +1,4 @@
-// Standalone C++ file generated from ds/fenwick.hpp
+// Standalone C++ file generated from str/pam.hpp
 // Can be directly submitted to online judges
 
 #include <bits/stdc++.h>
@@ -34,51 +34,53 @@ template<class T> bool chkmax(T &x, const T &y) {
     return chkf(x, y, greater{});
 }
 
-// === ds/fenwick.hpp ===
+// === str/pam.hpp ===
 
-// 单点
-struct Fenwick {
-	explicit Fenwick(int n) : n(n), nums(n + 1, 0) {}
-	ll query(int x) const {
-		ll ans = 0;
-		for(; x; x -= lbit(x)) {
-			ans += nums[x];
-		}
-		return ans;
+struct PAM {
+	PAM() : s("#"), last(1) {
+		nodes.emplace_back(-1, 0);
+		nodes.emplace_back(0, 0);
 	}
-	void update(int x, ll v) {
-		for(; x <= n; x += lbit(x)) {
-			nums[x] += v;
+	int insert(char ch) {
+		s += ch;
+		int pos = s.size() - 1;
+		int p = last, id = ch - 'a';
+		while(s[pos - nodes[p].len - 1] != ch) {
+			p = nodes[p].fail;
 		}
+		if(nodes[p].nxt[id] == -1) {
+			int cur = nodes.size();
+			nodes[p].nxt[id] = cur;
+			nodes.emplace_back(nodes[p].len + 2, 0);
+			if(nodes[cur].len == 1) {
+				nodes[cur].fail = 1;
+			} else {
+				int f = nodes[p].fail;
+				while(s[pos - nodes[f].len - 1] != ch) {
+					f = nodes[f].fail;
+				}
+				nodes[cur].fail = nodes[f].nxt[id];
+			}
+			if(nodes[cur].len == 1) {
+				nodes[cur].cnt = 1;
+			} else {
+				nodes[cur].cnt = nodes[nodes[cur].fail].cnt + 1;
+			}
+		}
+		last = nodes[p].nxt[id];
+		return nodes[last].cnt;
 	}
 private:
-	vector<ll> nums;
-	int n;
-	static int lbit(int x) {
-		return x & -x;
-	}
-};
-// 区间
-struct RangeFenwick {
-	const int n;
-	explicit RangeFenwick(int n)
-		: n(n), f1(n), f2(n) {}
-	void update(int l, int r, ll v) {
-		_update(l, v);
-		_update(r + 1, -v);
-	}
-	ll query(int l, int r) const {
-		return _query(r) - _query(l - 1);
-	}
-private:
-	Fenwick f1, f2;
-	void _update(int x, ll v) {
-		f1.update(x, v);
-		f2.update(x, v * (x - 1));
-	}
-	ll _query(int x) const {
-		return f1.query(x) * x - f2.query(x);
-	}
+	struct Node {
+		int len, fail, cnt;
+		array<int, 26> nxt;
+		Node(int l, int f) : len(l), fail(f), cnt(0) {
+			nxt.fill(-1);
+		}
+	};
+	vector<Node> nodes;
+	string s;
+	int last;
 };
 
 // Example usage:

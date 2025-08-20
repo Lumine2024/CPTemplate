@@ -1,4 +1,4 @@
-// Standalone C++ file generated from ds/fenwick.hpp
+// Standalone C++ file generated from str/strhash.hpp
 // Can be directly submitted to online judges
 
 #include <bits/stdc++.h>
@@ -34,51 +34,33 @@ template<class T> bool chkmax(T &x, const T &y) {
     return chkf(x, y, greater{});
 }
 
-// === ds/fenwick.hpp ===
+// === str/strhash.hpp ===
 
-// 单点
-struct Fenwick {
-	explicit Fenwick(int n) : n(n), nums(n + 1, 0) {}
-	ll query(int x) const {
-		ll ans = 0;
-		for(; x; x -= lbit(x)) {
-			ans += nums[x];
-		}
-		return ans;
-	}
-	void update(int x, ll v) {
-		for(; x <= n; x += lbit(x)) {
-			nums[x] += v;
+struct StringHash {
+	explicit StringHash(const string &s) : p1(s.size() + 1, 0), p2(s.size() + 1, 0) {
+		for(int i = 0; i < s.size(); ++i) {
+			p1[i + 1] = (p1[i] * mul1 + s[i]) % modulo;
+			p2[i + 1] = p2[i] * mul2 + s[i];
 		}
 	}
-private:
-	vector<ll> nums;
-	int n;
-	static int lbit(int x) {
-		return x & -x;
-	}
-};
-// 区间
-struct RangeFenwick {
-	const int n;
-	explicit RangeFenwick(int n)
-		: n(n), f1(n), f2(n) {}
-	void update(int l, int r, ll v) {
-		_update(l, v);
-		_update(r + 1, -v);
-	}
-	ll query(int l, int r) const {
-		return _query(r) - _query(l - 1);
+	ull substr(int l, int r) const {
+		ull ret1 = (p1[r] - p1[l] * pmul1[r - l] % modulo + modulo) % modulo;
+		ull ret2 = p2[r] - p2[l] * pmul2[r - l];
+		return (ret1 << 3) ^ (ret1 >> 5) ^ ret2;
 	}
 private:
-	Fenwick f1, f2;
-	void _update(int x, ll v) {
-		f1.update(x, v);
-		f2.update(x, v * (x - 1));
-	}
-	ll _query(int x) const {
-		return f1.query(x) * x - f2.query(x);
-	}
+	vector<ull> p1, p2;
+	static inline const ull c = (ull)chrono::steady_clock::now().time_since_epoch().count();
+	static inline const ull mul1 = c % 131 + 131, mul2 = c % 13331 + 13331;
+	static inline ull pmul1[maxn], pmul2[maxn];
+	static inline int init = [] {
+		pmul1[0] = pmul2[0] = 1;
+		for(int i = 1; i < maxn; ++i) {
+			pmul1[i] = pmul1[i - 1] * mul1 % modulo;
+			pmul2[i] = pmul2[i - 1] * mul2;
+		}
+		return 0;
+	}();
 };
 
 // Example usage:

@@ -1,4 +1,4 @@
-// Standalone C++ file generated from ds/fenwick.hpp
+// Standalone C++ file generated from ds/dsu.hpp
 // Can be directly submitted to online judges
 
 #include <bits/stdc++.h>
@@ -34,51 +34,63 @@ template<class T> bool chkmax(T &x, const T &y) {
     return chkf(x, y, greater{});
 }
 
-// === ds/fenwick.hpp ===
+// === ds/dsu.hpp ===
 
-// 单点
-struct Fenwick {
-	explicit Fenwick(int n) : n(n), nums(n + 1, 0) {}
-	ll query(int x) const {
-		ll ans = 0;
-		for(; x; x -= lbit(x)) {
-			ans += nums[x];
-		}
-		return ans;
+// 按秩合并
+struct DSU {
+	explicit DSU(int n) : fa(n), rk(n, 1) {
+		iota(fa.begin(), fa.end(), 0);
 	}
-	void update(int x, ll v) {
-		for(; x <= n; x += lbit(x)) {
-			nums[x] += v;
+	int find(int x) {
+		if(fa[x] != x) {
+			fa[x] = find(fa[x]);
 		}
+		return fa[x];
+	}
+	bool is_connected(int x, int y) {
+		return find(x) == find(y);
+	}
+	void connect(int x, int y) {
+		x = find(x);
+		y = find(y);
+		if(x == y) return;
+		if(rk[x] < rk[y]) {
+			swap(x, y);
+		}
+		if(rk[x] == rk[y]) {
+			rk[x]++;
+		}
+		fa[y] = x;
 	}
 private:
-	vector<ll> nums;
-	int n;
-	static int lbit(int x) {
-		return x & -x;
-	}
+	vector<int> fa, rk;
 };
-// 区间
-struct RangeFenwick {
-	const int n;
-	explicit RangeFenwick(int n)
-		: n(n), f1(n), f2(n) {}
-	void update(int l, int r, ll v) {
-		_update(l, v);
-		_update(r + 1, -v);
+// 随机合并
+struct DSU_Random {
+	explicit DSU_Random(int n) : fa(n) {
+		iota(fa.begin(), fa.end(), 0);
 	}
-	ll query(int l, int r) const {
-		return _query(r) - _query(l - 1);
+	int find(int x) {
+		if(fa[x] != x) {
+			fa[x] = find(fa[x]);
+		}
+		return fa[x];
+	}
+	bool is_connected(int x, int y) {
+		return find(x) == find(y);
+	}
+	void connect(int x, int y) {
+		int fx = find(x), fy = find(y);
+		if(rnd() % 2) {
+			fa[fx] = fy;
+		} else {
+			fa[fy] = fx;
+		}
 	}
 private:
-	Fenwick f1, f2;
-	void _update(int x, ll v) {
-		f1.update(x, v);
-		f2.update(x, v * (x - 1));
-	}
-	ll _query(int x) const {
-		return f1.query(x) * x - f2.query(x);
-	}
+	static inline mt19937 rnd{ (unsigned int)chrono::steady_clock::now()
+		.time_since_epoch().count() };
+	vector<int> fa;
 };
 
 // Example usage:

@@ -1,4 +1,4 @@
-// Standalone C++ file generated from ds/fenwick.hpp
+// Standalone C++ file generated from others/hash.hpp
 // Can be directly submitted to online judges
 
 #include <bits/stdc++.h>
@@ -34,51 +34,21 @@ template<class T> bool chkmax(T &x, const T &y) {
     return chkf(x, y, greater{});
 }
 
-// === ds/fenwick.hpp ===
+// === others/hash.hpp ===
 
-// 单点
-struct Fenwick {
-	explicit Fenwick(int n) : n(n), nums(n + 1, 0) {}
-	ll query(int x) const {
-		ll ans = 0;
-		for(; x; x -= lbit(x)) {
-			ans += nums[x];
-		}
-		return ans;
-	}
-	void update(int x, ll v) {
-		for(; x <= n; x += lbit(x)) {
-			nums[x] += v;
-		}
+struct MyHash {
+	size_t operator()(ll x) const noexcept {
+		x ^= (x >> 21);
+		x ^= (x << 37);
+		x ^= (x >> 4);
+		x *= 0x27d4eb2f165667c5;
+		x ^= (x >> 28);
+		x *= 0x165667b19e3779f9;
+		x ^= (x >> 31);
+		return x ^ c;
 	}
 private:
-	vector<ll> nums;
-	int n;
-	static int lbit(int x) {
-		return x & -x;
-	}
-};
-// 区间
-struct RangeFenwick {
-	const int n;
-	explicit RangeFenwick(int n)
-		: n(n), f1(n), f2(n) {}
-	void update(int l, int r, ll v) {
-		_update(l, v);
-		_update(r + 1, -v);
-	}
-	ll query(int l, int r) const {
-		return _query(r) - _query(l - 1);
-	}
-private:
-	Fenwick f1, f2;
-	void _update(int x, ll v) {
-		f1.update(x, v);
-		f2.update(x, v * (x - 1));
-	}
-	ll _query(int x) const {
-		return f1.query(x) * x - f2.query(x);
-	}
+	static inline size_t c = (size_t)chrono::steady_clock::now().time_since_epoch().count();
 };
 
 // Example usage:

@@ -1,4 +1,4 @@
-// Standalone C++ file generated from ds/fenwick.hpp
+// Standalone C++ file generated from str/minrep.hpp
 // Can be directly submitted to online judges
 
 #include <bits/stdc++.h>
@@ -34,52 +34,29 @@ template<class T> bool chkmax(T &x, const T &y) {
     return chkf(x, y, greater{});
 }
 
-// === ds/fenwick.hpp ===
+// === str/minrep.hpp ===
 
-// 单点
-struct Fenwick {
-	explicit Fenwick(int n) : n(n), nums(n + 1, 0) {}
-	ll query(int x) const {
-		ll ans = 0;
-		for(; x; x -= lbit(x)) {
-			ans += nums[x];
+string minstr(const string &str) {
+	int n = str.size(), i = 0, j = 1, k = 0;
+	string s = str + str;
+	while(i < n && j < n) {
+		while(k < n && s[i + k] == s[j + k]) {
+			++k;
 		}
-		return ans;
-	}
-	void update(int x, ll v) {
-		for(; x <= n; x += lbit(x)) {
-			nums[x] += v;
+		if(k == n)
+			break;
+		if(s[i + k] > s[j + k]) {
+			i += (k + 1);
+		} else {
+			j += (k + 1);
 		}
+		if(i == j) {
+			++j;
+		}
+		k = 0;
 	}
-private:
-	vector<ll> nums;
-	int n;
-	static int lbit(int x) {
-		return x & -x;
-	}
-};
-// 区间
-struct RangeFenwick {
-	const int n;
-	explicit RangeFenwick(int n)
-		: n(n), f1(n), f2(n) {}
-	void update(int l, int r, ll v) {
-		_update(l, v);
-		_update(r + 1, -v);
-	}
-	ll query(int l, int r) const {
-		return _query(r) - _query(l - 1);
-	}
-private:
-	Fenwick f1, f2;
-	void _update(int x, ll v) {
-		f1.update(x, v);
-		f2.update(x, v * (x - 1));
-	}
-	ll _query(int x) const {
-		return f1.query(x) * x - f2.query(x);
-	}
-};
+	return s.substr(min(i, j), n);
+}
 
 // Example usage:
 inline void solve() {

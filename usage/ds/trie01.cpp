@@ -1,4 +1,4 @@
-// Standalone C++ file generated from ds/fenwick.hpp
+// Standalone C++ file generated from ds/trie01.hpp
 // Can be directly submitted to online judges
 
 #include <bits/stdc++.h>
@@ -34,51 +34,44 @@ template<class T> bool chkmax(T &x, const T &y) {
     return chkf(x, y, greater{});
 }
 
-// === ds/fenwick.hpp ===
+// === ds/trie01.hpp ===
 
-// 单点
-struct Fenwick {
-	explicit Fenwick(int n) : n(n), nums(n + 1, 0) {}
-	ll query(int x) const {
+struct Trie01 {
+	Trie01() : nodes(1) {}
+	void insert(ll val) {
+		int now = 0;
+		for(ll i = 62; i >= 0; --i) {
+			ll flag = (val >> i) & 1;
+			if(nodes[now].nxt[flag] == -1) {
+				nodes[now].nxt[flag] = nodes.size();
+				nodes.emplace_back();
+			}
+			now = nodes[now].nxt[flag];
+		}
+	}
+	ll qmax_xor(ll val) const {
+		int now = 0;
 		ll ans = 0;
-		for(; x; x -= lbit(x)) {
-			ans += nums[x];
+		for(ll i = 62; i >= 0; --i) {
+			ll flag = (val >> i) & 1;
+			if(nodes[now].nxt[1 ^ flag] != -1) {
+				ans += (1ll << i);
+				now = nodes[now].nxt[1 ^ flag];
+			} else {
+				now = nodes[now].nxt[flag];
+			}
 		}
 		return ans;
 	}
-	void update(int x, ll v) {
-		for(; x <= n; x += lbit(x)) {
-			nums[x] += v;
+private:
+	static constexpr int height = 63;
+	struct Node {
+		int nxt[2];
+		Node() {
+			nxt[0] = nxt[1] = -1;
 		}
-	}
-private:
-	vector<ll> nums;
-	int n;
-	static int lbit(int x) {
-		return x & -x;
-	}
-};
-// 区间
-struct RangeFenwick {
-	const int n;
-	explicit RangeFenwick(int n)
-		: n(n), f1(n), f2(n) {}
-	void update(int l, int r, ll v) {
-		_update(l, v);
-		_update(r + 1, -v);
-	}
-	ll query(int l, int r) const {
-		return _query(r) - _query(l - 1);
-	}
-private:
-	Fenwick f1, f2;
-	void _update(int x, ll v) {
-		f1.update(x, v);
-		f2.update(x, v * (x - 1));
-	}
-	ll _query(int x) const {
-		return f1.query(x) * x - f2.query(x);
-	}
+	};
+	vector<Node> nodes;
 };
 
 // Example usage:

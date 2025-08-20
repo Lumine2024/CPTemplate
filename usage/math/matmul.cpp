@@ -1,4 +1,4 @@
-// Standalone C++ file generated from ds/fenwick.hpp
+// Standalone C++ file generated from math/matmul.hpp
 // Can be directly submitted to online judges
 
 #include <bits/stdc++.h>
@@ -34,52 +34,35 @@ template<class T> bool chkmax(T &x, const T &y) {
     return chkf(x, y, greater{});
 }
 
-// === ds/fenwick.hpp ===
+// === math/matmul.hpp ===
 
-// 单点
-struct Fenwick {
-	explicit Fenwick(int n) : n(n), nums(n + 1, 0) {}
-	ll query(int x) const {
-		ll ans = 0;
-		for(; x; x -= lbit(x)) {
-			ans += nums[x];
-		}
-		return ans;
-	}
-	void update(int x, ll v) {
-		for(; x <= n; x += lbit(x)) {
-			nums[x] += v;
+template<class T> vector<vector<T>> matmul(const vector<vector<T>> &lhs, const vector<vector<T>> &rhs) {
+	int M = lhs.size(), N = lhs[0].size(), P = rhs[0].size();
+	vector<vector<T>> ret(M, vector<T>(P, 0));
+	for(int i = 0; i < M; ++i) {
+		for(int j = 0; j < P; ++j) {
+			for(int k = 0; k < N; ++k) {
+				ret[i][j] = ret[i][j] + lhs[i][k] * rhs[k][j];
+				// 增广矩乘：ret[i][j] = min(ret[i][j], lhs[i][k] + rhs[k][j]);
+				// 对的对的，这就是floyd，对的对的
+			}
 		}
 	}
-private:
-	vector<ll> nums;
-	int n;
-	static int lbit(int x) {
-		return x & -x;
+	return ret;
+}
+template<class T> vector<vector<T>> matpow(vector<vector<T>> mat, ll N) {
+	int M = mat.size();
+	vector<vector<T>> ret(M, vector<T>(M, 0));
+	for(int i = 0; i < M; ++i) {
+		ret[i][i] = static_cast<T>(1);
 	}
-};
-// 区间
-struct RangeFenwick {
-	const int n;
-	explicit RangeFenwick(int n)
-		: n(n), f1(n), f2(n) {}
-	void update(int l, int r, ll v) {
-		_update(l, v);
-		_update(r + 1, -v);
+	for(; N != 0; N >>= 1, mat = matmul(mat, mat)) {
+		if(N & 1ll) {
+			ret = matmul(ret, mat);
+		}
 	}
-	ll query(int l, int r) const {
-		return _query(r) - _query(l - 1);
-	}
-private:
-	Fenwick f1, f2;
-	void _update(int x, ll v) {
-		f1.update(x, v);
-		f2.update(x, v * (x - 1));
-	}
-	ll _query(int x) const {
-		return f1.query(x) * x - f2.query(x);
-	}
-};
+	return ret;
+}
 
 // Example usage:
 inline void solve() {
