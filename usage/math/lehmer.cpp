@@ -23,6 +23,52 @@ template<class T> bool chkmax(T &x, const T &y) {
 }
 
 
+// 单点
+struct Fenwick {
+	explicit Fenwick(int n) : n(n), nums(n + 1, 0) {}
+	ll query(int x) const {
+		ll ans = 0;
+		for(; x; x -= lbit(x)) {
+			ans += nums[x];
+		}
+		return ans;
+	}
+	void update(int x, ll v) {
+		for(; x <= n; x += lbit(x)) {
+			nums[x] += v;
+		}
+	}
+private:
+	vector<ll> nums;
+	int n;
+	static int lbit(int x) {
+		return x & -x;
+	}
+};
+// 区间
+struct RangeFenwick {
+	const int n;
+	explicit RangeFenwick(int n)
+		: n(n), f1(n), f2(n) {}
+	void update(int l, int r, ll v) {
+		_update(l, v);
+		_update(r + 1, -v);
+	}
+	ll query(int l, int r) const {
+		return _query(r) - _query(l - 1);
+	}
+private:
+	Fenwick f1, f2;
+	void _update(int x, ll v) {
+		f1.update(x, v);
+		f2.update(x, v * (x - 1));
+	}
+	ll _query(int x) const {
+		return f1.query(x) * x - f2.query(x);
+	}
+};
+
+
 // value segment tree
 struct VST {
 	VST(int maxn) : sum((maxn + 1) * 4), n(maxn + 1) {}
@@ -100,6 +146,36 @@ private:
 		}
 	}
 };
+
+
+// 均为0-based排列
+vector<int> lehmer(const vector<int> &a) {
+	int n = a.size();
+	vector<int> l(n);
+	Fenwick bit(n);
+	for(int i = 1; i <= n; ++i) {
+		bit.update(i, 1);
+	}
+	for(int i = 0; i < n; ++i) {
+		int x = a[i] + 1;
+		l[i] = bit.query(n) - bit.query(x);
+		bit.update(x, -1);
+	}
+	return l;
+}
+vector<int> rev_lehmer(const vector<int> &l) {
+	int n = l.size();
+	VST vst(n); // 使用权值线段树实现会快一点
+	for(int i = 0; i < n; ++i) {
+		vst.insert(i);
+	}
+	vector<int> ret(n);
+	for(int i = 0; i < n; ++i) {
+		ret[i] = vst.qvr(l[i] + 1);
+		vst.erase(ret[i]);
+	}
+	return ret;
+}
 
 inline void solve() {
     // Add your solution code here using the template above

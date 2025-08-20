@@ -1,4 +1,3 @@
-
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -21,8 +20,6 @@ template<class T> bool chkmax(T &x, const T &y) {
     return chkf(x, y, greater{});
 }
 
-
-// 单点
 struct Fenwick {
 	explicit Fenwick(int n) : n(n), nums(n + 1, 0) {}
 	ll query(int x) const {
@@ -44,31 +41,26 @@ private:
 		return x & -x;
 	}
 };
-// 区间
-struct RangeFenwick {
-	const int n;
-	explicit RangeFenwick(int n)
-		: n(n), f1(n), f2(n) {}
-	void update(int l, int r, ll v) {
-		_update(l, v);
-		_update(r + 1, -v);
+
+struct ArithmeticFenwick {
+	explicit ArithmeticFenwick(int n)
+		: f1(n + 2), f2(n + 2) {}
+	// a*idx+b
+	void update(int l, int r, ll a, ll b) {
+		f1.update(l, b);
+		f1.update(r + 1, -b - a * (r - l + 1));
+		f2.update(l, a);
+		f2.update(r + 1, -a);
 	}
-	ll query(int l, int r) const {
-		return _query(r) - _query(l - 1);
+	ll query(ll idx) const {
+		return f1.query(idx) + idx * f2.query(idx);
 	}
 private:
 	Fenwick f1, f2;
-	void _update(int x, ll v) {
-		f1.update(x, v);
-		f2.update(x, v * (x - 1));
-	}
-	ll _query(int x) const {
-		return f1.query(x) * x - f2.query(x);
-	}
 };
 
 inline void solve() {
-    // Add your solution code here using the template above
+    
 }
 
 int main() {
