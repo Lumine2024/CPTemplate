@@ -1,16 +1,9 @@
-// Standalone C++ file generated from binary/bisect.hpp
-// Can be directly submitted to online judges
-
 #include <bits/stdc++.h>
 using namespace std;
 
 using ll = long long;
 using ull = unsigned long long;
 using ld = long double;
-
-inline constexpr ll inf = 0x3f3f3f3f3f3f3f3f;
-inline constexpr int maxn = 100005, infint = 0x3f3f3f3f;
-inline constexpr ld eps = 1e-9l, infld = 1e12l;
 
 template<class T, class F> bool chkf(T &x, const T &y, F &&f) {
     if(f(y, x)) {
@@ -25,8 +18,6 @@ template<class T> bool chkmin(T &x, const T &y) {
 template<class T> bool chkmax(T &x, const T &y) {
     return chkf(x, y, greater{});
 }
-
-// === binary/bisect.hpp ===
 
 template<class T> constexpr T defminv = T{};
 template<class T> constexpr T defmaxv = T{};
@@ -59,9 +50,8 @@ template<class T> T binary(auto &&check, T minv = defminv<T>, T maxv = defmaxv<T
 	return ans;
 }
 
-// Example usage:
 inline void solve() {
-    // Add your solution code here using the template above
+    
 }
 
 int main() {
@@ -69,7 +59,7 @@ int main() {
     cin.tie(nullptr);
     int t = 1;
     // cin >> t;
-    while(t--) {
+    for(int i = 0; i < t; ++i) {
         solve();
     }
     return 0;
