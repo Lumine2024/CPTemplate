@@ -34,6 +34,31 @@ template<class T> bool chkmax(T &x, const T &y) {
     return chkf(x, y, greater{});
 }
 
+// === ds/fenwick.hpp (Fenwick tree needed for CDQ) ===
+template<class T> struct Fenwick {
+	explicit Fenwick(int n) : tree(n + 1, 0), n(n) {}
+	void update(int i, T delta) {
+		++i;
+		for(; i <= n; i += i & -i) {
+			tree[i] += delta;
+		}
+	}
+	T query(int i) const {
+		++i;
+		T sum = 0;
+		for(; i > 0; i -= i & -i) {
+			sum += tree[i];
+		}
+		return sum;
+	}
+	T query(int l, int r) const {
+		return query(r) - query(l - 1);
+	}
+private:
+	vector<T> tree;
+	int n;
+};
+
 // === ds/cdq.hpp ===
 
 struct Data {
@@ -43,7 +68,7 @@ struct Data {
 	Data(int x_, int y_, int z_) : x(x_), y(y_), z(z_), cnt(1), ans(-1) {}
 };
 vector<int> threed_partial(int n, int k, vector<Data> &_datas) {
-	Fenwick fwk(k);
+	Fenwick<int> fwk(k);
 	sort(_datas.begin(), _datas.end() - 1, [](const Data &l, const Data &r) {
 		if(l.x != r.x) return l.x < r.x;
 		if(l.y != r.y) return l.y < r.y;
