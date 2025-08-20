@@ -34,6 +34,56 @@ template<class T> bool chkmax(T &x, const T &y) {
     return chkf(x, y, greater{});
 }
 
+// === geo/basic.hpp (Point and cmp needed for cross) ===
+
+using ld = long double;
+int sign(ld a) {
+	return (a < -eps) ? -1 : (a > eps) ? 1 : 0;
+}
+int cmp(ld a, ld b) {
+	return sign(a - b);
+}
+
+struct Point {
+	ld x, y;
+	Point(ld _x = 0, ld _y = 0) : x(_x), y(_y) {}
+	Point operator+(const Point &p) const {
+		return Point(x + p.x, y + p.y);
+	}
+	Point operator-(const Point &p) const {
+		return Point(x - p.x, y - p.y);
+	}
+	Point operator*(ld k) const {
+		return Point(k * x, k * y);
+	}
+	Point operator/(ld k) const {
+		return Point(x / k, y / k);
+	}
+	bool operator==(const Point &p) const {
+		return cmp(x, p.x) == 0 && cmp(y, p.y) == 0;
+	}
+	bool operator<(const Point &p) const {
+		return cmp(x, p.x) < 0 || (cmp(x, p.x) == 0 && cmp(y, p.y) < 0);
+	}
+	Point perp() const {
+		return Point(-y, x);
+	}
+	ld dot(const Point &p) const {
+		return x * p.x + y * p.y;
+	}
+	ld cross(const Point &p) const {
+		return x * p.y - y * p.x;
+	}
+	ld norm() const {
+		return x * x + y * y;
+	}
+	ld norm2() const {
+		return sqrt(norm());
+	}
+};
+
+using Vector = Point;
+
 // === greedy/cross.hpp ===
 
 bool cross_all(const vector<Point> &points) {
