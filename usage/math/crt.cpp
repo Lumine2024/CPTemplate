@@ -73,7 +73,7 @@ pair<ll, ll> excrt(const vector<ll> &rem, const vector<ll> &mod) {
 }
 
 inline void solve() {
-    // Add your solution code here using the template above
+    
 }
 
 int main() {

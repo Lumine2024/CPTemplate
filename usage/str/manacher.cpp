@@ -65,7 +65,7 @@ string manacher(const string &_s) {
 }
 
 inline void solve() {
-    // Add your solution code here using the template above
+    
 }
 
 int main() {

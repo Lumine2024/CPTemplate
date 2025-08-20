@@ -75,7 +75,7 @@ template<class ... Args> void debug_helper(const string &s, Args &&... args) {
 #endif
 
 inline void solve() {
-    // Add your solution code here using the template above
+    
 }
 
 int main() {

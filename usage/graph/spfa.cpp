@@ -52,7 +52,7 @@ vector<ll> spfa(const vector<vector<pair<int, ll>>> &graph, int start) {
 }
 
 inline void solve() {
-    // Add your solution code here using the template above
+    
 }
 
 int main() {

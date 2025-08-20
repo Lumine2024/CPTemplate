@@ -51,7 +51,7 @@ template<class T> vector<vector<T>> matpow(vector<vector<T>> mat, ll N) {
 }
 
 inline void solve() {
-    // Add your solution code here using the template above
+    
 }
 
 int main() {

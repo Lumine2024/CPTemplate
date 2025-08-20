@@ -127,7 +127,7 @@ ll boruvka(const vector<Edge> &edges, int n) {
 }
 
 inline void solve() {
-    // Add your solution code here using the template above
+    
 }
 
 int main() {
