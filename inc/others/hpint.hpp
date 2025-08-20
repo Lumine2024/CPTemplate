@@ -1,5 +1,5 @@
 #pragma once
-#include "../constants.hpp"
+#include "constants.hpp"
 
 struct HPINT {
 	HPINT() : nums(1, 0), neg(false) {}

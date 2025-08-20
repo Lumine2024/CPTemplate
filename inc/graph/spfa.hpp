@@ -16,8 +16,7 @@ vector<ll> spfa(const vector<vector<pair<int, ll>>> &graph, int start) {
 		q.pop();
 		inq[u] = false;
 		for(auto [v, w] : graph[u]) {
-			if(dist[v] > dist[u] + w) {
-				dist[v] = dist[u] + w;
+			if(chkmin(dist[v], dist[u] + w)) {
 				if(!inq[v]) {
 					inq[v] = true;
 					q.push(v);

@@ -10,8 +10,8 @@ struct Comb {
 	static ll invfact(ll n) {
 		return _invfact[n];
 	}
-	static ll comb(ll n, ll m) {
-		if(m < 0 || m > n) return 0;
+	static ll binom(ll n, ll m) {
+		if(m < 0 || m > n || n < 0) return 0;
 		return (((ll(_fact[n]) * ll(_invfact[m])) % modulo) * ll(_invfact[n - m])) % modulo;
 	}
 private:
