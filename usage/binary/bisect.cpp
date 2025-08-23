@@ -36,18 +36,20 @@ template<floating_point T> constexpr T defmaxv<T> = 1e12;
 template<floating_point T> constexpr T defeps<T> = 1e-9;
 template<floating_point T> constexpr T defdelta<T> = 1e-9;
 
-template<class T> T binary(auto &&check, T minv = defminv<T>, T maxv = defmaxv<T>, T eps = defeps<T>, T delta = defdelta<T>) {
-	T ans{}, hi = maxv, lo = minv;
-	while((maxv - minv) > eps) {
-		T mid = (minv + maxv) / 2;
-		if(check(mid)) {
-			ans = mid;
-			hi = mid - delta;
-		} else {
-			lo = mid + delta;
-		}
-	}
-	return ans;
+template<class F> concept check_function = convertible_to<F, function<bool(int)>>;
+
+template<class T, check_function F> T binary(F &&check, bool rev = false, T minv = defminv<T>, T maxv = defmaxv<T>, T eps = defeps<T>, T delta = defdelta<T>) {
+    T ans = (rev ? minv : maxv), hi = maxv, lo = minv;
+    while((hi - lo) >= eps) {
+        T mid = (lo + hi) / 2;
+        if(check(mid)) {
+            ans = mid;
+            rev ? (lo = mid + delta) : (hi = mid - delta);
+        } else {
+            rev ? (hi = mid - delta) : (lo = mid + delta);
+        }
+    }
+    return ans;
 }
 
 inline void solve() {
