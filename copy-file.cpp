@@ -44,22 +44,23 @@ namespace fs = std::filesystem;
 
 constexpr int unused = 32, parse_error = 33, fs_error = 34, src_nexist = 35;
 
-void print_usage() {
-    std::cout << "------copy-file.exe------\n";
+void print_usage(const std::string &myname) {
+    std::cout << "------" << myname << "------\n";
     std::cout << "usage:\n";
-    std::cout << "./copy-file.exe -src [source-file] -dst [destination-position]\n";
+    std::cout << myname << " -src [source-file] -dst [destination-position]\n";
     std::cout << "example:\n";
-    std::cout << "./copy-file.exe -src usage/ds/seg.cpp -dst D:/contest/D.cpp\n";
+    std::cout << myname << " -src \"usage/ds/seg.cpp\" -dst \"D:/contest/D.cpp\"\n";
     std::cout << std::endl;
 }
 
-void print_src_nexist() {
-    std::cout << "------copy-file.exe------\n";
+void print_src_nexist(const std::string &myname) {
+    std::cout << "------" << myname << "------\n";
     std::cout << "the source file you have provided does not exist!\n";
     std::cout << std::endl;
 }
 
 int main(int argc, char **argv) {
+    std::string myname = argv[0];
     try {
         ArgumentParser parser;
         parser.add_argument("-src");
@@ -67,7 +68,7 @@ int main(int argc, char **argv) {
 
         auto parse_result = parser.parse(argc, argv);
         if(parse_result.size() != 3) {
-            print_usage();
+            print_usage(myname);
             return unused;
         }
 
@@ -76,7 +77,7 @@ int main(int argc, char **argv) {
         fs::path src(src_name), dst(dst_name);
 
         if(!fs::exists(src)) {
-            print_src_nexist();
+            print_src_nexist(myname);
             return src_nexist;
         }
 

@@ -1,4 +1,3 @@
-
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -160,22 +159,17 @@ struct HPINT {
 		}
 		return is;
 	}
-	bool operator>(const HPINT &r) const {
-		if(neg != r.neg) {
-			return !neg && r.neg;
-		}
-		int c = _cmp(nums, r.nums);
-		if(neg) {
-			return c == -1;
-		} else {
-			return c == 1;
-		}
-	}
-	bool operator<(const HPINT &r) const {
-		return r > (*this);
-	}
 	bool operator==(const HPINT &r) const {
 		return neg == r.neg && _cmp(nums, r.nums) == 0;
+	}
+	strong_ordering operator<=>(const HPINT &r) const {
+		if(neg != r.neg) {
+			if(neg) return strong_ordering(-1);
+			return strong_ordering(1);
+		}
+		int c = _cmp(nums, r.nums);
+		if(neg) c *= -1;
+		return strong_ordering(c);
 	}
 	HPINT operator+(const HPINT &r) const {
 		HPINT ret = *this;
@@ -191,12 +185,6 @@ struct HPINT {
 		HPINT ret = *this;
 		ret *= r;
 		return ret;
-	}
-	bool operator>=(const HPINT &r) const {
-		return !operator<(r);
-	}
-	bool operator<=(const HPINT &r) const {
-		return !operator>(r);
 	}
 private:
 	vector<int> nums;

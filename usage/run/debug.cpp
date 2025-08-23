@@ -25,14 +25,12 @@ template<class T> bool chkmax(T &x, const T &y) {
 #ifdef ONLINE_JUDGE
 #define debug(...) (void(0))
 #else
-
 string trim(string s) {
     int l = 0, r = s.size() - 1;
     while(l <= r && isspace(s[l])) ++l;
     while(r >= l && isspace(s[r])) --r;
     return s.substr(l, r - l + 1);
 }
-
 vector<string> split_args(const string &s) {
     vector<string> ret;
     string cur;
@@ -54,7 +52,6 @@ vector<string> split_args(const string &s) {
     if(!(trim(cur).empty())) ret.push_back(trim(cur));
     return ret;
 }
-
 template<class Tuple, size_t ... I> void print_tuple(const vector<string> &names, const Tuple &t, index_sequence<I...>) {
     using expr = int[];
     bool first = true;
@@ -63,14 +60,12 @@ template<class Tuple, size_t ... I> void print_tuple(const vector<string> &names
         cerr << names[I] << " = " << get<I>(t)
     ), 0)...};
 }
-
 template<class ... Args> void debug_helper(const string &s, Args &&... args) {
     auto names = split_args(s);
     auto tp = forward_as_tuple(forward<Args>(args)...);
     print_tuple(names, tp, make_index_sequence<sizeof...(Args)>{});
     cerr << endl;
 }
-
 #define debug(...) debug_helper(#__VA_ARGS__, __VA_ARGS__)
 #endif
 
