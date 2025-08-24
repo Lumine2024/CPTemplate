@@ -6,8 +6,6 @@ using ll = long long;
 using ull = unsigned long long;
 using ld = long double;
 
-inline constexpr ld eps = 1e-9l, pi = 3.14159265358979323846264338327950288l, infld = 1e12l;
-
 template<class T, class F> bool chkf(T &x, const T &y, F &&f) {
     if(f(y, x)) {
         x = y;
@@ -22,261 +20,68 @@ template<class T> bool chkmax(T &x, const T &y) {
     return chkf(x, y, greater{});
 }
 
-
-using ld = long double;
-int sign(ld a) {
-	return (a < -eps) ? -1 : (a > eps) ? 1 : 0;
-}
-int cmp(ld a, ld b) {
-	return sign(a - b);
-}
+// Simplified functions for Pick's theorem - no floating point operations needed
+// Most geometric operations removed as they're not required for Pick's theorem
 
 struct Point {
-	ld x, y;
-	Point() : x(0.0l), y(0.0l) {}
-	Point(ld _x, ld _y) : x(_x), y(_y) {}
-	Point(const complex<ld> &cd) : x(cd.real()), y(cd.imag()) {}
-	operator complex<ld>() const {
-		return complex<ld>(x, y);
-	}
+	ll x, y;
+	Point() : x(0), y(0) {}
+	Point(ll _x, ll _y) : x(_x), y(_y) {}
 	Point operator+(const Point &p) const {
 		return Point(x + p.x, y + p.y);
 	}
 	Point operator-(const Point &p) const {
 		return Point(x - p.x, y - p.y);
 	}
-	Point operator*(ld z) const {
+	Point operator*(ll z) const {
 		return Point(z * x, z * y);
 	}
-	friend Point operator*(ld z, const Point &p) {
+	friend Point operator*(ll z, const Point &p) {
 		return p * z;
 	}
-	Point operator/(ld z) const {
-		return Point(x / z, y / z);
-	}
 	bool operator==(const Point &p) const {
-		return cmp(x, p.x) == 0 && cmp(y, p.y) == 0;
+		return x == p.x && y == p.y;
 	}
-	ld len2() const {
+	ll len2() const {
 		return x * x + y * y;
-	}
-	ld len() const {
-		return sqrt(x * x + y * y);
-	}
-	// [0, 2*geo_pi)
-	ld arg() const {
-		ld ret = atan2(y, x);
-		int c = cmp(ret, 0);
-		return c == 1 ? ret : c == 0 ? 0.0l : ret + 2 * pi;
-	}
-	Point rotate(ld a) const {
-		return Point(x * cos(a) - y * sin(a), x * sin(a) + y * cos(a));
 	}
 };
 using Vector = Point;
-ld dot(const Vector &x, const Vector &y) {
+ll dot(const Vector &x, const Vector &y) {
 	return x.x * y.x + x.y * y.y;
 }
-ld cross(const Vector &x, const Vector &y) {
+ll cross(const Vector &x, const Vector &y) {
 	return x.x * y.y - x.y * y.x;
 }
-ld cross(const Point &o, const Point &a, const Point &b) {
+ll cross(const Point &o, const Point &a, const Point &b) {
 	return cross(a - o, b - o);
 }
-bool argcmp(const Point &x, const Point &y) {
-	bool bx = sign(x.y) == 1 || (sign(x.y) == 0 && sign(x.x) == 1),
-		 by = sign(y.y) == 1 || (sign(y.y) == 0 && sign(y.x) == 1);
-	if(bx != by) return bx;
-	return sign(cross(x, y)) == 0;
-}
-ld dist(const Point &x, const Point &y) {
-	return (x - y).len();
-}
-int to_left(const Vector &a, const Vector &b) {
-	return sign(cross(a, b));
-}
-int to_left(const Point &a, const Point &b, const Point &c) {
-	return sign(cross(a, b, c));
-}
-ld angle(const Vector &a, const Vector &b) {
-	ld cosa = min(max(dot(a, b) / (a.len() * b.len()), -1.0l), 1.0l);
-	ld ret = acos(cosa);
-	if(to_left(a, b) == -1) {
-		ret = 2 * pi - ret;
-	}
-	return ret;
-}
-
-struct Line {
-	Point p, v;
-	Line() {}
-	Line(const Point &_p, const Vector &_v) : p(_p), v(_v) {}
-};
-int to_left(const Line &ln, const Point &p) {
-	return to_left(ln.v, p - ln.p);
-}
-bool parallel(const Line &l1, const Line &l2) {
-	return cmp(cross(l1.v, l2.v), 0.0l) == 0;
-}
-int is_inter(const Line &l1, const Line &l2) {
-	return parallel(l1, l2) ? 0 : 1;
-}
-Point inter(const Line &a, const Line &b) {
-	if(parallel(a, b))
-		throw runtime_error("a and b are parallel");
-	Vector v = a.v * (cross(b.v, a.p - b.p) / cross(a.v, b.v));
-	return a.p + v;
-}
-ld dist(const Point &p, const Line &ln) {
-	return abs(cross(ln.v, p - ln.p)) / ln.v.len();
-}
-ld dist(const Line &l1, const Line &l2) {
-	if(!parallel(l1, l2)) {
-		return 0;
-	}
-	return dist(l1.p, l2);
-}
-Point proj(const Point &p, const Line &ln) {
-	Vector v = ln.v * (dot(ln.v, p - ln.p) / (dot(ln.v, ln.v)));
-	return ln.p + v;
-}
-bool is_on(const Point &p, const Line &ln) {
-	return cmp(cross(ln.v, ln.p - p), 0.0l) == 0;
-}
-
-struct Lineseg {
-	Point a, b;
-	Lineseg() {}
-	Lineseg(const Point &_a, const Point &_b) : a(_a), b(_b) {}
-	ld len() const {
-		return (b - a).len();
-	}
-};
-int is_on(const Point &p, const Lineseg &ls) {
-	if(p == ls.a || p == ls.b) {
-		return 2;
-	}
-	return to_left(p - ls.a, p - ls.b) == 0 && cmp(dot(p - ls.a, p - ls.b), 0) == -1;
-}
-int is_inter(const Line &ln, const Lineseg &ls) {
-	int a = to_left(ln, ls.a), b = to_left(ln, ls.b);
-	if(a == 0 || b == 0) {
-		return 2;
-	}
-	return a == b ? 0 : 1;
-}
-int is_inter(const Lineseg &l1, const Lineseg &l2) {
-	if(is_on(l1.a, l2) || is_on(l1.b, l2) || is_on(l2.a, l1) || is_on(l2.b, l1)) {
-		return 2;
-	}
-	Line ln1(l1.a, l1.b - l1.a), ln2(l2.a, l2.b - l2.a);
-	return to_left(ln1, l2.a) * to_left(ln1, l2.b) == -1 
-		&& to_left(ln2, l1.a) * to_left(ln2, l1.b) == -1;
-}
-ld dist(const Point &p, const Lineseg &ls) {
-	if(is_on(p, ls) != 0) {
-		return 0.0l;
-	}
-	if(cmp(dot(p - ls.a, ls.b - ls.a), 0) == -1 ||
-	   cmp(dot(p - ls.b, ls.a - ls.b), 0) == -1) {
-		return min(dist(p, ls.a), dist(p, ls.b));
-	}
-	Line l(ls.a, ls.b - ls.a);
-	return dist(p, l);
-}
-
 struct Polygon {
 	vector<Point> pts;
 	Polygon() {}
 	Polygon(const vector<Point> &p) : pts(p) {}
-	Polygon(const vector<Line> &l) {
-		pts.reserve(l.size());
-		for(int i = 0; i < l.size(); ++i) {
-			pts.emplace_back(inter(l[i], l[(i + 1) % l.size()]));
-		}
-	}
-	ld area() const {
-		ld ret = 0.0l;
+	ll twice_area() const {
+		ll ret = 0;
 		for(int i = 0; i < pts.size(); ++i) {
 			ret += cross(pts[i], pts[(i + 1) % pts.size()]);
 		}
-		return ret / 2.0l;
-	}
-	ld circ() const {
-		ld ret = 0.0l;
-		for(int i = 0; i < pts.size(); ++i) {
-			ret += (pts[i] - pts[(i + 1) % pts.size()]).len();
-		}
-		return ret;
+		return abs(ret);
 	}
 	int size() const {
 		return pts.size();
 	}
 };
 
-struct Circle {
-	Point c;
-	ld r;
-	Circle() : r(0.0l) {}
-	Circle(const Point &_c, ld _r) : c(_c), r(_r) {}
-	ld area() const {
-		return pi * r * r;
-	}
-	ld circ() const {
-		return 2.0l * pi * r;
-	}
-};
-bool is_inter(const Circle &c1, const Circle &c2) {
-	ld dis = (c2.c - c1.c).len();
-	ld r1 = c1.r, r2 = c2.r;
-	if(abs(dis) <= eps) {
-		return false;
-	}
-	if(dis > r1 + r2 + eps || dis < abs(r1 - r2) - eps) {
-		return false;
-	}
-	return true;
-}
-pair<Point, Point> inter(const Circle &c1, const Circle &c2) {
-	if(!is_inter(c1, c2))
-		throw runtime_error("Circles do not intersect");
-	ld dis = (c2.c - c1.c).len();
-	ld r1 = c1.r, r2 = c2.r;
-	ld cosa = ((r1 * r1 + dis * dis - r2 * r2) / (2 * r1 * dis));
-	cosa = min(max(cosa, -1.0l), 1.0l);
-	ld alp = acos(cosa);
-	Point v = c2.c - c1.c;
-	v = v / v.len() * c1.r;
-	return { c1.c + v.rotate(alp), c1.c + v.rotate(-alp) };
-}
-bool is_inter(const Circle &c, const Line &l) {
-	ld d = dist(c.c, l);
-	return cmp(c.r, d) != -1;
-}
-pair<Point, Point> inter(const Circle &c, const Line &l) {
-	if(!is_inter(c, l))
-		throw runtime_error("Circle and line do not intersect");
-	Point o = c.c;
-	Vector v = l.v;
-	Point p = l.p - o;
-	ld A = v.len2(), B = 2 * dot(p, v), C = p.len2() - c.r * c.r, D = max(B * B - 4 * A * C, 0.0l);
-	ld s = sqrt(D);
-	ld q = (B > 0 ? -B - s : -B + s) / 2;
-	ld t1 = q / A, t2 = C / q;
-	Point i1 = l.p + v * t1, i2 = l.p + v * t2;
-	return {i1, i2};
-}
-
 ll point_inside(const Polygon &poly) {
-    ll twos = poly.area() * 2 + 0.5l;
+    ll twice_area = poly.twice_area();
     ll border = 0;
     for(int i = 0; i < poly.size(); ++i) {
-        ll j = (i + 1) % poly.size();
-        Vector v = poly.pts[i] - poly.pts[j];
-        ll vx = v.x, vy = v.y;
-        border += gcd(vx, vy);
+        int j = (i + 1) % poly.size();
+        Vector v = poly.pts[j] - poly.pts[i];
+        ll vx = abs(v.x), vy = abs(v.y);
+        border += __gcd(vx, vy);
     }
-    return twos - border + 2;
+    return (twice_area - border + 2) / 2;
 }
 
 inline void solve() {
