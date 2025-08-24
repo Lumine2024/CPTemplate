@@ -56,6 +56,13 @@ ll cross(const Vector &x, const Vector &y) {
 ll cross(const Point &o, const Point &a, const Point &b) {
 	return cross(a - o, b - o);
 }
+bool argcmp(const Point &x, const Point &y) {
+	// Integer version of angle comparison - avoids floating point calculations
+	bool bx = x.y > 0 || (x.y == 0 && x.x > 0);
+	bool by = y.y > 0 || (y.y == 0 && y.x > 0);
+	if(bx != by) return bx;
+	return cross(x, y) == 0;
+}
 struct Polygon {
 	vector<Point> pts;
 	Polygon() {}
