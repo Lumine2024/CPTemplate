@@ -19,10 +19,6 @@ template<class T> bool chkmin(T &x, const T &y) {
 template<class T> bool chkmax(T &x, const T &y) {
     return chkf(x, y, greater{});
 }
-
-// Simplified functions for Pick's theorem - no floating point operations needed
-// Most geometric operations removed as they're not required for Pick's theorem
-
 struct Point {
 	ll x, y;
 	Point() : x(0), y(0) {}
@@ -57,12 +53,41 @@ ll cross(const Point &o, const Point &a, const Point &b) {
 	return cross(a - o, b - o);
 }
 bool argcmp(const Point &x, const Point &y) {
-	// Integer version of angle comparison - avoids floating point calculations
 	bool bx = x.y > 0 || (x.y == 0 && x.x > 0);
 	bool by = y.y > 0 || (y.y == 0 && y.x > 0);
 	if(bx != by) return bx;
 	return cross(x, y) == 0;
 }
+ll dist2(const Point &a, const Point &b) {
+	return (a - b).len2();
+}
+int to_left(const Vector &a, const Vector &b) {
+	ll c = cross(a, b);
+	return c > 0 ? 1 : c < 0 ? -1 : 0;
+}
+int to_left(const Point &a, const Point &b, const Point &c) {
+	ll c = cross(a, b, c);
+	return c > 0 ? 1 : c < 0 ? -1 : 0;
+}
+
+struct Line {
+	Point p, v;
+	Line() {}
+	Line(const Point &_p, const Vector &_v) : p(_p), v(_v) {}
+};
+int to_left(const Line &ln, const Point &p) {
+	return to_left(ln.v, p - ln.p);
+}
+bool parallel(const Line &l1, const Line &l2) {
+	return cross(l1.v, l2.v) == 0;
+}
+int is_inter(const Line &l1, const Line &l2) {
+	return parallel(l1, l2) ? 0 : 1;
+}
+bool is_on(const Point &p, const Line &ln) {
+	return cross(ln.v, ln.p - p) == 0;
+}
+
 struct Polygon {
 	vector<Point> pts;
 	Polygon() {}
@@ -80,15 +105,15 @@ struct Polygon {
 };
 
 ll point_inside(const Polygon &poly) {
-    ll twice_area = poly.twice_area();
+    ll twos = poly.twice_area();
     ll border = 0;
     for(int i = 0; i < poly.size(); ++i) {
         int j = (i + 1) % poly.size();
         Vector v = poly.pts[j] - poly.pts[i];
         ll vx = abs(v.x), vy = abs(v.y);
-        border += __gcd(vx, vy);
+        border += gcd(vx, vy);
     }
-    return (twice_area - border + 2) / 2;
+    return (twos - border + 2) / 2;
 }
 
 inline void solve() {
