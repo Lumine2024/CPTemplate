@@ -6,7 +6,6 @@ using ll = long long;
 using ull = unsigned long long;
 using ld = long double;
 
-inline constexpr ll inf = 0x3f3f3f3f3f3f3f3f;
 inline constexpr ld eps = 1e-9l, pi = 3.14159265358979323846264338327950288l, infld = 1e12l;
 
 template<class T, class F> bool chkf(T &x, const T &y, F &&f) {
@@ -268,59 +267,16 @@ pair<Point, Point> inter(const Circle &c, const Line &l) {
 	return {i1, i2};
 }
 
-
-vector<Line> half_inter(vector<Line> lines) {
-	lines.push_back({{-inf, 0.0l}, {0.0l, -1.0l}});
-	lines.push_back({{inf, 0.0l}, {0.0l, 1.0l}});
-	lines.push_back({{0.0l, inf}, {-1.0l, 0.0l}});
-	lines.push_back({{0.0l, -inf}, {1.0l, 0.0l}});
-	sort(lines.begin(), lines.end(), [](const Line &a, const Line &b) {
-		int c = cmp(a.v.arg(), b.v.arg());
-		if(c != 0)
-			return c == -1;
-		return sign(cross(a.v, b.p - a.p)) < 0;
-	});
-	deque<Line> dq;
-	auto bad = [](const Line &l, const Line &b, const Line &c) {
-		try {
-			auto p = inter(b, c);
-			return to_left(l, p) < 0;
-		} catch(const invalid_argument &) {
-			return false;
-		}
-	};
-	for(auto &l : lines) {
-		if(!dq.empty() && cmp(l.v.arg(), dq.back().v.arg()) == 0) {
-			if(to_left(l, dq.back().p + dq.back().v) < 0)
-				dq.back() = l;
-			continue;
-		}
-		while(dq.size() > 1 && bad(l, dq.back(), dq[dq.size() - 2]))
-			dq.pop_back();
-		while(dq.size() > 1 && bad(l, dq[0], dq[1]))
-			dq.pop_front();
-		dq.push_back(l);
-	}
-	while(dq.size() > 1 && bad(dq[0], dq.back(), dq[dq.size() - 2]))
-		dq.pop_back();
-	while(dq.size() > 1 && bad(dq.back(), dq[0], dq[1]))
-		dq.pop_front();
-	vector<Line> ret(dq.begin(), dq.end());
-	int m = ret.size();
-	if(m < 3)
-		return {};
-	vector<Point> poly;
-	poly.reserve(m);
-	for(int i = 0; i < m; ++i) {
-		try {
-			poly.emplace_back(inter(ret[i], ret[(i + 1) % m]));
-		} catch(const invalid_argument &) {
-			return {};
-		}
-	}
-	if(poly.size() != m)
-		return {};
-	return ret;
+ll point_inside(const Polygon &poly) {
+    ll twos = poly.area() * 2 + 0.5l;
+    ll border = 0;
+    for(int i = 0; i < poly.size(); ++i) {
+        ll j = (i + 1) % poly.size();
+        Vector v = poly.pts[i] - poly.pts[j];
+        ll vx = v.x, vy = v.y;
+        border += gcd(vx, vy);
+    }
+    return twos - border + 2;
 }
 
 inline void solve() {
