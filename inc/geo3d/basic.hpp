@@ -1,17 +1,5 @@
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-using ull = unsigned long long;
-using ld = long double;
-using cd = complex<ld>;
-
-constexpr ld eps = 1e-9l, pi = 3.14159265358979323846264338327950288l;
-int sign(ld x) {
-	return x > eps ? 1 : x < -eps ? -1 : 0;
-}
-int cmp(ld x, ld y) {
-	return sign(x - y);
-}
+#pragma once
+#include "constants.hpp"
 
 namespace geo3d {
 
@@ -29,6 +17,7 @@ struct Point {
 	bool operator==(const Point &p) const {return cmp(x, p.x) == 0 && cmp(y, p.y) == 0 && cmp(z, p.z) == 0;}
 };
 using Vector = Point;
+
 ld dot(const Vector &a, const Vector &b) {
 	return a.x * b.x + a.y * b.y + a.z * b.z;
 }
@@ -90,21 +79,3 @@ bool parallel(const Plane &a, const Plane &b) {
 }
 
 } // namespace geo3d
-
-using namespace geo3d;
-
-inline void solve() {
-    
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    cout << setprecision(9) << fixed;
-    int t = 1;
-    // cin >> t;
-    for(int i = 0; i < t; ++i) {
-        solve();
-    }
-    return 0;
-}

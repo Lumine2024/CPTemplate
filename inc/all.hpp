@@ -33,6 +33,9 @@
 #include "geo/rotcal.hpp"
 #include "geo/scanline.hpp"
 
+// 3D Geometry
+#include "geo3d/basic.hpp"
+
 // GraphTheory
 #include "graph/boruvka.hpp"
 #include "graph/dijk.hpp"
