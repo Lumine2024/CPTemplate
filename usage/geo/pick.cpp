@@ -66,8 +66,8 @@ int to_left(const Vector &a, const Vector &b) {
 	return c > 0 ? 1 : c < 0 ? -1 : 0;
 }
 int to_left(const Point &a, const Point &b, const Point &c) {
-	ll c = cross(a, b, c);
-	return c > 0 ? 1 : c < 0 ? -1 : 0;
+	ll cr = cross(a, b, c);
+	return cr > 0 ? 1 : cr < 0 ? -1 : 0;
 }
 
 struct Line {
@@ -104,14 +104,13 @@ struct Polygon {
 	}
 };
 
-ll point_inside(const Polygon &poly) {
+ll points_inside(const Polygon &poly) {
     ll twos = poly.twice_area();
     ll border = 0;
     for(int i = 0; i < poly.size(); ++i) {
         int j = (i + 1) % poly.size();
         Vector v = poly.pts[j] - poly.pts[i];
-        ll vx = abs(v.x), vy = abs(v.y);
-        border += gcd(vx, vy);
+		border += gcd(abs(v.x), abs(v.y));
     }
     return (twos - border + 2) / 2;
 }
