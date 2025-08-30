@@ -6,23 +6,20 @@ using ll = long long;
 using ull = unsigned long long;
 using ld = long double;
 
-inline constexpr ll modulo = 998244353;
-inline constexpr int maxn = 100005;
-
-template<class T, class F> bool chkf(T &x, const T &y, F &&f) {
-    if(f(y, x)) {
-        x = y;
-        return true;
-    }
-    return false;
+template<class T, class F> concept binary_func = convertible_to<F, function<bool(T, T)>>;
+template<class T1, class T2, class F> requires(binary_func<T1, F> &&convertible_to<T2, T1>) bool chkf(T1 &x, const T2 &y, F &&f) {
+	if(f(static_cast<T1>(y), x)) {
+		x = static_cast<T1>(y);
+		return true;
+	}
+	return false;
 }
-template<class T> bool chkmin(T &x, const T &y) {
-    return chkf(x, y, less{});
+template<class T1, class T2> bool chkmin(T1 &x, const T2 &y) {
+	return chkf(x, y, less<T1>{});
 }
-template<class T> bool chkmax(T &x, const T &y) {
-    return chkf(x, y, greater{});
+template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
+	return chkf(x, y, greater<T1>{});
 }
-
 
 struct StringHash {
 	explicit StringHash(const string &s) : p1(s.size() + 1, 0), p2(s.size() + 1, 0) {
@@ -40,6 +37,7 @@ private:
 	vector<ull> p1, p2;
 	static inline const ull c = (ull)chrono::steady_clock::now().time_since_epoch().count();
 	static inline const ull mul1 = c % 131 + 131, mul2 = c % 13331 + 13331;
+	static constexpr ull modulo = 998244353, maxn = 500005;
 	static inline ull pmul1[maxn], pmul2[maxn];
 	static inline int init = [] {
 		pmul1[0] = pmul2[0] = 1;

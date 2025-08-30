@@ -8,20 +8,20 @@ using ld = long double;
 
 inline constexpr ll inf = 0x3f3f3f3f3f3f3f3f;
 
-template<class T, class F> bool chkf(T &x, const T &y, F &&f) {
-    if(f(y, x)) {
-        x = y;
-        return true;
-    }
-    return false;
+template<class T, class F> concept binary_func = convertible_to<F, function<bool(T, T)>>;
+template<class T1, class T2, class F> requires(binary_func<T1, F> &&convertible_to<T2, T1>) bool chkf(T1 &x, const T2 &y, F &&f) {
+	if(f(static_cast<T1>(y), x)) {
+		x = static_cast<T1>(y);
+		return true;
+	}
+	return false;
 }
-template<class T> bool chkmin(T &x, const T &y) {
-    return chkf(x, y, less{});
+template<class T1, class T2> bool chkmin(T1 &x, const T2 &y) {
+	return chkf(x, y, less<T1>{});
 }
-template<class T> bool chkmax(T &x, const T &y) {
-    return chkf(x, y, greater{});
+template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
+	return chkf(x, y, greater<T1>{});
 }
-
 
 // 按秩合并
 struct DSU {

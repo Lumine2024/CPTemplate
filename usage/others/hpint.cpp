@@ -5,22 +5,22 @@ using ll = long long;
 using ull = unsigned long long;
 using ld = long double;
 
-inline constexpr ld eps = 1e-9l, pi = 3.14159265358979323846264338327950288l, infld = 1e12l;
+inline constexpr ld eps = 1e-9l, pi = 3.14159265358979323846264338327950288l, inf = 1e12l;
 
-template<class T, class F> bool chkf(T &x, const T &y, F &&f) {
-    if(f(y, x)) {
-        x = y;
-        return true;
-    }
-    return false;
+template<class T, class F> concept binary_func = convertible_to<F, function<bool(T, T)>>;
+template<class T1, class T2, class F> requires(binary_func<T1, F> &&convertible_to<T2, T1>) bool chkf(T1 &x, const T2 &y, F &&f) {
+	if(f(static_cast<T1>(y), x)) {
+		x = static_cast<T1>(y);
+		return true;
+	}
+	return false;
 }
-template<class T> bool chkmin(T &x, const T &y) {
-    return chkf(x, y, less{});
+template<class T1, class T2> bool chkmin(T1 &x, const T2 &y) {
+	return chkf(x, y, less<T1>{});
 }
-template<class T> bool chkmax(T &x, const T &y) {
-    return chkf(x, y, greater{});
+template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
+	return chkf(x, y, greater<T1>{});
 }
-
 
 struct HPINT {
 	HPINT() : nums(1, 0), neg(false) {}
@@ -164,12 +164,12 @@ struct HPINT {
 	}
 	strong_ordering operator<=>(const HPINT &r) const {
 		if(neg != r.neg) {
-			if(neg) return strong_ordering(-1);
-			return strong_ordering(1);
+			if(neg) return strong_ordering::less;
+			return strong_ordering::greater;
 		}
 		int c = _cmp(nums, r.nums);
 		if(neg) c *= -1;
-		return strong_ordering(c);
+		return c <=> 0;
 	}
 	HPINT operator+(const HPINT &r) const {
 		HPINT ret = *this;
@@ -310,6 +310,9 @@ private:
 		return 0;
 	}
 };
+template<> inline constexpr bool std::is_integral_v<HPINT> = true;
+template<> inline constexpr bool std::is_signed_v<HPINT> = true;
+
 
 inline void solve() {
     

@@ -6,25 +6,27 @@ using ll = long long;
 using ull = unsigned long long;
 using ld = long double;
 
-
-template<class T, class F> bool chkf(T &x, const T &y, F &&f) {
-    if(f(y, x)) {
-        x = y;
-        return true;
-    }
-    return false;
+template<class T, class F> concept binary_func = convertible_to<F, function<bool(T, T)>>;
+template<class T1, class T2, class F> requires(binary_func<T1, F> &&convertible_to<T2, T1>) bool chkf(T1 &x, const T2 &y, F &&f) {
+	if(f(static_cast<T1>(y), x)) {
+		x = static_cast<T1>(y);
+		return true;
+	}
+	return false;
 }
-template<class T> bool chkmin(T &x, const T &y) {
-    return chkf(x, y, less{});
+template<class T1, class T2> bool chkmin(T1 &x, const T2 &y) {
+	return chkf(x, y, less<T1>{});
 }
-template<class T> bool chkmax(T &x, const T &y) {
-    return chkf(x, y, greater{});
+template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
+	return chkf(x, y, greater<T1>{});
 }
-
 
 // 强连通分量
 struct SCC {
 	explicit SCC(int n) : nodes(n), graph(n) {}
+	explicit SCC(const vector<vector<int>> &g) : graph(g), nodes(g.size()) {
+		solve();
+	}
 	void addedge(int u, int v) {
 		if(u == v) return;
 		graph[u].push_back(v);
@@ -56,9 +58,7 @@ struct SCC {
 		Node() : dfn(-1), low(-1), ins(false), inscc(-1) {}
 	};
 	vector<Node> nodes;
-	vector<vector<int>> graph;
-	vector<vector<int>> sccs;
-	vector<vector<int>> dag;
+	vector<vector<int>> graph, sccs, dag;
 private:
 	stack<int> scc_stack;
 	void dfs(int &dfn, int &cnt, int u) {
@@ -93,9 +93,11 @@ private:
 // 边双
 struct EBCC {
 	explicit EBCC(int n) : nodes(n), graph(n), in_ebcc(n) {}
+	explicit EBCC(const vector<vector<int>> &g) : graph(g), nodes(g.size()), in_ebcc(g.size()) {
+		solve();
+	}
 	void addedge(int u, int v) {
-		if(u == v)
-			return;
+		if(u == v) return;
 		graph[u].emplace_back(v);
 		graph[v].emplace_back(u);
 	}
@@ -130,8 +132,7 @@ private:
 		dfn++;
 		stk.push(u);
 		for(int v : graph[u]) {
-			if(v == fa)
-				continue;
+			if(v == fa) continue;
 			if(nodes[v].dfn == -1) {
 				dfs(v, u, dfn);
 				nodes[u].low = min(nodes[u].low, nodes[v].low);
@@ -154,8 +155,10 @@ private:
 };
 // 点双
 struct DCC {
-	explicit DCC(int n)
-		: nodes(n), graph(n) {}
+	explicit DCC(int n) : nodes(n), graph(n) {}
+	explicit DCC(const vector<vector<int>> &g) : graph(g), nodes(g.size()) {
+		solve();
+	}
 	void addedge(int u, int v) {
 		if(u == v) return;
 		graph[u].emplace_back(v);
@@ -214,6 +217,9 @@ private:
 // 割点
 struct Cutpoint {
 	explicit Cutpoint(int n) : nodes(n), graph(n) {}
+	explicit Cutpoint(const vector<vector<int>> &g) : graph(g), nodes(g.size()) {
+		solve();
+	}
 	void addedge(int u, int v) {
 		graph[u].emplace_back(v);
 		graph[v].emplace_back(u);
@@ -237,8 +243,7 @@ struct Cutpoint {
 	vector<int> cutpoints;
 private:
 	void dfs(int u, int fa, int &dfn) {
-		nodes[u].dfn = nodes[u].low = dfn;
-		++dfn;
+		nodes[u].dfn = nodes[u].low = dfn++;
 		int child = 0;
 		bool flag = false;
 		for(int v : graph[u]) {
@@ -263,17 +268,19 @@ private:
 };
 // 桥
 struct Bridge {
-	explicit Bridge(int n)
-		: nodes(n), graph(n) {}
+	explicit Bridge(int n) : nodes(n), graph(n) {}
+	explicit Bridge(const vector<vector<int>> &g) : graph(g), nodes(g.size()) {
+		solve();
+	}
 	void addedge(int u, int v) {
 		graph[u].emplace_back(v);
 		graph[v].emplace_back(u);
 	}
 	void solve() {
-		int dfn_now = 0;
+		int dfn = 0;
 		for(int i = 0; i < nodes.size(); ++i) {
 			if(nodes[i].dfn == -1) {
-				dfs(i, -1, dfn_now);
+				dfs(i, -1, dfn);
 			}
 		}
 	}
@@ -286,16 +293,16 @@ struct Bridge {
 	vector<vector<int>> graph;
 	vector<pair<int, int>> bridges;
 private:
-	void dfs(int u, int father, int &dfn_now) {
-		nodes[u].dfn = nodes[u].low = dfn_now++;
+	void dfs(int u, int fa, int &dfn) {
+		nodes[u].dfn = nodes[u].low = dfn++;
 		for(int v : graph[u]) {
 			if(nodes[v].dfn == -1) {
-				dfs(v, u, dfn_now);
+				dfs(v, u, dfn);
 				nodes[u].low = min(nodes[u].low, nodes[v].low);
 				if(nodes[v].low > nodes[u].dfn) {
 					bridges.emplace_back(min(u, v), max(u, v));
 				}
-			} else if(v != father) {
+			} else if(v != fa) {
 				nodes[u].low = min(nodes[u].low, nodes[v].dfn);
 			}
 		}
