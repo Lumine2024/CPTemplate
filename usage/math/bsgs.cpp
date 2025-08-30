@@ -1,4 +1,3 @@
-
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -21,20 +20,14 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 	return chkf(x, y, greater<T1>{});
 }
 
-template<class T, class F> bool chkf(T &x, const T &y, F &&f) {
-    if(f(y, x)) {
-        x = y;
-        return true;
+constexpr ll modulo = 998244353;
+inline ll qpow(ll x, ll n) {
+    ll ret = 1;
+    for(; n != 0; n >>= 1, x = x * x % modulo) {
+        if(n & 1) ret = ret * x % modulo;
     }
-    return false;
+    return ret;
 }
-template<class T> bool chkmin(T &x, const T &y) {
-    return chkf(x, y, less{});
-}
-template<class T> bool chkmax(T &x, const T &y) {
-    return chkf(x, y, greater{});
-}
-
 
 struct MyHash {
 	size_t operator()(ll x) const noexcept {
@@ -53,6 +46,27 @@ private:
 	static inline const size_t c = (size_t)chrono::steady_clock::now().time_since_epoch().count();
 };
 
+// returns ret so that qpow(ret, a) = b, -1 if not exist
+ll mlog(ll a, ll b) {
+    if(b == 1) return 0;
+    ll t = ceil(sqrt(modulo));
+    ll now = b;
+    unordered_map<ll, ll, MyHash> table; // Hey, I used std::unordered_map! Hack it!
+    for(int i = 0; i < t; ++i) {
+        table[now] = i;
+        now = now * a % modulo;
+    }
+    ll mi = qpow(a, t);
+    now = 1;
+    for(int i = 1; i <= t; ++i) {
+        now = now * mi % modulo;
+        if(table.contains(now)) {
+            return i * t - table[now];
+        }
+    }
+    return -1;
+}
+
 inline void solve() {
     
 }
@@ -60,9 +74,9 @@ inline void solve() {
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
-    int t = 1;
-    // cin >> t;
-    while(t--) {
+    int n = 1;
+    cin >> n;
+    while(n--) {
         solve();
     }
     return 0;

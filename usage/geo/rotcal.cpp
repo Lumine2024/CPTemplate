@@ -6,29 +6,31 @@ using ll = long long;
 using ull = unsigned long long;
 using ld = long double;
 
-inline constexpr ld eps = 1e-9l, pi = 3.14159265358979323846264338327950288l, infld = 1e12l;
+inline constexpr ld eps = 1e-9l, pi = 3.14159265358979323846264338327950288l, inf = 1e12l;
 
-template<class T, class F> bool chkf(T &x, const T &y, F &&f) {
-    if(f(y, x)) {
-        x = y;
-        return true;
-    }
-    return false;
+template<class T, class F> concept binary_func = convertible_to<F, function<bool(T, T)>>;
+template<class T1, class T2, class F> requires(binary_func<T1, F> &&convertible_to<T2, T1>) bool chkf(T1 &x, const T2 &y, F &&f) {
+	if(f(static_cast<T1>(y), x)) {
+		x = static_cast<T1>(y);
+		return true;
+	}
+	return false;
 }
-template<class T> bool chkmin(T &x, const T &y) {
-    return chkf(x, y, less{});
+template<class T1, class T2> bool chkmin(T1 &x, const T2 &y) {
+	return chkf(x, y, less<T1>{});
 }
-template<class T> bool chkmax(T &x, const T &y) {
-    return chkf(x, y, greater{});
+template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
+	return chkf(x, y, greater<T1>{});
 }
 
-
-using ld = long double;
 int sign(ld a) {
 	return (a < -eps) ? -1 : (a > eps) ? 1 : 0;
 }
 int cmp(ld a, ld b) {
 	return sign(a - b);
+}
+strong_ordering cmpso(ld a, ld b) {
+	return cmp(a, b) <=> 0;
 }
 
 struct Point {
@@ -99,7 +101,7 @@ int to_left(const Point &a, const Point &b, const Point &c) {
 	return sign(cross(a, b, c));
 }
 ld angle(const Vector &a, const Vector &b) {
-	ld cosa = min(max(dot(a, b) / (a.len() * b.len()), -1.0l), 1.0l);
+	ld cosa = clamp(dot(a, b) / (a.len() * b.len()), -1.0l, 1.0l);
 	ld ret = acos(cosa);
 	if(to_left(a, b) == -1) {
 		ret = 2 * pi - ret;
@@ -116,7 +118,7 @@ int to_left(const Line &ln, const Point &p) {
 	return to_left(ln.v, p - ln.p);
 }
 bool parallel(const Line &l1, const Line &l2) {
-	return cmp(cross(l1.v, l2.v), 0.0l) == 0;
+	return sign(cross(l1.v, l2.v)) == 0;
 }
 int is_inter(const Line &l1, const Line &l2) {
 	return parallel(l1, l2) ? 0 : 1;
@@ -141,7 +143,7 @@ Point proj(const Point &p, const Line &ln) {
 	return ln.p + v;
 }
 bool is_on(const Point &p, const Line &ln) {
-	return cmp(cross(ln.v, ln.p - p), 0.0l) == 0;
+	return sign(cross(ln.v, ln.p - p)) == 0;
 }
 
 struct Lineseg {
@@ -156,7 +158,7 @@ int is_on(const Point &p, const Lineseg &ls) {
 	if(p == ls.a || p == ls.b) {
 		return 2;
 	}
-	return to_left(p - ls.a, p - ls.b) == 0 && cmp(dot(p - ls.a, p - ls.b), 0) == -1;
+	return to_left(p - ls.a, p - ls.b) == 0 && sign(dot(p - ls.a, p - ls.b)) == -1;
 }
 int is_inter(const Line &ln, const Lineseg &ls) {
 	int a = to_left(ln, ls.a), b = to_left(ln, ls.b);
@@ -242,8 +244,7 @@ pair<Point, Point> inter(const Circle &c1, const Circle &c2) {
 		throw runtime_error("Circles do not intersect");
 	ld dis = (c2.c - c1.c).len();
 	ld r1 = c1.r, r2 = c2.r;
-	ld cosa = ((r1 * r1 + dis * dis - r2 * r2) / (2 * r1 * dis));
-	cosa = min(max(cosa, -1.0l), 1.0l);
+	ld cosa = clamp((r1 * r1 + dis * dis - r2 * r2) / (2 * r1 * dis), -1.0l, 1.0l);
 	ld alp = acos(cosa);
 	Point v = c2.c - c1.c;
 	v = v / v.len() * c1.r;

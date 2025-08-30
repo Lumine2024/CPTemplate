@@ -3,84 +3,80 @@ using namespace std;
 using ll = long long;
 using ull = unsigned long long;
 
-constexpr ll modulo = 998244353;
-
-template<class T, class F> bool chkf(T &x, const T &y, F &&f) {
-    if(f(y, x)) {
-        x = y;
-        return true;
-    }
-    return false;
+template<class T, class F> concept binary_func = convertible_to<F, function<bool(T, T)>>;
+template<class T1, class T2, class F> requires(binary_func<T1, F> &&convertible_to<T2, T1>) bool chkf(T1 &x, const T2 &y, F &&f) {
+	if(f(static_cast<T1>(y), x)) {
+		x = static_cast<T1>(y);
+		return true;
+	}
+	return false;
 }
-template<class T> bool chkmin(T &x, const T &y) {
-    return chkf(x, y, less{});
+template<class T1, class T2> bool chkmin(T1 &x, const T2 &y) {
+	return chkf(x, y, less<T1>{});
 }
-template<class T> bool chkmax(T &x, const T &y) {
-    return chkf(x, y, greater{});
-}
-
-ll modadd(ll a, ll b) {
-    a += b;
-    if(a >= modulo) a -= modulo;
-    return a;
-}
-ll modsub(ll a, ll b) {
-    a -= b;
-    if(a < 0) a += modulo;
-    return a;
+template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
+	return chkf(x, y, greater<T1>{});
 }
 
-void fwt_and(vector<ll> &nums, bool invert) {
-    int n = nums.size();
+constexpr ll modulo = 998244353, inv2 = 499122177;
+void fwt_or(vector<ll> &a, bool invert) {
+    ll n = a.size(), type = invert ? -1 : 1;
     for(ll x = 2; x <= n; x <<= 1) {
         ll k = x >> 1;
-        for (ll i = 0; i < n; i += x) {
-            for (ll j = 0; j < k; j++) {
-                if(invert) {
-                    nums[i + j] = modsub(nums[i + j], nums[i + j + k]);
-                } else {
-                    nums[i + j] = modadd(nums[i + j], nums[i + j + k]);
-                }
+        for(ll i = 0; i < n; i += x) 
+            for(ll j = 0; j < k; ++j) 
+                a[i + j + k] = (a[i + j + k] + a[i + j] * type) % modulo;
+    }
+}
+void fwt_and(vector<ll> &a, bool invert) {
+    ll n = a.size(), type = invert ? -1 : 1;
+    for(ll x = 2; x <= n; x <<= 1) {
+        ll k = x >> 1;
+        for(ll i = 0; i < n; i += x) 
+            for(ll j = 0; j < k; ++j) 
+                a[i + j] = (a[i + j] + a[i + j + k] * type) % modulo;
+    }
+}
+void fwt_xor(vector<ll> &a, bool invert) {
+    ll n = a.size(), type = invert ? inv2 : 1;
+    for(ll x = 2; x <= n; x <<= 1) {
+        ll k = x >> 1;
+        for(ll i = 0; i < n; i += x) {
+            for(ll j = 0; j < k; ++j) {
+                ll u = a[i + j], v = a[i + j + k];
+                a[i + j] = (u + v) % modulo;
+                a[i + j + k] = (u - v) % modulo;
+                a[i + j] = (a[i + j] * type) % modulo;
+                a[i + j + k] = (a[i + j + k] * type) % modulo;
             }
         }
     }
 }
-
-void fwt_or(vector<ll> &nums, bool invert) {
-    int n = nums.size();
-    for (ll x = 2; x <= n; x <<= 1) {
-        ll k = x >> 1;
-        for (ll i = 0; i < n; i += x) {
-            for (ll j = 0; j < k; j++) {
-                if(invert) {
-                    nums[i + j + k] = modsub(nums[i + j + k], nums[i + j]);
-                } else {
-                    nums[i + j + k] = modadd(nums[i + j + k], nums[i + j]);
-                }
-            }
-        }
-    }
+void fwt_xnor(vector<ll> &a, bool invert) {
+    reverse(a.begin(), a.end());
+    fwt_xor(a, invert);
+    reverse(a.begin(), a.end());
 }
-
-void fwt_xor(vector<ll> &nums, bool invert) {
-    int n = nums.size();
-    for (ll x = 2; x <= n; x <<= 1) {
-        ll k = x >> 1;
-        for (ll i = 0; i < n; i += x) {
-            for (ll j = 0; j < k; j++) {
-                nums[i + j] = modadd(nums[i + j], nums[i + j + k]);
-                nums[i + j + k] = modsub(nums[i + j], modadd(nums[i + j + k], nums[i + j + k]));
-                if(invert) {
-                    nums[i + j] = modulo - nums[i + j];
-                    nums[i + j + k] = modulo - nums[i + j + k];
-                }
-            }
-        }
+vector<ll> fwt_transform(const vector<ll> &a, const vector<ll> &b, void (*func)(vector<ll> &a, bool invert)) {
+    ll n = 1;
+	while(n < max(a.size(), b.size())) n <<= 1;
+    vector<ll> A(n, 0), B(n, 0), C(n, 0);
+    for(ll i = 0; i < a.size(); i++) A[i] = a[i];
+    for(ll i = 0; i < b.size(); i++) B[i] = b[i];
+    func(A, false);
+    func(B, false);
+    for(ll i = 0; i < n; i++) {
+        C[i] = (A[i] * B[i]) % modulo;
     }
+    func(C, true);
+    for(ll i = 0; i < n; i++) {
+        C[i] = (C[i] % modulo + modulo) % modulo;
+    }
+    return C;
 }
 
 inline void solve() {
-
+    
 }
 
 int main() {
