@@ -22,17 +22,17 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 }
 
 template<class T, class F> bool chkf(T &x, const T &y, F &&f) {
-    if(f(y, x)) {
-        x = y;
-        return true;
-    }
-    return false;
+	if(f(y, x)) {
+		x = y;
+		return true;
+	}
+	return false;
 }
 template<class T> bool chkmin(T &x, const T &y) {
-    return chkf(x, y, less{});
+	return chkf(x, y, less{});
 }
 template<class T> bool chkmax(T &x, const T &y) {
-    return chkf(x, y, greater{});
+	return chkf(x, y, greater{});
 }
 
 
@@ -43,7 +43,7 @@ struct MyHash {
 		x ^= (x << 37);
 		x ^= (x >> 4);
 		x *= 0x27d4eb2f165667c5;
-        x *= c;
+		x *= c;
 		x ^= (x >> 28);
 		x *= 0x165667b19e3779f9;
 		x ^= (x >> 31);
@@ -54,16 +54,16 @@ private:
 };
 
 inline void solve() {
-    
+	
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int t = 1;
-    // cin >> t;
-    while(t--) {
-        solve();
-    }
-    return 0;
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+	int t = 1;
+	// cin >> t;
+	while(t--) {
+		solve();
+	}
+	return 0;
 }

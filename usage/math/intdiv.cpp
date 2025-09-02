@@ -25,7 +25,7 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 
 // 要计算\sum floor(n/i)
 ll intdiv(ll n) {
-    ll ans = 0;
+	ll ans = 0;
 	for(ll b = 1; b <= n;) {
 		ll val = n / b;
 		ll r = n / val;
@@ -33,20 +33,20 @@ ll intdiv(ll n) {
 		ans = (ans + (len % modulo * val % modulo)) % modulo;
 		b = r + 1;
 	}
-    return ans;
+	return ans;
 }
 
 inline void solve() {
-    
+	
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int t = 1;
-    // cin >> t;
-    while(t--) {
-        solve();
-    }
-    return 0;
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+	int t = 1;
+	// cin >> t;
+	while(t--) {
+		solve();
+	}
+	return 0;
 }

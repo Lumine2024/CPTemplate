@@ -114,17 +114,17 @@ bool parallel(const Plane &a, const Plane &b) {
 }
 
 inline void solve() {
-    
+	
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    cout << setprecision(9) << fixed;
-    int t = 1;
-    // cin >> t;
-    for(int i = 0; i < t; ++i) {
-        solve();
-    }
-    return 0;
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+	cout << setprecision(9) << fixed;
+	int t = 1;
+	// cin >> t;
+	for(int i = 0; i < t; ++i) {
+		solve();
+	}
+	return 0;
 }

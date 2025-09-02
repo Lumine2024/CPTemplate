@@ -9,11 +9,11 @@ using ld = long double;
 inline constexpr ll modulo = 998244353, inf = 0x3f3f3f3f3f3f3f3f;
 
 inline ll qpow(ll x, ll n) {
-    ll ret = 1;
-    for(; n != 0; n >>= 1, x = x * x % modulo) {
-        if(n & 1) ret = ret * x % modulo;
-    }
-    return ret;
+	ll ret = 1;
+	for(; n != 0; n >>= 1, x = x * x % modulo) {
+		if(n & 1) ret = ret * x % modulo;
+	}
+	return ret;
 }
 
 template<class T, class F> concept binary_func = convertible_to<F, function<bool(T, T)>>;
@@ -114,16 +114,16 @@ int factor_sum_f(int p, int k) {
 }
 
 inline void solve() {
-    
+	
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int t = 1;
-    // cin >> t;
-    while(t--) {
-        solve();
-    }
-    return 0;
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+	int t = 1;
+	// cin >> t;
+	while(t--) {
+		solve();
+	}
+	return 0;
 }

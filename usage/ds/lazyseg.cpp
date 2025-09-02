@@ -99,42 +99,42 @@ private:
 };
 
 struct Info {
-    Info() {
-        
-    }
-    Info operator+(const Info &i) const {
-        
-    }
+	Info() {
+		
+	}
+	Info operator+(const Info &i) const {
+		
+	}
 };
 struct Tag {
-    Tag() {
-        
-    }
-    bool empty() const {
-        
-    }
-    void clear() {
-        
-    }
-    void apply(Info &dst, int l, int r) const {
-        
-    }
-    void apply(Tag &dst, int l, int r) const {
-        
-    }
+	Tag() {
+		
+	}
+	bool empty() const {
+		
+	}
+	void clear() {
+		
+	}
+	void apply(Info &dst, int l, int r) const {
+		
+	}
+	void apply(Tag &dst, int l, int r) const {
+		
+	}
 };
 
 inline void solve() {
-    
+	
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int t = 1;
-    // cin >> t;
-    while(t--) {
-        solve();
-    }
-    return 0;
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+	int t = 1;
+	// cin >> t;
+	while(t--) {
+		solve();
+	}
+	return 0;
 }

@@ -37,6 +37,7 @@ struct ACAM {
 		nodes[now].cnt++;
 	}
 	void build() {
+		order.clear();
 		queue<int> q;
 		nodes[0].fail = 0;
 		for(int i = 0; i < 26; ++i) {
@@ -51,6 +52,7 @@ struct ACAM {
 		while(!q.empty()) {
 			int now = q.front();
 			q.pop();
+			order.push_back(now);
 			for(int i = 0; i < 26; ++i) {
 				int v = nodes[now].nxt2[i];
 				if(v == -1) {
@@ -58,22 +60,6 @@ struct ACAM {
 				} else {
 					nodes[v].fail = nodes[nodes[now].fail].nxt2[i];
 					q.push(v);
-				}
-			}
-		}
-		q.push(0);
-		while(!q.empty()) {
-			int u = q.front();
-			q.pop();
-			for(int i = 0; i < 26; ++i) {
-				int v = nodes[u].nxt1[i];
-				if(v == -1) {
-					continue;
-				}
-				q.push(v);
-				int fu = nodes[u].fail;
-				if(fu != 0 && nodes[fu].cnt == 0) {
-					nodes[u].fail = nodes[fu].fail;
 				}
 			}
 		}
@@ -89,16 +75,18 @@ struct ACAM {
 		}
 		return now;
 	}
-	vector<int> query(const string &str) const {
-		int now = 0;
+	vector<int> frequency(const string &str) const {
 		vector<int> ret(nodes.size(), 0);
+		int now = 0;
 		for(char ch : str) {
 			int id = ch - 'a';
 			now = nodes[now].nxt2[id];
-			int u = now;
-			while(u != 0) {
-				ret[u]++;
-				u = nodes[u].fail;
+			ret[now]++;
+		}
+		for(int i = order.size() - 1; i >= 0; --i) {
+			int u = order[i];
+			if(u != 0) {
+				ret[nodes[u].fail] += ret[u];
 			}
 		}
 		return ret;
@@ -117,19 +105,20 @@ private:
 		}
 	};
 	vector<Node> nodes;
+	vector<int> order;
 };
 
 inline void solve() {
-    
+	
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int t = 1;
-    // cin >> t;
-    while(t--) {
-        solve();
-    }
-    return 0;
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+	int t = 1;
+	// cin >> t;
+	while(t--) {
+		solve();
+	}
+	return 0;
 }

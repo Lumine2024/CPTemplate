@@ -107,27 +107,27 @@ struct Polygon {
 };
 
 ll points_inside(const Polygon &poly) {
-    ll twos = poly.twice_area();
-    ll border = 0;
-    for(int i = 0; i < poly.size(); ++i) {
-        int j = (i + 1) % poly.size();
-        Vector v = poly.pts[j] - poly.pts[i];
+	ll twos = poly.twice_area();
+	ll border = 0;
+	for(int i = 0; i < poly.size(); ++i) {
+		int j = (i + 1) % poly.size();
+		Vector v = poly.pts[j] - poly.pts[i];
 		border += gcd(abs(v.x), abs(v.y));
-    }
-    return (twos - border + 2) / 2;
+	}
+	return (twos - border + 2) / 2;
 }
 
 inline void solve() {
-    
+	
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int t = 1;
-    // cin >> t;
-    while(t--) {
-        solve();
-    }
-    return 0;
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+	int t = 1;
+	// cin >> t;
+	while(t--) {
+		solve();
+	}
+	return 0;
 }

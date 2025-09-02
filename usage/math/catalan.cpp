@@ -6,11 +6,11 @@ using ull = unsigned long long;
 inline constexpr ll modulo = 998244353;
 
 inline ll qpow(ll x, ll n) {
-    ll ret = 1;
-    for(; n != 0; n >>= 1, x = x * x % modulo) {
-        if(n & 1) ret = ret * x % modulo;
-    }
-    return ret;
+	ll ret = 1;
+	for(; n != 0; n >>= 1, x = x * x % modulo) {
+		if(n & 1) ret = ret * x % modulo;
+	}
+	return ret;
 }
 
 template<class T, class F> concept binary_func = convertible_to<F, function<bool(T, T)>>;
@@ -57,20 +57,20 @@ private:
 };
 
 struct Catalan {
-    Catalan() = delete;
-    static ll get(int x) {
-        return _cat[x];
-    }
+	Catalan() = delete;
+	static ll get(int x) {
+		return _cat[x];
+	}
 private:
-    static constexpr int _maxn = 250005;
-    static inline int _cat[_maxn];
-    static inline int init = [] {
-        _cat[0] = 1;
-        for(int i = 1; i < _maxn; ++i) {
-            _cat[i] = (Comb::binom(2 * i, i) - Comb::binom(2 * i, i - 1) + modulo) % modulo;
-        }
-        return 0;
-    }();
+	static constexpr int _maxn = 250005;
+	static inline int _cat[_maxn];
+	static inline int init = [] {
+		_cat[0] = 1;
+		for(int i = 1; i < _maxn; ++i) {
+			_cat[i] = (Comb::binom(2 * i, i) - Comb::binom(2 * i, i - 1) + modulo) % modulo;
+		}
+		return 0;
+	}();
 };
 
 inline void solve() {
@@ -78,12 +78,12 @@ inline void solve() {
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int n = 1;
-    // cin >> n;
-    while(n--) {
-        solve();
-    }
-    return 0;
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+	int n = 1;
+	// cin >> n;
+	while(n--) {
+		solve();
+	}
+	return 0;
 }

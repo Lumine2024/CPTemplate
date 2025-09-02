@@ -40,16 +40,16 @@ vector<int> lis(const vector<int> &nums) {
 }
 
 inline void solve() {
-    
+	
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int t = 1;
-    // cin >> t;
-    for(int i = 0; i < t; ++i) {
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+	int t = 1;
+	// cin >> t;
+	for(int i = 0; i < t; ++i) {
 		solve();
 	}
-    return 0;
+	return 0;
 }

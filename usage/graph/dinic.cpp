@@ -49,8 +49,7 @@ private:
 	};
 	vector<vector<Edge>> graph;
 	vector<int> level;
-	int n;
-	int start, end;
+	int n, start, end;
 	bool bfs() {
 		fill(level.begin(), level.end(), -1);
 		level[start] = 0;
@@ -68,39 +67,39 @@ private:
 		}
 		return level[end] != -1;
 	}
-	ll dfs(int u, ll max_flow) {
-		if(u == end || max_flow == 0) return max_flow;
-		ll total_flow = 0;
+	ll dfs(int u, ll mf) {
+		if(u == end || mf == 0) return mf;
+		ll nf = 0;
 		for(auto &e : graph[u]) {
 			if(level[e.to] == level[u] + 1 && e.cap > 0) {
-				ll min_flow = min(max_flow, e.cap);
-				ll pushed = dfs(e.to, min_flow);
-				if(pushed > 0) {
-					e.cap -= pushed;
-					graph[e.to][e.rev].cap += pushed;
-					total_flow += pushed;
-					max_flow -= pushed;
-					if(max_flow == 0) {
-						return total_flow;
+				ll min_flow = min(mf, e.cap);
+				ll push = dfs(e.to, min_flow);
+				if(push > 0) {
+					e.cap -= push;
+					graph[e.to][e.rev].cap += push;
+					nf += push;
+					mf -= push;
+					if(mf == 0) {
+						return nf;
 					}
 				}
 			}
 		}
-		return total_flow;
+		return nf;
 	}
 };
 
 inline void solve() {
-    
+	
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int t = 1;
-    // cin >> t;
-    while(t--) {
-        solve();
-    }
-    return 0;
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+	int t = 1;
+	// cin >> t;
+	while(t--) {
+		solve();
+	}
+	return 0;
 }
