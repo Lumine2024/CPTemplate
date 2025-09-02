@@ -22,7 +22,9 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 }
 
 struct Qread {
-	Qread() : state(true) {}
+	Qread() : state(true) {
+		cin.rdbuf()->pubsetbuf(buffer, maxn);
+	}
 	template<integral T> Qread &operator>>(T &val) {
 		if(!state) {
 			val = 0;
@@ -31,7 +33,7 @@ struct Qread {
 		T x = 0, f = 1;
 		char ch = cin.rdbuf()->sbumpc();
 		while(ch < '0' || ch > '9') {
-			if(ch == EOF) {
+			if(ch == char_traits<char>::eof()) {
 				state = false;
 				cin.setstate(ios_base::eofbit);
 				val = x * f;
@@ -54,19 +56,21 @@ struct Qread {
 	}
 private:
 	bool state;
+	static constexpr int maxn = 1 << 21;
+	char buffer[maxn];
 }qread;
 
 inline void solve() {
-    
+	
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int t = 1;
-    // cin >> t;
-    while(t--) {
-        solve();
-    }
-    return 0;
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+	int t = 1;
+	// cin >> t;
+	while(t--) {
+		solve();
+	}
+	return 0;
 }

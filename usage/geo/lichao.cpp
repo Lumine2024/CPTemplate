@@ -87,7 +87,7 @@ ld cross(const Point &o, const Point &a, const Point &b) {
 }
 bool argcmp(const Point &x, const Point &y) {
 	bool bx = sign(x.y) == 1 || (sign(x.y) == 0 && sign(x.x) == 1),
-		by = sign(y.y) == 1 || (sign(y.y) == 0 && sign(y.x) == 1);
+		 by = sign(y.y) == 1 || (sign(y.y) == 0 && sign(y.x) == 1);
 	if(bx != by) return bx;
 	return sign(cross(x, y)) == 0;
 }
@@ -184,16 +184,16 @@ int is_inter(const Line &ln, const Lineseg &ls) {
 	return a == b ? 0 : 1;
 }
 int is_inter(const Lineseg &l1, const Lineseg &l2) {
-	if(is_on(l1.a, l2) || is_on(l1.b, l2) || is_on(l2.a, l1) || is_on(l2.b, l1))
+	if(is_on(l1.a, l2) || is_on(l1.b, l2) || is_on(l2.a, l1) || is_on(l2.b, l1)) 
 		return 2;
 	Line ln1(l1.a, l1.b - l1.a), ln2(l2.a, l2.b - l2.a);
-	return to_left(ln1, l2.a) * to_left(ln1, l2.b) == -1
+	return to_left(ln1, l2.a) * to_left(ln1, l2.b) == -1 
 		&& to_left(ln2, l1.a) * to_left(ln2, l1.b) == -1;
 }
 ld dist(const Point &p, const Lineseg &ls) {
 	if(is_on(p, ls) != 0) return 0.0l;
 	if(sign(dot(p - ls.a, ls.b - ls.a)) == -1 ||
-		sign(dot(p - ls.b, ls.a - ls.b)) == -1)
+	   sign(dot(p - ls.b, ls.a - ls.b)) == -1) 
 		return min(dist(p, ls.a), dist(p, ls.b));
 	Line l(ls.a, ls.b - ls.a);
 	return dist(p, l);
@@ -277,35 +277,56 @@ pair<Point, Point> inter(const Circle &c, const Line &l) {
 	ld q = (B > 0 ? -B - s : -B + s) / 2;
 	ld t1 = q / A, t2 = C / q;
 	Point i1 = l.p + v * t1, i2 = l.p + v * t2;
-	return { i1, i2 };
+	return {i1, i2};
 }
 
-vector<Point> andrew(vector<Point> points) {
-	sort(points.begin(), points.end(), [](const Point &a, const Point &b) {
-		return a.x < b.x || (a.x == b.x && a.y < b.y);
-	});
-	points.erase(unique(points.begin(), points.end()), points.end());
-	int n = points.size();
-	if(n <= 2) {
-		return points;
+struct LiChao {
+	explicit LiChao(int ma) : id(ma * 4, -1), n(ma) {}
+	void addline(int x1, int x2, int y1, int y2) {
+		Lineseg ls({ld(x1), ld(y1)}, {ld(x2), ld(y2)});
+		int i = lines.size();
+		lines.push_back(ls);
+		_update(i, min(x1, x2), max(x1, x2), 0, 0, n - 1);
 	}
-	vector<Point> stk;
-	for(int i = 0; i < n; ++i) {
-		while(stk.size() >= 2 && sign(cross(stk[stk.size() - 2], stk.back(), points[i])) <= 0) {
-			stk.pop_back();
+	pair<ld, int> query(int k) const {
+		return _query(k, 0, 0, n - 1);
+	}
+private:
+	vector<int> id;
+	vector<Lineseg> lines;
+	int n;
+	static pair<ld, int> _max(const pair<ld, int> &a, const pair<ld, int> &b) {
+		int cmp1 = cmp(a.first, b.first);
+		if(cmp1 != 0) return (cmp1 == 1) ? a : b;
+		return a.second < b.second ? a : b;
+	}
+	void _update(int i, int ul, int ur, int u, int rl, int rr) {
+		int mid = (rl + rr) / 2, ls = u * 2 + 1, rs = u * 2 + 2;
+		if(ul <= rl && ur >= rr) {
+			if(id[u] == -1) {
+				id[u] = i;
+				return;
+			}
+			if(cmp(lines[i].at(mid), lines[id[u]].at(mid)) == 1) swap(i, id[u]);
+			if(cmp(lines[i].at(rl), lines[id[u]].at(rl)) == 1)
+				_update(i, ul, ur, ls, rl, mid);
+			if(cmp(lines[i].at(rr), lines[id[u]].at(rr)) == 1)
+				_update(i, ul, ur, rs, mid + 1, rr);
+		} else {
+			if(ul <= mid) _update(i, ul, ur, ls, rl, mid);
+			if(mid < ur) _update(i, ul, ur, rs, mid + 1, rr);
 		}
-		stk.push_back(points[i]);
 	}
-	int t = stk.size();
-	for(int i = n - 2; i >= 0; --i) {
-		while(stk.size() > t && sign(cross(stk[stk.size() - 2], stk.back(), points[i])) <= 0) {
-			stk.pop_back();
-		}
-		stk.push_back(points[i]);
+	pair<ld, int> _query(int k, int u, int rl, int rr) const {
+		pair<ld, int> ret(-inf, -1);
+		if(id[u] != -1) ret = {lines[id[u]].at(k), id[u]};
+		if(rl == rr) return ret;
+		int mid = (rl + rr) / 2, ls = u * 2 + 1, rs = u * 2 + 2;
+		if(k <= mid) ret = _max(ret, _query(k, ls, rl, mid));
+		else ret = _max(ret, _query(k, rs, mid + 1, rr));
+		return ret;
 	}
-	stk.pop_back();
-	return stk;
-}
+};
 
 inline void solve() {
 	
@@ -314,9 +335,9 @@ inline void solve() {
 int main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(nullptr);
-	int t = 1;
-	// cin >> t;
-	while(t--) {
+	int n = 1;
+	// cin >> n;
+	while(n--) {
 		solve();
 	}
 	return 0;

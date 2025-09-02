@@ -87,7 +87,7 @@ ld cross(const Point &o, const Point &a, const Point &b) {
 }
 bool argcmp(const Point &x, const Point &y) {
 	bool bx = sign(x.y) == 1 || (sign(x.y) == 0 && sign(x.x) == 1),
-		 by = sign(y.y) == 1 || (sign(y.y) == 0 && sign(y.x) == 1);
+		by = sign(y.y) == 1 || (sign(y.y) == 0 && sign(y.x) == 1);
 	if(bx != by) return bx;
 	return sign(cross(x, y)) == 0;
 }
@@ -113,6 +113,12 @@ struct Line {
 	Point p, v;
 	Line() {}
 	Line(const Point &_p, const Vector &_v) : p(_p), v(_v) {}
+	ld at(ld x) const {
+		if(sign(v.x) == 0) return -inf;
+		ld delx = x - p.x;
+		ld ratio = delx / v.x;
+		return (p + ratio * v).y;
+	}
 };
 int to_left(const Line &ln, const Point &p) {
 	return to_left(ln.v, p - ln.p);
@@ -145,6 +151,11 @@ Point proj(const Point &p, const Line &ln) {
 bool is_on(const Point &p, const Line &ln) {
 	return sign(cross(ln.v, ln.p - p)) == 0;
 }
+Line midperp(const Point &a, const Point &b) {
+	Point mid = (a + b) / 2;
+	Vector to(-(b - a).y, (b - a).x);
+	return Line(mid, to);
+}
 
 struct Lineseg {
 	Point a, b;
@@ -153,36 +164,37 @@ struct Lineseg {
 	ld len() const {
 		return (b - a).len();
 	}
+	ld at(ld x) const {
+		if(cmp(x, min(a.x, b.x)) == -1 || cmp(x, max(a.x, b.x)) == 1) return -inf;
+		if(cmp(a.x, b.x) == 0) {
+			if(cmp(a.x, x) != 0) return -inf;
+			return max(a.y, b.y);
+		}
+		Line l(a, b - a);
+		return l.at(x);
+	}
 };
 int is_on(const Point &p, const Lineseg &ls) {
-	if(p == ls.a || p == ls.b) {
-		return 2;
-	}
+	if(p == ls.a || p == ls.b) return 2;
 	return to_left(p - ls.a, p - ls.b) == 0 && sign(dot(p - ls.a, p - ls.b)) == -1;
 }
 int is_inter(const Line &ln, const Lineseg &ls) {
 	int a = to_left(ln, ls.a), b = to_left(ln, ls.b);
-	if(a == 0 || b == 0) {
-		return 2;
-	}
+	if(a == 0 || b == 0) return 2;
 	return a == b ? 0 : 1;
 }
 int is_inter(const Lineseg &l1, const Lineseg &l2) {
-	if(is_on(l1.a, l2) || is_on(l1.b, l2) || is_on(l2.a, l1) || is_on(l2.b, l1)) {
+	if(is_on(l1.a, l2) || is_on(l1.b, l2) || is_on(l2.a, l1) || is_on(l2.b, l1))
 		return 2;
-	}
 	Line ln1(l1.a, l1.b - l1.a), ln2(l2.a, l2.b - l2.a);
-	return to_left(ln1, l2.a) * to_left(ln1, l2.b) == -1 
+	return to_left(ln1, l2.a) * to_left(ln1, l2.b) == -1
 		&& to_left(ln2, l1.a) * to_left(ln2, l1.b) == -1;
 }
 ld dist(const Point &p, const Lineseg &ls) {
-	if(is_on(p, ls) != 0) {
-		return 0.0l;
-	}
-	if(cmp(dot(p - ls.a, ls.b - ls.a), 0) == -1 ||
-	   cmp(dot(p - ls.b, ls.a - ls.b), 0) == -1) {
+	if(is_on(p, ls) != 0) return 0.0l;
+	if(sign(dot(p - ls.a, ls.b - ls.a)) == -1 ||
+		sign(dot(p - ls.b, ls.a - ls.b)) == -1)
 		return min(dist(p, ls.a), dist(p, ls.b));
-	}
 	Line l(ls.a, ls.b - ls.a);
 	return dist(p, l);
 }
@@ -265,7 +277,7 @@ pair<Point, Point> inter(const Circle &c, const Line &l) {
 	ld q = (B > 0 ? -B - s : -B + s) / 2;
 	ld t1 = q / A, t2 = C / q;
 	Point i1 = l.p + v * t1, i2 = l.p + v * t2;
-	return {i1, i2};
+	return { i1, i2 };
 }
 
 struct Convex : public Polygon {
@@ -375,16 +387,16 @@ pair<Point, Point> tangent(const Line &ln, const Convex &convex) {
 }
 
 inline void solve() {
-    
+	
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int t = 1;
-    // cin >> t;
-    while(t--) {
-        solve();
-    }
-    return 0;
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+	int t = 1;
+	// cin >> t;
+	while(t--) {
+		solve();
+	}
+	return 0;
 }

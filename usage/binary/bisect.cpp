@@ -40,30 +40,30 @@ template<floating_point T> constexpr T defdelta<T> = 1e-9;
 template<class F> concept check_function = convertible_to<F, function<bool(int)>>;
 
 template<class T, check_function F> T binary(F &&check, bool rev = false, T minv = defminv<T>, T maxv = defmaxv<T>, T eps = defeps<T>, T delta = defdelta<T>) {
-    T ans = (rev ? minv : maxv), hi = maxv, lo = minv;
-    while((hi - lo) >= eps) {
-        T mid = (lo + hi) / 2;
-        if(check(mid)) {
-            ans = mid;
-            rev ? (lo = mid + delta) : (hi = mid - delta);
-        } else {
-            rev ? (hi = mid - delta) : (lo = mid + delta);
-        }
-    }
-    return ans;
+	T ans = (rev ? minv : maxv), hi = maxv, lo = minv;
+	while((hi - lo) >= eps) {
+		T mid = (lo + hi) / 2;
+		if(check(mid)) {
+			ans = mid;
+			rev ? (lo = mid + delta) : (hi = mid - delta);
+		} else {
+			rev ? (hi = mid - delta) : (lo = mid + delta);
+		}
+	}
+	return ans;
 }
 
 inline void solve() {
-    
+	
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int t = 1;
-    // cin >> t;
-    for(int i = 0; i < t; ++i) {
-        solve();
-    }
-    return 0;
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+	int t = 1;
+	// cin >> t;
+	for(int i = 0; i < t; ++i) {
+		solve();
+	}
+	return 0;
 }

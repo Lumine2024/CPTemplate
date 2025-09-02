@@ -113,6 +113,12 @@ struct Line {
 	Point p, v;
 	Line() {}
 	Line(const Point &_p, const Vector &_v) : p(_p), v(_v) {}
+	ld at(ld x) const {
+		if(sign(v.x) == 0) return -inf;
+		ld delx = x - p.x;
+		ld ratio = delx / v.x;
+		return (p + ratio * v).y;
+	}
 };
 int to_left(const Line &ln, const Point &p) {
 	return to_left(ln.v, p - ln.p);
@@ -145,6 +151,11 @@ Point proj(const Point &p, const Line &ln) {
 bool is_on(const Point &p, const Line &ln) {
 	return sign(cross(ln.v, ln.p - p)) == 0;
 }
+Line midperp(const Point &a, const Point &b) {
+	Point mid = (a + b) / 2;
+	Vector to(-(b - a).y, (b - a).x);
+	return Line(mid, to);
+}
 
 struct Lineseg {
 	Point a, b;
@@ -152,6 +163,15 @@ struct Lineseg {
 	Lineseg(const Point &_a, const Point &_b) : a(_a), b(_b) {}
 	ld len() const {
 		return (b - a).len();
+	}
+	ld at(ld x) const {
+		if(cmp(x, min(a.x, b.x)) == -1 || cmp(x, max(a.x, b.x)) == 1) return -inf;
+		if(cmp(a.x, b.x) == 0) {
+			if(cmp(a.x, x) != 0) return -inf;
+			return max(a.y, b.y);
+		}
+		Line l(a, b - a);
+		return l.at(x);
 	}
 };
 int is_on(const Point &p, const Lineseg &ls) {
@@ -261,16 +281,16 @@ pair<Point, Point> inter(const Circle &c, const Line &l) {
 }
 
 inline void solve() {
-    
+	
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int t = 1;
-    // cin >> t;
-    while(t--) {
-        solve();
-    }
-    return 0;
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+	int t = 1;
+	// cin >> t;
+	while(t--) {
+		solve();
+	}
+	return 0;
 }

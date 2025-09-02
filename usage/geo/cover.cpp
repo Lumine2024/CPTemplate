@@ -87,7 +87,7 @@ ld cross(const Point &o, const Point &a, const Point &b) {
 }
 bool argcmp(const Point &x, const Point &y) {
 	bool bx = sign(x.y) == 1 || (sign(x.y) == 0 && sign(x.x) == 1),
-		by = sign(y.y) == 1 || (sign(y.y) == 0 && sign(y.x) == 1);
+		 by = sign(y.y) == 1 || (sign(y.y) == 0 && sign(y.x) == 1);
 	if(bx != by) return bx;
 	return sign(cross(x, y)) == 0;
 }
@@ -184,16 +184,16 @@ int is_inter(const Line &ln, const Lineseg &ls) {
 	return a == b ? 0 : 1;
 }
 int is_inter(const Lineseg &l1, const Lineseg &l2) {
-	if(is_on(l1.a, l2) || is_on(l1.b, l2) || is_on(l2.a, l1) || is_on(l2.b, l1))
+	if(is_on(l1.a, l2) || is_on(l1.b, l2) || is_on(l2.a, l1) || is_on(l2.b, l1)) 
 		return 2;
 	Line ln1(l1.a, l1.b - l1.a), ln2(l2.a, l2.b - l2.a);
-	return to_left(ln1, l2.a) * to_left(ln1, l2.b) == -1
+	return to_left(ln1, l2.a) * to_left(ln1, l2.b) == -1 
 		&& to_left(ln2, l1.a) * to_left(ln2, l1.b) == -1;
 }
 ld dist(const Point &p, const Lineseg &ls) {
 	if(is_on(p, ls) != 0) return 0.0l;
 	if(sign(dot(p - ls.a, ls.b - ls.a)) == -1 ||
-		sign(dot(p - ls.b, ls.a - ls.b)) == -1)
+	   sign(dot(p - ls.b, ls.a - ls.b)) == -1) 
 		return min(dist(p, ls.a), dist(p, ls.b));
 	Line l(ls.a, ls.b - ls.a);
 	return dist(p, l);
@@ -277,34 +277,45 @@ pair<Point, Point> inter(const Circle &c, const Line &l) {
 	ld q = (B > 0 ? -B - s : -B + s) / 2;
 	ld t1 = q / A, t2 = C / q;
 	Point i1 = l.p + v * t1, i2 = l.p + v * t2;
-	return { i1, i2 };
+	return {i1, i2};
 }
 
-vector<Point> andrew(vector<Point> points) {
-	sort(points.begin(), points.end(), [](const Point &a, const Point &b) {
-		return a.x < b.x || (a.x == b.x && a.y < b.y);
-	});
-	points.erase(unique(points.begin(), points.end()), points.end());
-	int n = points.size();
-	if(n <= 2) {
-		return points;
-	}
-	vector<Point> stk;
-	for(int i = 0; i < n; ++i) {
-		while(stk.size() >= 2 && sign(cross(stk[stk.size() - 2], stk.back(), points[i])) <= 0) {
-			stk.pop_back();
+Circle cover(const Point &a) {
+	return Circle(a, 0);
+}
+Circle cover(const Point &a, const Point &b) {
+	return Circle((a + b) / 2, (b - a).len() / 2);
+}
+Circle cover(const Point &a, const Point &b, const Point &c) {
+	Line u = midperp(a, b), v = midperp(a, c);
+	if(!is_inter(u, v)) throw runtime_error("three points are on a same line!");
+	Point center = inter(u, v);
+	return Circle(center, dist(center, a));
+}
+Circle cover(vector<Point> pts) {
+	static mt19937 rng((unsigned)chrono::steady_clock::now().time_since_epoch().count());
+	shuffle(pts.begin(), pts.end(), rng);
+	if(pts.size() == 1) return cover(pts[0]);
+	if(pts.size() == 2) return cover(pts[0], pts[1]);
+	if(pts.size() == 3) return cover(pts[0], pts[1], pts[2]);
+	int n = pts.size();
+	Circle ret = cover(pts[0]);
+	for(int i = 1; i < n; ++i) {
+		if(ret.r < dist(ret.c, pts[i])) {
+			ret = cover(pts[i]);
+			for(int j = 0; j < i; ++j) {
+				if(ret.r < dist(ret.c, pts[j])) {
+					ret = cover(pts[i], pts[j]);
+					for(int k = 0; k < j; ++k) {
+						if(ret.r < dist(ret.c, pts[k])) {
+							ret = cover(pts[i], pts[j], pts[k]);
+						}
+					}
+				}
+			}
 		}
-		stk.push_back(points[i]);
 	}
-	int t = stk.size();
-	for(int i = n - 2; i >= 0; --i) {
-		while(stk.size() > t && sign(cross(stk[stk.size() - 2], stk.back(), points[i])) <= 0) {
-			stk.pop_back();
-		}
-		stk.push_back(points[i]);
-	}
-	stk.pop_back();
-	return stk;
+	return ret;
 }
 
 inline void solve() {

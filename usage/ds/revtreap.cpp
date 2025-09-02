@@ -43,66 +43,44 @@ struct Treap {
 		Node *lc = _merge(l.first, node);
 		rt = _merge(lc, tmp.second);
 	}
-	void erase(int v) {
-		auto tmp = _sval(rt, v);
-		auto l = _sval(tmp.first, v - 1);
-		if(l.second->cnt > 1) {
-			l.second->cnt--;
-			l.second->usize();
-			l.first = _merge(l.first, l.second);
-		} else {
-			if(tmp.first == l.second) {
-				tmp.first = nullptr;
-			}
-			delete l.second;
-			l.second = nullptr;
-		}
-		rt = _merge(l.first, tmp.second);
+	void reverse(int l, int r) {
+		auto [a, b] = _srev(rt, l);
+		auto [c, d] = _srev(b, r - l);
+		if(c) c->rev ^= true;
+		rt = _mrev(a, _mrev(c, d));
 	}
-	// 注意0-based
-	int qrv(int v) const {
-		return _qrv(rt, v);
-	}
-	// 注意0-based
-	int qvr(int r) const {
-		return _qvr(rt, r);
-	}
-	// 注意是小于的，不是大于等于的
-	int lower_bound(int v) const {
-		auto tmp = _sval(rt, v - 1);
-		int ret = -infint;
-		if(tmp.first) {
-			ret = _qvr(tmp.first, tmp.first->size - 1);
-		}
-		rt = _merge(tmp.first, tmp.second);
-		return ret;
-	}
-	int upper_bound(int v) const {
-		auto tmp = _sval(rt, v);
-		int ret = -infint;
-		if(tmp.second) {
-			ret = _qvr(tmp.second, 0);
-		}
-		rt = _merge(tmp.first, tmp.second);
+	vector<int> inorder() const {
+		vector<int> ret;
+		ret.reserve(rt->size);
+		auto dfs = [&](auto &&dfs, Node *ptr) -> void {
+			if(!ptr) return;
+			ptr->urev();
+			dfs(dfs, ptr->left);
+			ret.push_back(ptr->val);
+			dfs(dfs, ptr->right);
+		};
+		dfs(dfs, rt);
 		return ret;
 	}
 private:
 	struct Node {
-		int val;
-		int cnt;
-		int size;
-		int prio;
+		int val, cnt, size, prio;
 		Node *left, *right;
+		bool rev;
 		static inline random_device rnd{};
 		Node(int v)
-			: val(v), cnt(1), size(1), prio(rnd()), left(nullptr), right(nullptr) {}
+			: val(v), cnt(1), size(1), prio(rnd()), left(nullptr), right(nullptr), rev(false) {}
 		void usize() {
 			size = cnt;
-			if(left) {
-				size += left->size;
-			}
-			if(right) {
-				size += right->size;
+			if(left) size += left->size;
+			if(right) size += right->size;
+		}
+		void urev() {
+			if(rev) {
+				swap(left, right);
+				if(left != nullptr) left->rev ^= true;
+				if(right != nullptr) right->rev ^= true;
+				rev = false;
 			}
 		}
 	};
@@ -134,26 +112,6 @@ private:
 			return { tmp.first, ptr };
 		}
 	}
-	static tuple<Node *, Node *, Node *> _srnk(Node *const ptr, int rnk) {
-		if(!ptr) return { nullptr, nullptr, nullptr };
-		int lsize = (ptr->left ? ptr->left->size : 0);
-		if(rnk < lsize) {
-			auto [lptr, mptr, rptr] = _srnk(ptr->left, rnk);
-			ptr->left = rptr;
-			ptr->usize();
-			return { lptr, mptr, ptr };
-		} else if(rnk < lsize + ptr->cnt) {
-			Node *lptr = ptr->left;
-			Node *rptr = ptr->right;
-			ptr->left = ptr->right = nullptr;
-			return { lptr, ptr, rptr };
-		} else {
-			auto [lptr, mptr, rptr] = _srnk(ptr->right, rnk - lsize - ptr->cnt);
-			ptr->right = lptr;
-			ptr->usize();
-			return { ptr, mptr, rptr };
-		}
-	}
 	static Node *_merge(Node *const u, Node *const v) {
 		if(!u) return v;
 		if(!v) return u;
@@ -167,19 +125,38 @@ private:
 			return v;
 		}
 	}
-	int _qrv(Node *const ptr, int val) const {
-		auto [l, r] = _sval(ptr, val - 1);
-		int ret = (l ? l->size : 0);
-		rt = _merge(l, r);
-		return ret;
+	static pair<Node *, Node *> _srev(Node *const ptr, int k) {
+		if(!ptr) return {nullptr, nullptr};
+		ptr->urev();
+		if(k == 0 || (ptr->left && ptr->left->size >= k)) {
+			auto [pf, ps] = _srev(ptr->left, k);
+			ptr->left = ps;
+			ptr->usize();
+			return {pf, ptr};
+		} else {
+			auto [pf, ps] = _srev(ptr->right, k - 1 - (ptr->left ? ptr->left->size : 0));
+			ptr->right = pf;
+			ptr->usize();
+			return {ptr, ps};
+		}
 	}
-	int _qvr(Node *const ptr, int r) const {
-		auto [lptr, mptr, rptr] = _srnk(ptr, r);
-		int ret = mptr->val;
-		rt = _merge(_merge(lptr, mptr), rptr);
-		return ret;
+	static Node *_mrev(Node *const a, Node *const b) {
+		if(!a) return b;
+		if(!b) return a;
+		if(a->prio < b->prio) {
+			a->urev();
+			a->right = _mrev(a->right, b);
+			a->usize();
+			return a;
+		} else {
+			b->urev();
+			b->left = _mrev(a, b->left);
+			b->usize();
+			return b;
+		}
 	}
 };
+
 
 inline void solve() {
 	
