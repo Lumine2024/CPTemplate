@@ -35,7 +35,7 @@ vector<int> suffix_array(const string &str) {
 		cnt[rk[i]]--;
 		sa[cnt[rk[i]]] = i;
 	}
-	for(int w = 1;; w <<= 1, m = p + 1) {
+	for(int w = 1; ; w <<= 1, m = p + 1) {
 		int cur = 0;
 		for(int i = n - w; i < n; ++i) {
 			id[cur] = i;
@@ -62,14 +62,11 @@ vector<int> suffix_array(const string &str) {
 		vector<int> oldrk = rk;
 		rk[sa[0]] = 0;
 		for(int i = 1; i < n; ++i) {
-			if(oldrk[sa[i]] != oldrk[sa[i - 1]] || oldrk[sa[i] + w] != oldrk[sa[i - 1] + w]) {
-				++p;
-			}
+			if(oldrk[sa[i]] != oldrk[sa[i - 1]] ||
+				oldrk[sa[i] + w] != oldrk[sa[i - 1] + w]) ++p;
 			rk[sa[i]] = p;
 		}
-		if(p == n - 1) {
-			break;
-		}
+		if(p == n - 1) break;
 	}
 	return sa;
 }

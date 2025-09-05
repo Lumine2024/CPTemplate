@@ -281,6 +281,7 @@ pair<Point, Point> inter(const Circle &c, const Line &l) {
 }
 
 struct LiChao {
+	vector<Lineseg> lines;
 	explicit LiChao(int ma) : id(ma * 4, -1), n(ma) {}
 	void addline(int x1, int x2, int y1, int y2) {
 		Lineseg ls({ld(x1), ld(y1)}, {ld(x2), ld(y2)});
@@ -288,12 +289,11 @@ struct LiChao {
 		lines.push_back(ls);
 		_update(i, min(x1, x2), max(x1, x2), 0, 0, n - 1);
 	}
-	pair<ld, int> query(int k) const {
-		return _query(k, 0, 0, n - 1);
+	int query(int k) const {
+		return _query(k, 0, 0, n - 1).second;
 	}
 private:
 	vector<int> id;
-	vector<Lineseg> lines;
 	int n;
 	static pair<ld, int> _max(const pair<ld, int> &a, const pair<ld, int> &b) {
 		int cmp1 = cmp(a.first, b.first);

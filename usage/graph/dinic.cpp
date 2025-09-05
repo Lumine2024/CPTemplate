@@ -24,6 +24,11 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 }
 
 struct Dinic {
+	struct Edge {
+		int to, rev;
+		ll cap;
+	};
+	vector<vector<Edge>> graph;
 	Dinic(int n, int s, int e)
 		: graph(n), level(n), start(s), end(e), n(n) {}
 	void addedge(int u, int v, ll w) {
@@ -42,12 +47,6 @@ struct Dinic {
 		return ans;
 	}
 private:
-	struct Edge {
-		int to;
-		int rev;
-		ll cap;
-	};
-	vector<vector<Edge>> graph;
 	vector<int> level;
 	int n, start, end;
 	bool bfs() {
