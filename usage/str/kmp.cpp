@@ -26,12 +26,8 @@ vector<int> kmp_f(const string &s) {
 	int n = s.size();
 	vector<int> f(n, 0);
 	for(int i = 1, j = 0; i < n; ++i) {
-		while(j > 0 && s[i] != s[j]) {
-			j = f[j - 1];
-		}
-		if(s[i] == s[j]) {
-			++j;
-		}
+		while(j > 0 && s[i] != s[j]) j = f[j - 1];
+		if(s[i] == s[j]) ++j;
 		f[i] = j;
 	}
 	return f;
@@ -44,15 +40,9 @@ int kmp_find(const string &haystack, const string &needle, int off = 0) {
 		if(haystack[j] == needle[i]) {
 			++i;
 			++j;
-			if(i == n) {
-				return j - n;
-			}
+			if(i == n) return j - n;
 		} else {
-			if(i == 0) {
-				++j;
-			} else {
-				i = f[i - 1];
-			}
+			(i == 0) ? (++j) : (i = f[i - 1]);
 		}
 	}
 	return -1;
@@ -71,11 +61,7 @@ int kmp_count(const string &haystack, const string &needle) {
 				i = f[i - 1];
 			}
 		} else {
-			if(i == 0) {
-				++j;
-			} else {
-				i = f[i - 1];
-			}
+			(i == 0) ? (++j) : (i = f[i - 1]);
 		}
 	}
 	return ret;
