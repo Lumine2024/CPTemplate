@@ -21,39 +21,30 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 	return chkf(x, y, greater<T1>{});
 }
 
-template<class T> struct Fenwick {
-	explicit Fenwick(int n) : tree(n + 1, 0), n(n) {}
-	void update(int i, T delta) {
-		++i;
-		for(; i <= n; i += i & -i) {
-			tree[i] += delta;
-		}
+template<class T> concept FenwickInfo = requires(T a, T b) {
+	{a + b} -> convertible_to<T>;
+};
+template<FenwickInfo T> struct Fenwick {
+	explicit Fenwick(int n) : _nums(n + 1, 0), _n(n) {}
+	T query(int x) const {
+		T ans{};
+		for(; x; x -= x & -x) ans = ans + _nums[x];
+		return ans;
 	}
-	T query(int i) const {
-		++i;
-		T sum = 0;
-		for(; i > 0; i -= i & -i) {
-			sum += tree[i];
-		}
-		return sum;
-	}
-	T query(int l, int r) const {
-		return query(r) - query(l - 1);
+	void update(int x, const T &v) {
+		for(; x <= _n; x += x & -x) _nums[x] = _nums[x] + v;
 	}
 private:
-	vector<T> tree;
-	int n;
+	vector<T> _nums;
+	int _n;
 };
-
 
 struct Data {
-	int x, y, z;
-	int cnt;
-	int ans;
+	int x, y, z, cnt, ans;
 	Data(int x_, int y_, int z_) : x(x_), y(y_), z(z_), cnt(1), ans(-1) {}
 };
-vector<int> threed_partial(int n, int k, vector<Data> &_datas) {
-	Fenwick<int> fwk(k);
+vector<int> threed_partial(int n, int k, vector<Data> _datas) {
+	Fenwick<int> f(k);
 	sort(_datas.begin(), _datas.end() - 1, [](const Data &l, const Data &r) {
 		if(l.x != r.x) return l.x < r.x;
 		if(l.y != r.y) return l.y < r.y;
@@ -70,14 +61,12 @@ vector<int> threed_partial(int n, int k, vector<Data> &_datas) {
 			(_datas[i].z != _datas[i + 1].z)) {
 			datas.emplace_back(_datas[i].x, _datas[i].y, _datas[i].z);
 			cnt = 0;
-			}
+		}
 	}
 	int m = datas.size();
 	auto cdq = [&](auto &&cdq, int l, int r) -> void {
-		if(r - l < 2) {
-			return;
-		}
-		int mid = (l + r) >> 1;
+		if(r - l < 2) return;
+		int mid = (l + r) / 2;
 		cdq(cdq, l, mid);
 		cdq(cdq, mid, r);
 		sort(datas.begin() + l, datas.begin() + mid, [](const Data &l, const Data &r) {
@@ -91,14 +80,12 @@ vector<int> threed_partial(int n, int k, vector<Data> &_datas) {
 		int j = l;
 		for(int i = mid; i < r; ++i) {
 			while(datas[j].y <= datas[i].y && j < mid) {
-				fwk.update(datas[j].z, datas[j].cnt);
+				f.update(datas[j].z, datas[j].cnt);
 				++j;
 			}
-			datas[i].ans += fwk.query(datas[i].z);
+			datas[i].ans += f.query(datas[i].z);
 		}
-		for(int k = l; k < j; ++k) {
-			fwk.update(datas[k].z, -datas[k].cnt);
-		}
+		for(int k = l; k < j; ++k) f.update(datas[k].z, -datas[k].cnt);
 	};
 	cdq(cdq, 0, m);
 	vector<int> ans(n, 0);

@@ -21,21 +21,6 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 	return chkf(x, y, greater<T1>{});
 }
 
-template<class T, class F> bool chkf(T &x, const T &y, F &&f) {
-	if(f(y, x)) {
-		x = y;
-		return true;
-	}
-	return false;
-}
-template<class T> bool chkmin(T &x, const T &y) {
-	return chkf(x, y, less{});
-}
-template<class T> bool chkmax(T &x, const T &y) {
-	return chkf(x, y, greater{});
-}
-
-
 struct MyHash {
 	size_t operator()(ll x) const noexcept {
 		x ^= c;

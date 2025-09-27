@@ -27,7 +27,7 @@ vector<ll> dijkstra(vector<vector<pair<int, ll>>> &graph, int start) {
 	int v = graph.size();
 	vector<ll> dist(v, inf);
 	dist[start] = 0;
-	vector<bool> visited(v, false);
+	vector<bool> vis(v, false);
 	priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<>> pq;
 	for(auto [vtx, w] : graph[start]) {
 		dist[vtx] = w;
@@ -36,13 +36,12 @@ vector<ll> dijkstra(vector<vector<pair<int, ll>>> &graph, int start) {
 	while(!pq.empty()) {
 		auto [w, vtx] = pq.top();
 		pq.pop();
-		if(visited[vtx]) continue;
-		visited[vtx] = true;
+		if(vis[vtx]) continue;
+		vis[vtx] = true;
 		for(auto [vt, ww] : graph[vtx]) {
-			if(!visited[vt]) {
-				if(chkmin(dist[vt], dist[vtx] + ww)) {
-					pq.emplace(dist[vt], vt);
-				}
+			if(!vis[vt] && dist[vt] > dist[vtx] + ww) {
+				dist[vt] = dist[vtx] + ww;
+				pq.emplace(dist[vt], vt);
 			}
 		}
 	}

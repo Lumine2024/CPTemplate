@@ -23,41 +23,38 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 	return chkf(x, y, greater<T1>{});
 }
 
-// 按秩合并
 struct DSU {
-	explicit DSU(int n) : fa(n), rk(n, 1) {
-		iota(fa.begin(), fa.end(), 0);
-	}
+	explicit DSU(int n) : fs(n, -1) {}
 	int find(int x) {
-		if(fa[x] != x) {
-			fa[x] = find(fa[x]);
-		}
-		return fa[x];
+		if(fs[x] < 0) return x;
+		return fs[x] = find(fs[x]);
 	}
 	bool is_connected(int x, int y) {
 		return find(x) == find(y);
 	}
+	int size(int x) {
+		return -fs[find(x)];
+	}
 	void connect(int x, int y) {
-		x = find(x);
-		y = find(y);
+		x = find(x); y = find(y);
 		if(x == y) return;
-		if(rk[x] < rk[y]) {
-			swap(x, y);
+		int sx = size(x), sy = size(y);
+		if(sx < sy) {
+			fs[y] -= sx;
+			fs[x] = y;
+		} else {
+			fs[x] -= sy;
+			fs[y] = x;
 		}
-		if(rk[x] == rk[y]) {
-			rk[x]++;
-		}
-		fa[y] = x;
 	}
 private:
-	vector<int> fa, rk;
+	vector<int> fs; // fa or size
 };
 
 struct Edge {
 	int u, v;
 	ll w;
 };
-
 
 ll kruskal(vector<Edge> &edges, int n) {
 	DSU dsu(n);
@@ -72,9 +69,7 @@ ll kruskal(vector<Edge> &edges, int n) {
 		}
 	}
 	for(int i = 1; i < n; ++i) {
-		if(!dsu.is_connected(i, 0)) {
-			return inf;
-		}
+		if(!dsu.is_connected(i, 0)) return inf;
 	}
 	return ans;
 }

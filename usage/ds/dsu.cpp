@@ -21,61 +21,32 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 	return chkf(x, y, greater<T1>{});
 }
 
-// 按秩合并
 struct DSU {
-	explicit DSU(int n) : fa(n), rk(n, 1) {
-		iota(fa.begin(), fa.end(), 0);
-	}
+	explicit DSU(int n) : fs(n, -1) {}
 	int find(int x) {
-		if(fa[x] != x) {
-			fa[x] = find(fa[x]);
-		}
-		return fa[x];
+		if(fs[x] < 0) return x;
+		return fs[x] = find(fs[x]);
 	}
 	bool is_connected(int x, int y) {
 		return find(x) == find(y);
 	}
+	int size(int x) {
+		return -fs[find(x)];
+	}
 	void connect(int x, int y) {
-		x = find(x);
-		y = find(y);
+		x = find(x); y = find(y);
 		if(x == y) return;
-		if(rk[x] < rk[y]) {
-			swap(x, y);
-		}
-		if(rk[x] == rk[y]) {
-			rk[x]++;
-		}
-		fa[y] = x;
-	}
-private:
-	vector<int> fa, rk;
-};
-// 随机合并
-struct DSU_Random {
-	explicit DSU_Random(int n) : fa(n) {
-		iota(fa.begin(), fa.end(), 0);
-	}
-	int find(int x) {
-		if(fa[x] != x) {
-			fa[x] = find(fa[x]);
-		}
-		return fa[x];
-	}
-	bool is_connected(int x, int y) {
-		return find(x) == find(y);
-	}
-	void connect(int x, int y) {
-		int fx = find(x), fy = find(y);
-		if(rnd() % 2) {
-			fa[fx] = fy;
+		int sx = size(x), sy = size(y);
+		if(sx < sy) {
+			fs[y] -= sx;
+			fs[x] = y;
 		} else {
-			fa[fy] = fx;
+			fs[x] -= sy;
+			fs[y] = x;
 		}
 	}
 private:
-	static inline mt19937 rnd{ (unsigned int)chrono::steady_clock::now()
-		.time_since_epoch().count() };
-	vector<int> fa;
+	vector<int> fs; // fa or size
 };
 
 inline void solve() {

@@ -21,28 +21,24 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 	return chkf(x, y, greater<T1>{});
 }
 
-struct Fenwick {
-	explicit Fenwick(int n) : n(n), nums(n + 1, 0) {}
-	ll query(int x) const {
-		ll ans = 0;
-		for(; x; x -= lbit(x)) {
-			ans += nums[x];
-		}
+template<class T> concept FenwickInfo = requires(T a, T b) {
+	T{};
+	{a + b} -> convertible_to<T>;
+};
+template<FenwickInfo T> struct Fenwick {
+	explicit Fenwick(int n) : _nums(n + 1, 0), _n(n) {}
+	T query(int x) const {
+		T ans{};
+		for(; x; x -= x & -x) ans = ans + _nums[x];
 		return ans;
 	}
-	void update(int x, ll v) {
-		for(; x <= n; x += lbit(x)) {
-			nums[x] += v;
-		}
+	void update(int x, const T &v) {
+		for(; x <= _n; x += x & -x) _nums[x] = _nums[x] + v;
 	}
 private:
-	vector<ll> nums;
-	int n;
-	static int lbit(int x) {
-		return x & -x;
-	}
+	vector<T> _nums;
+	int _n;
 };
-
 struct ArithmeticFenwick {
 	explicit ArithmeticFenwick(int n)
 		: f1(n + 2), f2(n + 2) {}
@@ -57,7 +53,7 @@ struct ArithmeticFenwick {
 		return f1.query(idx) + idx * f2.query(idx);
 	}
 private:
-	Fenwick f1, f2;
+	Fenwick<ll> f1, f2;
 };
 
 inline void solve() {

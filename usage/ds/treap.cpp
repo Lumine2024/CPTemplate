@@ -68,7 +68,7 @@ struct Treap {
 		return _qvr(rt, r);
 	}
 	// 注意是小于的，不是大于等于的
-	int lower_bound(int v) const {
+	int qpre(int v) const {
 		auto tmp = _sval(rt, v - 1);
 		int ret = -infint;
 		if(tmp.first) {
@@ -77,7 +77,7 @@ struct Treap {
 		rt = _merge(tmp.first, tmp.second);
 		return ret;
 	}
-	int upper_bound(int v) const {
+	int qsuc(int v) const {
 		auto tmp = _sval(rt, v);
 		int ret = -infint;
 		if(tmp.second) {

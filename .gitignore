@@ -9,6 +9,7 @@
 !*.pdf
 !CMakeLists.txt
 !*.sh
+!*.ps1
 !*.jpg
 /.idea
 /cmake-build-debug
