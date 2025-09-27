@@ -21,22 +21,41 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 	return chkf(x, y, greater<T1>{});
 }
 
+template<class T> concept EdgeT = requires(T t) {
+	{t.dst} -> convertible_to<int>;
+};
+
 // 强连通分量
 struct SCC {
 	explicit SCC(int n) : nodes(n), graph(n) {}
 	explicit SCC(const vector<vector<int>> &g) : graph(g), nodes(g.size()) {
-		solve();
+		build();
+	}
+	template<class T> explicit SCC(const vector<vector<pair<int, T>>> &g) : graph(g.size()), nodes(g.size()) {
+		int n = g.size();
+		for(int u = 0; u < n; ++u) {
+			for(auto [v, _] : g[u]) {
+				addedge(u, v);
+			}
+		}
+		build();
+	}
+	template<EdgeT T> explicit SCC(const vector<vector<T>> &g) : graph(g.size()), nodes(g.size()) {
+		int n = g.size();
+		for(int u = 0; u < n; ++u) {
+			for(const T &edge : g[u]) {
+				addedge(u, edge.dst);
+			}
+		}
+		build();
 	}
 	void addedge(int u, int v) {
-		if(u == v) return;
-		graph[u].push_back(v);
+		if(u != v) graph[u].push_back(v);
 	}
-	void solve() {
+	void build() {
 		int dfn = 0, cnt = 0;
 		for(int i = 0; i < nodes.size(); i++) {
-			if(nodes[i].dfn == -1) {
-				dfs(dfn, cnt, i);
-			}
+			if(nodes[i].dfn == -1) dfs(dfn, cnt, i);
 		}
 		dag.assign(cnt, {});
 		set<pair<int, int>> edges;
@@ -44,28 +63,25 @@ struct SCC {
 			for(int v : graph[u]) {
 				int bu = nodes[u].inscc, bv = nodes[v].inscc;
 				if(bu != bv && !edges.contains({ bu, bv })) {
-					dag[bu].emplace_back(bv);
+					dag[bu].push_back(bv);
 					edges.insert({ bu, bv });
 				}
 			}
 		}
 	}
 	struct Node {
-		int dfn;
-		int low;
+		int dfn, low, inscc;
 		bool ins;
-		int inscc;
 		Node() : dfn(-1), low(-1), ins(false), inscc(-1) {}
 	};
 	vector<Node> nodes;
 	vector<vector<int>> graph, sccs, dag;
 private:
-	stack<int> scc_stack;
+	stack<int> stk;
 	void dfs(int &dfn, int &cnt, int u) {
-		nodes[u].dfn = dfn;
-		nodes[u].low = dfn;
+		nodes[u].dfn = nodes[u].low = dfn;
 		++dfn;
-		scc_stack.push(u);
+		stk.push(u);
 		nodes[u].ins = true;
 		for(int v : graph[u]) {
 			if(nodes[v].dfn == -1) {
@@ -79,8 +95,8 @@ private:
 			vector<int> scc;
 			int v = -1;
 			while(v != u) {
-				v = scc_stack.top();
-				scc_stack.pop();
+				v = stk.top();
+				stk.pop();
 				nodes[v].ins = false;
 				nodes[v].inscc = cnt;
 				scc.emplace_back(v);
@@ -94,37 +110,32 @@ private:
 struct EBCC {
 	explicit EBCC(int n) : nodes(n), graph(n), in_ebcc(n) {}
 	explicit EBCC(const vector<vector<int>> &g) : graph(g), nodes(g.size()), in_ebcc(g.size()) {
-		solve();
+		build();
 	}
 	void addedge(int u, int v) {
 		if(u == v) return;
-		graph[u].emplace_back(v);
-		graph[v].emplace_back(u);
+		graph[u].push_back(v);
+		graph[v].push_back(u);
 	}
-	void solve() {
+	void build() {
 		int dfn = 0;
 		for(int i = 0; i < nodes.size(); ++i) {
-			if(nodes[i].dfn == -1) {
-				dfs(i, -1, dfn);
-			}
+			if(nodes[i].dfn == -1) dfs(i, -1, dfn);
 		}
 		for(int i = 0; i < ebcc.size(); ++i) {
-			for(int u : ebcc[i]) {
-				in_ebcc[u] = i;
-			}
+			for(int u : ebcc[i]) in_ebcc[u] = i;
 		}
 	}
 	vector<vector<int>> graph;
 	vector<vector<int>> ebcc;
 	vector<int> in_ebcc;
-private:
 	struct Node {
-		int dfn;
-		int low;
+		int dfn, low;
 		bool ins;
 		Node() : dfn(-1), low(-1), ins(false) {}
 	};
 	vector<Node> nodes;
+private:
 	stack<int> stk;
 	void dfs(int u, int fa, int &dfn) {
 		nodes[u].dfn = nodes[u].low = dfn;
@@ -146,7 +157,7 @@ private:
 			while(n != u) {
 				n = stk.top();
 				stk.pop();
-				t.emplace_back(n);
+				t.push_back(n);
 				nodes[n].ins = false;
 			}
 			ebcc.emplace_back(move(t));
@@ -157,14 +168,14 @@ private:
 struct DCC {
 	explicit DCC(int n) : nodes(n), graph(n) {}
 	explicit DCC(const vector<vector<int>> &g) : graph(g), nodes(g.size()) {
-		solve();
+		build();
 	}
 	void addedge(int u, int v) {
 		if(u == v) return;
-		graph[u].emplace_back(v);
-		graph[v].emplace_back(u);
+		graph[u].push_back(v);
+		graph[v].push_back(u);
 	}
-	void solve() {
+	void build() {
 		int dfn_now = 0;
 		for(int i = 0; i < nodes.size(); ++i) {
 			if(nodes[i].dfn == -1) {
@@ -173,8 +184,7 @@ struct DCC {
 		}
 	}
 	struct Node {
-		int dfn;
-		int low;
+		int dfn, low;
 		Node() :dfn(-1), low(-1) {}
 	};
 	vector<Node> nodes;
@@ -199,7 +209,7 @@ private:
 					while(!stk.empty()) {
 						int x = stk.top();
 						stk.pop();
-						f.emplace_back(x);
+						f.push_back(x);
 						if(x == v) break;
 					}
 					dcc.emplace_back(move(f));
@@ -209,7 +219,7 @@ private:
 			}
 		}
 		if(u == root && graph[u].empty()) {
-			dcc.emplace_back(vector<int>{u});
+			dcc.push_back(vector<int>{u});
 			return;
 		}
 	}
@@ -218,13 +228,13 @@ private:
 struct Cutpoint {
 	explicit Cutpoint(int n) : nodes(n), graph(n) {}
 	explicit Cutpoint(const vector<vector<int>> &g) : graph(g), nodes(g.size()) {
-		solve();
+		build();
 	}
 	void addedge(int u, int v) {
-		graph[u].emplace_back(v);
-		graph[v].emplace_back(u);
+		graph[u].push_back(v);
+		graph[v].push_back(u);
 	}
-	void solve() {
+	void build() {
 		int dfn = 0;
 		for(int i = 0; i < nodes.size(); ++i) {
 			if(nodes[i].dfn == -1) {
@@ -262,7 +272,7 @@ private:
 			flag = (child > 1);
 		}
 		if(flag) {
-			cutpoints.emplace_back(u);
+			cutpoints.push_back(u);
 		}
 	}
 };
@@ -270,13 +280,13 @@ private:
 struct Bridge {
 	explicit Bridge(int n) : nodes(n), graph(n) {}
 	explicit Bridge(const vector<vector<int>> &g) : graph(g), nodes(g.size()) {
-		solve();
+		build();
 	}
 	void addedge(int u, int v) {
-		graph[u].emplace_back(v);
-		graph[v].emplace_back(u);
+		graph[u].push_back(v);
+		graph[v].push_back(u);
 	}
-	void solve() {
+	void build() {
 		int dfn = 0;
 		for(int i = 0; i < nodes.size(); ++i) {
 			if(nodes[i].dfn == -1) {

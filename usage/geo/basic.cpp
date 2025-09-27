@@ -6,7 +6,7 @@ using ll = long long;
 using ull = unsigned long long;
 using ld = long double;
 
-inline constexpr ld eps = 1e-9l, pi = 3.14159265358979323846264338327950288l, inf = 1e12l;
+inline constexpr ld eps = 1e-9l, pi = numbers::pi_v<ld>, inf = 1e12l;
 
 template<class T, class F> concept binary_func = convertible_to<F, function<bool(T, T)>>;
 template<class T1, class T2, class F> requires(binary_func<T1, F> &&convertible_to<T2, T1>) bool chkf(T1 &x, const T2 &y, F &&f) {

@@ -28,7 +28,7 @@ struct SCC {
 		if(u == v) return;
 		graph[u].push_back(v);
 	}
-	void solve() {
+	void build() {
 		int dfn = 0, cnt = 0;
 		for(int i = 0; i < nodes.size(); i++) {
 			if(nodes[i].dfn == -1) {
@@ -95,7 +95,7 @@ vector<int> twosat(int n, const vector<tuple<int, int, int, int>> &conds) {
 		solver.addedge(2 * i + 1 - flag_i, 2 * j + flag_j);
 		solver.addedge(2 * j + 1 - flag_j, 2 * i + flag_i);
 	}
-	solver.solve();
+	solver.build();
 	for(int i = 0; i < n; ++i) {
 		if(solver.nodes[2 * i].inscc == solver.nodes[2 * i + 1].inscc) {
 			return {};

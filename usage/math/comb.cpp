@@ -34,26 +34,27 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 struct Comb {
 	Comb() = delete;
 	static ll fact(ll n) {
-		return _fact[n];
+		return fac[n];
 	}
 	static ll invfact(ll n) {
-		return _invfact[n];
+		return ifac[n];
 	}
 	static ll binom(ll n, ll m) {
 		if(m < 0 || m > n || n < 0) return 0;
-		return (((ll(_fact[n]) * ll(_invfact[m])) % modulo) * ll(_invfact[n - m])) % modulo;
+		ll fn = fac[n], im = ifac[m], inm = ifac[n - m];
+		return fn * im % modulo * inm % modulo;
 	}
 private:
-	static constexpr int _maxn = 500005;
-	static inline int _fact[_maxn], _invfact[_maxn];
+	static constexpr int maxn = 500005;
+	static inline int fac[maxn], ifac[maxn];
 	static inline int init = [] {
-		_fact[0] = 1;
-		for(ll i = 1; i < _maxn; ++i) {
-			_fact[i] = (ll(_fact[i - 1]) * i) % modulo;
+		fac[0] = 1;
+		for(ll i = 1; i < maxn; ++i) {
+			fac[i] = (ll(fac[i - 1]) * i) % modulo;
 		}
-		_invfact[_maxn - 1] = qpow(_fact[_maxn - 1], modulo - 2);
-		for(ll i = _maxn - 2; i >= 0; --i) {
-			_invfact[i] = (ll(_invfact[i + 1]) * (i + 1)) % modulo;
+		ifac[maxn - 1] = qpow(fac[maxn - 1], modulo - 2);
+		for(ll i = maxn - 2; i >= 0; --i) {
+			ifac[i] = (ll(ifac[i + 1]) * (i + 1)) % modulo;
 		}
 		return 0;
 	}();

@@ -21,48 +21,44 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 	return chkf(x, y, greater<T1>{});
 }
 
-// 单点
-struct Fenwick {
-	explicit Fenwick(int n) : n(n), nums(n + 1, 0) {}
-	ll query(int x) const {
-		ll ans = 0;
-		for(; x; x -= lbit(x)) {
-			ans += nums[x];
-		}
+template<class T> concept FenwickInfo = requires(T a, T b) {
+	T{};
+	{a + b} -> convertible_to<T>;
+};
+template<FenwickInfo T> struct Fenwick {
+	explicit Fenwick(int n) : _nums(n + 1, 0), _n(n) {}
+	T query(int x) const {
+		T ans{};
+		for(; x; x -= x & -x) ans = ans + _nums[x];
 		return ans;
 	}
-	void update(int x, ll v) {
-		for(; x <= n; x += lbit(x)) {
-			nums[x] += v;
-		}
+	void update(int x, const T &v) {
+		for(; x <= _n; x += x & -x) _nums[x] = _nums[x] + v;
 	}
 private:
-	vector<ll> nums;
-	int n;
-	static int lbit(int x) {
-		return x & -x;
-	}
+	vector<T> _nums;
+	int _n;
 };
-// 区间
-struct RangeFenwick {
-	const int n;
-	explicit RangeFenwick(int n)
-		: n(n), f1(n), f2(n) {}
-	void update(int l, int r, ll v) {
+template<class T> concept RangeFenwickInfo = requires(T a, T b, int c) {
+	{a - b} -> convertible_to<T>;
+	{a * c} -> convertible_to<T>;
+	{-a} -> convertible_to<T>;
+} && FenwickInfo<T>;
+template<RangeFenwickInfo T> struct RangeFenwick {
+	explicit RangeFenwick(int n) : _f1(n), _f2(n), _n(n) {}
+	void update(int l, int r, const T &v) {
 		_update(l, v);
-		_update(r + 1, -v);
+		_update(r, -v);
 	}
-	ll query(int l, int r) const {
-		return _query(r) - _query(l - 1);
+	T query(int x) const {
+		return x * _f1.query(x) - _f2.query(x);
 	}
 private:
-	Fenwick f1, f2;
-	void _update(int x, ll v) {
-		f1.update(x, v);
-		f2.update(x, v * (x - 1));
-	}
-	ll _query(int x) const {
-		return f1.query(x) * x - f2.query(x);
+	Fenwick<T> _f1, _f2;
+	int _n;
+	void _update(int x, const T &v) {
+		_f1.update(x, v);
+		_f2.update(x, v * (x - 1));
 	}
 };
 

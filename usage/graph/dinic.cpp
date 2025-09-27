@@ -32,19 +32,20 @@ struct Dinic {
 	Dinic(int n, int s, int e)
 		: graph(n), level(n), start(s), end(e), n(n) {}
 	void addedge(int u, int v, ll w) {
-		graph[u].emplace_back(Edge{ v, (int)graph[v].size(), w });
-		graph[v].emplace_back(Edge{ u, (int)graph[u].size() - 1, 0 });
+		int iv = graph[v].size(), iu = graph[u].size();
+		graph[u].push_back({ v, iv, w });
+		graph[v].push_back({ u, iu, 0 });
 	}
-	ll solve() {
-		ll ans = 0;
+	ll maxflow() {
+		ll mf = 0;
 		while(bfs()) {
 			ll flow = dfs(start, inf);
 			while(flow > 0) {
-				ans += flow;
+				mf += flow;
 				flow = dfs(start, inf);
 			}
 		}
-		return ans;
+		return mf;
 	}
 private:
 	vector<int> level;

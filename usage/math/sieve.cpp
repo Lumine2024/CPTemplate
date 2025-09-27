@@ -44,7 +44,6 @@ template<class F> concept eularsieve_func = convertible_to<F, function<ll(int, i
 struct EularSieve {
 	vector<int> primes, lpf, lpow;
 	vector<ll> fv;
-
 	explicit EularSieve(int n) : lpf(n + 1), lpow(n + 1) {
 		for(ll i = 2; i <= n; ++i) {
 			if(lpf[i] == 0) {
@@ -58,8 +57,6 @@ struct EularSieve {
 				lpf[j] = p;
 				if(i % p == 0) {
 					lpow[j] = lpow[i] + 1;
-					ll jp = __qpow(lpf[j], lpow[j]);
-					ll rem = j / jp;
 					break;
 				} else {
 					lpow[j] = 1;
@@ -67,7 +64,6 @@ struct EularSieve {
 			}
 		}
 	}
-
 	template<eularsieve_func F> EularSieve(int n, F &&f) : lpf(n + 1), lpow(n + 1), fv(n + 1) {
 		fv[1] = 1;
 		for(ll i = 2; i <= n; ++i) {

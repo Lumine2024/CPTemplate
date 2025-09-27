@@ -22,6 +22,7 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 }
 
 template<class Info> concept SegInfo = requires(Info a, Info b) {
+	Info{};
 	{ a + b } -> same_as<Info>;
 	{ a.update(b) } -> same_as<void>;
 };
@@ -148,6 +149,9 @@ private:
 	struct _Node {
 		int dep, fa, toc, dfn, sz, hs;
 	};
+	vector<_Node> nodes;
+	vector<int> nfd;
+	SegTree<HLDInfo> seg;
 	void dfs1(const vector<Node> &g, int x, int fa) {
 		if(fa == -1) {
 			nodes[x].dep = 0;
@@ -181,9 +185,6 @@ private:
 			}
 		}
 	}
-	vector<_Node> nodes;
-	vector<int> nfd;
-	SegTree<HLDInfo> seg;
 };
 
 inline void solve() {
