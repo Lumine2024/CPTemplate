@@ -6,8 +6,6 @@ using ll = long long;
 using ull = unsigned long long;
 using ld = long double;
 
-inline constexpr ld eps = 1e-9l, pi = numbers::pi_v<ld>, inf = 1e12l;
-
 template<class T, class F> concept binary_func = convertible_to<F, function<bool(T, T)>>;
 template<class T1, class T2, class F> requires(binary_func<T1, F> &&convertible_to<T2, T1>) bool chkf(T1 &x, const T2 &y, F &&f) {
 	if(f(static_cast<T1>(y), x)) {
@@ -22,6 +20,8 @@ template<class T1, class T2> bool chkmin(T1 &x, const T2 &y) {
 template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 	return chkf(x, y, greater<T1>{});
 }
+
+inline constexpr ld eps = 1e-9l, pi = numbers::pi_v<ld>, inf = 1e12l;
 
 int sign(ld a) {
 	return (a < -eps) ? -1 : (a > eps) ? 1 : 0;

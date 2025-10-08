@@ -31,7 +31,7 @@ private:
 	static constexpr ll maxn = 500005;
 	static inline ll nums[maxn];
 	static inline int init = [] {
-		nums[0] = nums[1] = nums[2] = 1;
+		nums[0] = nums[2] = 1;
 		for(ll i = 3; i < maxn; ++i) {
 			nums[i] = (i - 1) * (nums[i - 1] + nums[i - 2]) % modulo;
 		}

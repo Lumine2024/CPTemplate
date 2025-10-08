@@ -39,6 +39,11 @@ struct Comb {
 	static ll invfact(ll n) {
 		return ifac[n];
 	}
+	static ll perm(ll n, ll m) {
+		if(m < 0 || m > n || n < 0) return 0;
+		ll fn = fac[n], inm = ifac[n - m];
+		return fn * inm % modulo;
+	}
 	static ll binom(ll n, ll m) {
 		if(m < 0 || m > n || n < 0) return 0;
 		ll fn = fac[n], im = ifac[m], inm = ifac[n - m];

@@ -56,10 +56,10 @@ vector<int> threed_partial(int n, int k, vector<Data> _datas) {
 	int cnt = 0;
 	for(int i = 0; i < n; ++i) {
 		++cnt;
-		if((_datas[i].x != _datas[i + 1].x) ||
+		if((i == n - 1) || (_datas[i].x != _datas[i + 1].x) ||
 			(_datas[i].y != _datas[i + 1].y) ||
 			(_datas[i].z != _datas[i + 1].z)) {
-			datas.emplace_back(_datas[i].x, _datas[i].y, _datas[i].z);
+			datas.emplace_back(_datas[i].x, _datas[i].y, _datas[i].z).cnt = cnt;
 			cnt = 0;
 		}
 	}
