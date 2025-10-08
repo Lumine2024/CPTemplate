@@ -6,8 +6,6 @@ using ll = long long;
 using ull = unsigned long long;
 using ld = long double;
 
-inline constexpr ll inf = 0x3f3f3f3f3f3f3f3f;
-
 template<class T, class F> concept binary_func = convertible_to<F, function<bool(T, T)>>;
 template<class T1, class T2, class F> requires(binary_func<T1, F> &&convertible_to<T2, T1>) bool chkf(T1 &x, const T2 &y, F &&f) {
 	if(f(static_cast<T1>(y), x)) {
@@ -23,15 +21,19 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 	return chkf(x, y, greater<T1>{});
 }
 
-vector<ll> dijkstra(vector<vector<pair<int, ll>>> &graph, int start) {
+inline constexpr ll inf = 0x3f3f3f3f3f3f3f3f;
+
+pair<vector<ll>, vector<int>> dijkstra(const vector<vector<pair<int, ll>>> &graph, int start) {
 	int v = graph.size();
 	vector<ll> dist(v, inf);
 	dist[start] = 0;
 	vector<bool> vis(v, false);
+    vector<int> pre(v, -1);
 	priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<>> pq;
 	for(auto [vtx, w] : graph[start]) {
 		dist[vtx] = w;
 		pq.emplace(w, vtx);
+		pre[vtx] = start;
 	}
 	while(!pq.empty()) {
 		auto [w, vtx] = pq.top();
@@ -42,10 +44,11 @@ vector<ll> dijkstra(vector<vector<pair<int, ll>>> &graph, int start) {
 			if(!vis[vt] && dist[vt] > dist[vtx] + ww) {
 				dist[vt] = dist[vtx] + ww;
 				pq.emplace(dist[vt], vt);
+				pre[vt] = vtx;
 			}
 		}
 	}
-	return dist;
+	return {dist, pre};
 }
 
 inline void solve() {

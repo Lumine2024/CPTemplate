@@ -6,16 +6,6 @@ using ll = long long;
 using ull = unsigned long long;
 using ld = long double;
 
-inline constexpr ll modulo = 998244353, inf = 0x3f3f3f3f3f3f3f3f;
-
-inline ll qpow(ll x, ll n) {
-	ll ret = 1;
-	for(; n != 0; n >>= 1, x = x * x % modulo) {
-		if(n & 1) ret = ret * x % modulo;
-	}
-	return ret;
-}
-
 template<class T, class F> concept binary_func = convertible_to<F, function<bool(T, T)>>;
 template<class T1, class T2, class F> requires(binary_func<T1, F> &&convertible_to<T2, T1>) bool chkf(T1 &x, const T2 &y, F &&f) {
 	if(f(static_cast<T1>(y), x)) {
@@ -31,6 +21,16 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 	return chkf(x, y, greater<T1>{});
 }
 
+inline constexpr ll modulo = 998244353, inf = 0x3f3f3f3f3f3f3f3f;
+
+ll qpow(ll x, ll n) {
+	ll ret = 1;
+	for(; n != 0; n >>= 1, x = x * x % modulo) {
+		if(n & 1) ret = ret * x % modulo;
+	}
+	return ret;
+}
+
 ll __qpow(ll x, ll n) {
 	ll ret = 1;
 	for(; n != 0; n >>= 1, x = x * x) {
@@ -39,7 +39,9 @@ ll __qpow(ll x, ll n) {
 	return ret;
 }
 
-template<class F> concept eularsieve_func = convertible_to<F, function<ll(int, int)>>;
+template<class F> concept eularsieve_func = requires(F &&f, int p, int k) {
+	{ f(p, k) } -> convertible_to<ll>;
+};
 
 struct EularSieve {
 	vector<int> primes, lpf, lpow;

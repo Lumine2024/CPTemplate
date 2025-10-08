@@ -42,9 +42,7 @@ template<class T> vector<vector<T>> matpow(vector<vector<T>> mat, ll n) {
 		ret[i][i] = static_cast<T>(1);
 	}
 	for(; n != 0; n >>= 1, mat = matmul(mat, mat)) {
-		if(n & 1ll) {
-			ret = matmul(ret, mat);
-		}
+		if(n & 1ll) ret = matmul(ret, mat);
 	}
 	return ret;
 }
