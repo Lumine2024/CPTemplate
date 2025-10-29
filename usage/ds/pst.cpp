@@ -23,7 +23,6 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 
 // persistent segment tree
 struct PST {
-	const int n;
 	explicit PST(int n_) : n(n_) {
 		nodes.reserve(2 * n * (int)log2(n));
 		vers.reserve(n + 1);
@@ -43,6 +42,7 @@ private:
 	};
 	vector<Node> nodes;
 	vector<int> vers;
+	int n;
 	int _build(int l, int r) {
 		int ret = nodes.size();
 		if(l == r) {
@@ -50,7 +50,7 @@ private:
 			return ret;
 		}
 		nodes.emplace_back(-1, -1, 0);
-		int mid = (l + r) >> 1;
+		int mid = (l + r) / 2;
 		nodes[ret].l = _build(l, mid);
 		nodes[ret].r = _build(mid + 1, r);
 		return ret;
@@ -59,26 +59,18 @@ private:
 		int ret = nodes.size();
 		nodes.emplace_back(nodes[root]);
 		nodes[ret].cnt++;
-		if(l == r) {
-			return ret;
-		}
-		int mid = (l + r) >> 1;
-		if(k <= mid) {
-			nodes[ret].l = _update(k, nodes[root].l, l, mid);
-		} else {
-			nodes[ret].r = _update(k, nodes[root].r, mid + 1, r);
-		}
+		if(l == r) return ret;
+		int mid = (l + r) / 2;
+		if(k <= mid) nodes[ret].l = _update(k, nodes[root].l, l, mid);
+		else nodes[ret].r = _update(k, nodes[root].r, mid + 1, r);
 		return ret;
 	}
 	int _query(int k, int root1, int root2, int l, int r) const {
 		if(l == r) return l;
-		int mid = (l + r) >> 1;
+		int mid = (l + r) / 2;
 		int cntl = nodes[nodes[root2].l].cnt - nodes[nodes[root1].l].cnt;
-		if(k <= cntl) {
-			return _query(k, nodes[root1].l, nodes[root2].l, l, mid);
-		} else {
-			return _query(k - cntl, nodes[root1].r, nodes[root2].r, mid + 1, r);
-		}
+		if(k <= cntl) return _query(k, nodes[root1].l, nodes[root2].l, l, mid);
+		else return _query(k - cntl, nodes[root1].r, nodes[root2].r, mid + 1, r);
 	}
 };
 
