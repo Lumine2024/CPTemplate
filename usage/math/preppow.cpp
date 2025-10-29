@@ -40,6 +40,12 @@ struct PreprocessedPow {
 		ll i = n / m, j = n % m;
 		return (ll(powerkm[i]) * ll(powerk[j])) % modulo;
 	}
+	ll operator()(ll n) const {
+		return pow(n);
+	}
+	ll operator[](ll n) const {
+		return pow(n);
+	}
 private:
 	int m;
 	vector<int> powerk, powerkm;

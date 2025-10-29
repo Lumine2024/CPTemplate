@@ -1,4 +1,3 @@
-
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -6,8 +5,7 @@ using ll = long long;
 using ull = unsigned long long;
 using ld = long double;
 
-template<class T, class F> concept binary_func = convertible_to<F, function<bool(T, T)>>;
-template<class T1, class T2, class F> requires(binary_func<T1, F> &&convertible_to<T2, T1>) bool chkf(T1 &x, const T2 &y, F &&f) {
+template<class T1, class T2, class F> bool chkf(T1 &x, const T2 &y, F &&f) {
 	if(f(static_cast<T1>(y), x)) {
 		x = static_cast<T1>(y);
 		return true;
@@ -21,11 +19,32 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 	return chkf(x, y, greater<T1>{});
 }
 
-inline constexpr ll modulo = 998244353;
+constexpr ll modulo = 998244353;
 constexpr ll qpow(ll x, ll n) {
 	ll ret = 1;
 	for(; n != 0; n >>= 1, x = x * x % modulo) {
 		if(n & 1) ret = ret * x % modulo;
+	}
+	return ret;
+}
+
+ll lagrange(const vector<ll> &x, const vector<ll> &y, ll x0) {
+	int n = x.size();
+	vector<ll> iden(n);
+	for(int i = 0; i < n; ++i) {
+		ll den = 1;
+		for(int j = 0; j < n; ++j) {
+			if(i != j) den = den * (x[i] - x[j] + modulo) % modulo;
+		}
+		iden[i] = qpow(den, modulo - 2);
+	}
+	ll ret = 0;
+	for(int i = 0; i < n; ++i) {
+		ll num = 1;
+		for(int j = 0; j < n; ++j) {
+			if(i != j) num = num * (x0 - x[j] + modulo) % modulo;
+		}
+		ret = (ret + y[i] * num % modulo * iden[i]) % modulo;
 	}
 	return ret;
 }
@@ -64,6 +83,30 @@ private:
 	}();
 };
 
+// if x[i] = i for i = 0 to x.size() - 1, then call this to solve in O(n)
+ll lagrange(const vector<ll> &y, ll x0) {
+	int n = y.size();
+	vector<ll> pre(n), suf(n);
+	pre[0] = (x0 - 0 + modulo) % modulo;
+	for(int i = 1; i < n; ++i) {
+		pre[i] = pre[i - 1] * (x0 - i + modulo) % modulo;
+	}
+	suf[n - 1] = (x0 - (n - 1) + modulo) % modulo;
+	for(int i = n - 2; i >= 0; --i) {
+		suf[i] = suf[i + 1] * (x0 - i + modulo) % modulo;
+	}
+	ll ret = 0;
+	for(int i = 0; i < n; ++i) {
+		ll term = y[i];
+		if(i > 0) term = term * pre[i - 1] % modulo;
+		if(i < n - 1) term = term * suf[i + 1] % modulo;
+		ll den = Comb::invfact(i) * Comb::invfact(n - 1 - i) % modulo;
+		if((n - 1 - i) % 2) den = modulo - den;
+		ret = (ret + term * den) % modulo;
+	}
+	return ret;
+}
+
 inline void solve() {
 	
 }
@@ -71,9 +114,9 @@ inline void solve() {
 int main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(nullptr);
-	int t = 1;
-	// cin >> t;
-	while(t--) {
+	int n = 1;
+	// cin >> n;
+	for(int i = 0; i < n; ++i) {
 		solve();
 	}
 	return 0;

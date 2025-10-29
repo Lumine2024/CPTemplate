@@ -27,7 +27,7 @@ struct BinaryLift {
 		tree[u].push_back(v);
 		tree[v].push_back(u);
 	}
-	void build(int root) {
+	void build(int root = 0) {
 		dfs(root, -1);
 	}
 	int lca(int u, int v) const {
