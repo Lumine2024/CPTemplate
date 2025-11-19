@@ -6,8 +6,7 @@ using ll = long long;
 using ull = unsigned long long;
 using ld = long double;
 
-template<class T, class F> concept binary_func = convertible_to<F, function<bool(T, T)>>;
-template<class T1, class T2, class F> requires(binary_func<T1, F> &&convertible_to<T2, T1>) bool chkf(T1 &x, const T2 &y, F &&f) {
+template<class T1, class T2, class F> bool chkf(T1 &x, const T2 &y, F &&f) {
 	if(f(static_cast<T1>(y), x)) {
 		x = static_cast<T1>(y);
 		return true;
@@ -21,13 +20,14 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 	return chkf(x, y, greater<T1>{});
 }
 
-template<class Info> concept SegInfo = requires(Info a, Info b) {
+template<class Info, class Applier> concept SegInfo = requires(Info a, Info b, const Applier src) {
 	Info{};
-	{ a + b } -> same_as<Info>;
-	{ a.update(b) } -> same_as<void>;
+	Info(a);
+	{a + b} -> same_as<Info>;
+	{src.apply(a)} -> same_as<void>;
 };
 
-template<SegInfo Info> struct SegTree {
+template<class Info, class Applier> requires(SegInfo<Info, Applier>) struct SegTree {
 	SegTree() : n(0) {}
 	explicit SegTree(int sz) : n(sz), info(sz * 4, Info()) {}
 	explicit SegTree(const vector<Info> &v) : n(v.size()), info(v.size() * 4) {
@@ -46,7 +46,7 @@ template<SegInfo Info> struct SegTree {
 		if(l == r) return Info();
 		return _query(l, r, 0, 0, n);
 	}
-	void update(int x, const Info &v) {
+	void update(int x, const Applier &v) {
 		_update(x, v, 0, 0, n);
 	}
 private:
@@ -64,15 +64,15 @@ private:
 	}
 	Info _query(int ql, int qr, int u, int rl, int rr) const {
 		if(ql <= rl && qr >= rr) return info[u];
-		int mid = (rl + rr) >> 1, ls = u * 2 + 1, rs = u * 2 + 2;
-		Info res{};
-		if(ql < mid) res = res + _query(ql, qr, ls, rl, mid);
-		if(qr > mid) res = res + _query(ql, qr, rs, mid, rr);
-		return res;
+		int mid = (rl + rr) / 2, ls = u * 2 + 1, rs = u * 2 + 2;
+		Info ret{};
+		if(ql < mid) ret = ret + _query(ql, qr, ls, rl, mid);
+		if(qr > mid) ret = ret + _query(ql, qr, rs, mid, rr);
+		return ret;
 	}
-	void _update(int x, const Info &v, int u, int rl, int rr) {
+	void _update(int x, const Applier &v, int u, int rl, int rr) {
 		if(rl == rr - 1) {
-			v.update(info[u]);
+			v.apply(info[u]);
 			return;
 		}
 		int mid = (rl + rr) >> 1, ls = u * 2 + 1, rs = u * 2 + 2;
@@ -83,16 +83,22 @@ private:
 };
 
 struct Info {
+	
 	Info() {
 		
 	}
 	Info operator+(const Info &i) const {
 		
 	}
-	void update(Info &dst) const {
+};
+
+struct Applier {
+	
+	void apply(Info &x) const {
 		
 	}
 };
+
 
 inline void solve() {
 	

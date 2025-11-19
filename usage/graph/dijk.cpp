@@ -30,21 +30,21 @@ pair<vector<ll>, vector<int>> dijkstra(const vector<vector<pair<int, ll>>> &grap
 	vector<bool> vis(v, false);
     vector<int> pre(v, -1);
 	priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<>> pq;
-	for(auto [vtx, w] : graph[start]) {
-		dist[vtx] = w;
-		pq.emplace(w, vtx);
-		pre[vtx] = start;
+	for(auto [v, w] : graph[start]) {
+		dist[v] = w;
+		pq.emplace(w, v);
+		pre[v] = start;
 	}
 	while(!pq.empty()) {
-		auto [w, vtx] = pq.top();
+		auto [w, u] = pq.top();
 		pq.pop();
-		if(vis[vtx]) continue;
-		vis[vtx] = true;
-		for(auto [vt, ww] : graph[vtx]) {
-			if(!vis[vt] && dist[vt] > dist[vtx] + ww) {
-				dist[vt] = dist[vtx] + ww;
-				pq.emplace(dist[vt], vt);
-				pre[vt] = vtx;
+		if(vis[u]) continue;
+		vis[u] = true;
+		for(auto [v, ww] : graph[u]) {
+			if(!vis[v] && dist[v] > dist[u] + ww) {
+				dist[v] = dist[u] + ww;
+				pq.emplace(dist[v], v);
+				pre[v] = u;
 			}
 		}
 	}

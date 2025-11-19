@@ -26,9 +26,7 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 struct Treap {
 	Treap() : rt(nullptr) {}
 	~Treap() {
-		if(rt) {
-			_dtor(rt);
-		}
+		if(rt) _dtor(rt);
 	}
 	void insert(int v) {
 		auto tmp = _sval(rt, v);
@@ -51,9 +49,7 @@ struct Treap {
 			l.second->usize();
 			l.first = _merge(l.first, l.second);
 		} else {
-			if(tmp.first == l.second) {
-				tmp.first = nullptr;
-			}
+			if(tmp.first == l.second) tmp.first = nullptr;
 			delete l.second;
 			l.second = nullptr;
 		}
@@ -71,39 +67,28 @@ struct Treap {
 	int qpre(int v) const {
 		auto tmp = _sval(rt, v - 1);
 		int ret = -infint;
-		if(tmp.first) {
-			ret = _qvr(tmp.first, tmp.first->size - 1);
-		}
+		if(tmp.first) ret = _qvr(tmp.first, tmp.first->size - 1);
 		rt = _merge(tmp.first, tmp.second);
 		return ret;
 	}
 	int qsuc(int v) const {
 		auto tmp = _sval(rt, v);
 		int ret = -infint;
-		if(tmp.second) {
-			ret = _qvr(tmp.second, 0);
-		}
+		if(tmp.second) ret = _qvr(tmp.second, 0);
 		rt = _merge(tmp.first, tmp.second);
 		return ret;
 	}
 private:
 	struct Node {
-		int val;
-		int cnt;
-		int size;
-		int prio;
+		int val, cnt, size, prio;
 		Node *left, *right;
 		static inline random_device rnd{};
 		Node(int v)
 			: val(v), cnt(1), size(1), prio(rnd()), left(nullptr), right(nullptr) {}
 		void usize() {
 			size = cnt;
-			if(left) {
-				size += left->size;
-			}
-			if(right) {
-				size += right->size;
-			}
+			if(left) size += left->size;
+			if(right) size += right->size;
 		}
 	};
 	mutable Node *rt;
@@ -119,9 +104,7 @@ private:
 		delete ptr;
 	}
 	static pair<Node *, Node *> _sval(Node *const ptr, int key) {
-		if(!ptr) {
-			return { nullptr, nullptr };
-		}
+		if(!ptr) return { nullptr, nullptr };
 		if(ptr->val <= key) {
 			auto tmp = _sval(ptr->right, key);
 			ptr->right = tmp.first;

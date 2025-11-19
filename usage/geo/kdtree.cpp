@@ -21,8 +21,7 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 	return chkf(x, y, greater<T1>{});
 }
 
-inline constexpr ld eps = 1e-9l, pi = numbers::pi_v<ld>, inf = 1e12l;
-
+constexpr ld eps = 1e-9l, pi = numbers::pi_v<ld>, inf = 1e12l;
 int sign(ld a) {
 	return (a < -eps) ? -1 : (a > eps) ? 1 : 0;
 }
@@ -34,7 +33,10 @@ strong_ordering cmpso(ld a, ld b) {
 }
 
 struct Point {
-	ld x, y;
+	union {
+		struct { ld x, y; };
+		ld coord[2];
+	};
 	Point() : x(0.0l), y(0.0l) {}
 	Point(ld _x, ld _y) : x(_x), y(_y) {}
 	Point(const complex<ld> &cd) : x(cd.real()), y(cd.imag()) {}
@@ -65,7 +67,7 @@ struct Point {
 	ld len() const {
 		return sqrt(x * x + y * y);
 	}
-	// [0, 2*geo_pi)
+	// [0, 2pi)
 	ld arg() const {
 		ld ret = atan2(y, x);
 		int c = cmp(ret, 0);
@@ -87,12 +89,15 @@ ld cross(const Point &o, const Point &a, const Point &b) {
 }
 bool argcmp(const Point &x, const Point &y) {
 	bool bx = sign(x.y) == 1 || (sign(x.y) == 0 && sign(x.x) == 1),
-		 by = sign(y.y) == 1 || (sign(y.y) == 0 && sign(y.x) == 1);
+		by = sign(y.y) == 1 || (sign(y.y) == 0 && sign(y.x) == 1);
 	if(bx != by) return bx;
 	return sign(cross(x, y)) == 0;
 }
 ld dist(const Point &x, const Point &y) {
 	return (x - y).len();
+}
+ld dist2(const Point &x, const Point &y) {
+	return (x - y).len2();
 }
 int to_left(const Vector &a, const Vector &b) {
 	return sign(cross(a, b));
@@ -139,9 +144,7 @@ ld dist(const Point &p, const Line &ln) {
 	return abs(cross(ln.v, p - ln.p)) / ln.v.len();
 }
 ld dist(const Line &l1, const Line &l2) {
-	if(!parallel(l1, l2)) {
-		return 0;
-	}
+	if(!parallel(l1, l2)) return 0.0l;
 	return dist(l1.p, l2);
 }
 Point proj(const Point &p, const Line &ln) {
@@ -158,7 +161,10 @@ Line midperp(const Point &a, const Point &b) {
 }
 
 struct Lineseg {
-	Point a, b;
+	union {
+		struct { Point a, b; };
+		Point pts[2];
+	};
 	Lineseg() {}
 	Lineseg(const Point &_a, const Point &_b) : a(_a), b(_b) {}
 	ld len() const {
@@ -184,16 +190,16 @@ int is_inter(const Line &ln, const Lineseg &ls) {
 	return a == b ? 0 : 1;
 }
 int is_inter(const Lineseg &l1, const Lineseg &l2) {
-	if(is_on(l1.a, l2) || is_on(l1.b, l2) || is_on(l2.a, l1) || is_on(l2.b, l1)) 
+	if(is_on(l1.a, l2) || is_on(l1.b, l2) || is_on(l2.a, l1) || is_on(l2.b, l1))
 		return 2;
 	Line ln1(l1.a, l1.b - l1.a), ln2(l2.a, l2.b - l2.a);
-	return to_left(ln1, l2.a) * to_left(ln1, l2.b) == -1 
+	return to_left(ln1, l2.a) * to_left(ln1, l2.b) == -1
 		&& to_left(ln2, l1.a) * to_left(ln2, l1.b) == -1;
 }
 ld dist(const Point &p, const Lineseg &ls) {
 	if(is_on(p, ls) != 0) return 0.0l;
 	if(sign(dot(p - ls.a, ls.b - ls.a)) == -1 ||
-	   sign(dot(p - ls.b, ls.a - ls.b)) == -1) 
+		sign(dot(p - ls.b, ls.a - ls.b)) == -1)
 		return min(dist(p, ls.a), dist(p, ls.b));
 	Line l(ls.a, ls.b - ls.a);
 	return dist(p, l);
@@ -243,17 +249,12 @@ struct Circle {
 bool is_inter(const Circle &c1, const Circle &c2) {
 	ld dis = (c2.c - c1.c).len();
 	ld r1 = c1.r, r2 = c2.r;
-	if(abs(dis) <= eps) {
-		return false;
-	}
-	if(dis > r1 + r2 + eps || dis < abs(r1 - r2) - eps) {
-		return false;
-	}
+	if(abs(dis) <= eps) return false;
+	if(dis > r1 + r2 + eps || dis < abs(r1 - r2) - eps) return false;
 	return true;
 }
 pair<Point, Point> inter(const Circle &c1, const Circle &c2) {
-	if(!is_inter(c1, c2))
-		throw runtime_error("Circles do not intersect");
+	if(!is_inter(c1, c2)) throw runtime_error("Circles do not intersect");
 	ld dis = (c2.c - c1.c).len();
 	ld r1 = c1.r, r2 = c2.r;
 	ld cosa = clamp((r1 * r1 + dis * dis - r2 * r2) / (2 * r1 * dis), -1.0l, 1.0l);
@@ -277,10 +278,9 @@ pair<Point, Point> inter(const Circle &c, const Line &l) {
 	ld q = (B > 0 ? -B - s : -B + s) / 2;
 	ld t1 = q / A, t2 = C / q;
 	Point i1 = l.p + v * t1, i2 = l.p + v * t2;
-	return {i1, i2};
+	return { i1, i2 };
 }
 
-// 目前不知道这玩意能干啥，就放着吧TaT
 struct TwoDTree {
 	explicit TwoDTree(const vector<Point> &pts) : nodes(pts.size()) {
 		int n = nodes.size();
@@ -290,7 +290,7 @@ struct TwoDTree {
 		}
 		auto pushup = [&](int p) {
 			for(int i = 0; i < 2; ++i) {
-				nodes[p].L[i] = nodes[p].U[i] = (i == 0) ? (nodes[p].pt.x) : (nodes[p].pt.y);
+				nodes[p].L[i] = nodes[p].U[i] = nodes[p].pt.coord[i];
 				if(nodes[p].ls != -1) {
 					chkmin(nodes[p].L[i], nodes[nodes[p].ls].L[i]);
 					chkmax(nodes[p].U[i], nodes[nodes[p].ls].U[i]);
@@ -304,26 +304,104 @@ struct TwoDTree {
 		auto build = [&](auto &&build, int l, int r, int k) -> int {
 			if(l >= r) return -1;
 			int mid = (l + r) / 2;
-			nth_element(nodes.begin() + l, nodes.begin() + mid, nodes.begin() + r, [&](const Node &a, const Node &b) {
-				if(k == 0) return a.pt.x < b.pt.x;
-				return a.pt.y < b.pt.y;
+			nth_element(nodes.begin() + l, nodes.begin() + mid, nodes.begin() + r,
+				[&](const Node &a, const Node &b) {
+				return a.pt.coord[k] < b.pt.coord[k];
 			});
 			nodes[mid].ls = build(build, l, mid, 1 - k);
 			nodes[mid].rs = build(build, mid + 1, r, 1 - k);
 			pushup(mid);
 			return mid;
 		};
-		build(build, 0, n, 0);
+		root = build(build, 0, n, 0);
 	}
-	// ...
+	template<class Comp> ld kth_cmp(int k) {
+		k *= 2;
+		priority_queue<ld, vector<ld>, Comp> pq;
+		for(int i = 0; i < nodes.size(); ++i) {
+			kth(root, nodes[i].pt, pq, k, 0);
+		}
+		return sqrt(pq.top());
+	}
+	ld kth_nearest(int k) {
+		return kth_cmp<less<>>(k);
+	}
+	ld kth_farthest(int k) {
+		return kth_cmp<greater<>>(k);
+	}
+	template<class Comp> ld kth_cmp(const Point &p, int k) {
+		k *= 2;
+		priority_queue<ld, vector<ld>, Comp> pq;
+		kth(root, p, pq, k, 0);
+		return sqrt(pq.top());
+	}
+	ld kth_nearest(const Point &p, int k) {
+		return kth_cmp<less<>>(p, k);
+	}
+	ld kth_farthest(const Point &p, int k) {
+		return kth_cmp<greater<>>(p, k);
+	}
 private:
 	struct Node {
 		int ls, rs;
 		Point pt;
-		array<ld, 2> L, U;
+		ld L[2], U[2];
 	};
 	vector<Node> nodes;
+	int root;
+	template<class Comp> ld cmpdist(const Point &p, const Node &node);
+	template<class Comp> void kth(int p, const Point &q, priority_queue<ld, vector<ld>, Comp> &pq, int k, int dep) {
+		static Comp comp;
+		if(p == -1) return;
+		ld dist = (nodes[p].pt - q).len2();
+		if(dist > 1e-12) {
+			if(pq.size() < k) {
+				pq.push(dist);
+			} else if(comp(dist, pq.top())) {
+				pq.pop();
+				pq.push(dist);
+			}
+		}
+		int dim = dep % 2;
+		int fi, se;
+		if(q.coord[dim] < nodes[p].pt.coord[dim]) {
+			fi = nodes[p].rs;
+			se = nodes[p].ls;
+		} else {
+			fi = nodes[p].ls;
+			se = nodes[p].rs;
+		}
+		if(fi != -1) {
+			kth(fi, q, pq, k, dep + 1);
+		}
+		if(se != -1) {
+			ld md = cmpdist<Comp>(q, nodes[se]);
+			if(comp(md, pq.size() < k ? inf : pq.top()) || pq.size() < k) {
+				kth(se, q, pq, k, dep + 1);
+			}
+		}
+	}
 };
+
+template<class Comp> ld TwoDTree::cmpdist(const Point &p, const Node &node) = delete;
+template<> ld TwoDTree::cmpdist<less<>>(const Point &p, const Node &node) {
+	ld d = 0;
+	for(int i = 0; i < 2; ++i) {
+		if(p.coord[i] < node.L[i]) {
+			ld t = node.L[i] - p.coord[i];
+			d += t * t;
+		} else if(p.coord[i] > node.U[i]) {
+			ld t = p.coord[i] - node.U[i];
+			d += t * t;
+		}
+	}
+	return d;
+}
+template<> ld TwoDTree::cmpdist<greater<>>(const Point &p, const Node &node) {
+	ld dx = max(abs(p.x - node.L[0]), abs(p.x - node.U[0]));
+	ld dy = max(abs(p.y - node.L[1]), abs(p.y - node.U[1]));
+	return dx * dx + dy * dy;
+}
 
 inline void solve() {
 	

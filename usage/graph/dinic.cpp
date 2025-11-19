@@ -79,9 +79,7 @@ private:
 					graph[e.to][e.rev].cap += push;
 					nf += push;
 					mf -= push;
-					if(mf == 0) {
-						return nf;
-					}
+					if(mf == 0) return nf;
 				}
 			}
 		}

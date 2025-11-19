@@ -5,31 +5,33 @@ using ll = long long;
 using ull = unsigned long long;
 using ld = long double;
 
-template<class Info> concept DynSegInfo = requires(Info a, Info b, ll l, ll r) {
+template<class Info, class Applier> concept DynSegInfo = requires(Info a, Info b, const Applier src) {
 	Info{};
-	Info(l, r);
-	{ a + b } -> same_as<Info>;
-	{ a.apply(b) } -> same_as<void>;
-	{ a.l } -> convertible_to<ll>;
-	{ a.r } -> convertible_to<ll>;
-	{ a.ls } -> convertible_to<ll>;
-	{ a.rs } -> convertible_to<ll>;
+	Info(a);
+	{a + b} -> same_as<Info>;
+	{src.apply(a)} -> same_as<void>;
 };
 
-template<DynSegInfo Info> struct DynSegTree {
-	explicit DynSegTree(ll _n) : n(_n), info(1, Info(0, _n)) {}
-	void update(ll x, const Info &src) {
+template<class Info, class Applier> requires DynSegInfo<Info, Applier> struct DynSegTree {
+	explicit DynSegTree(ll _n) : n(_n), info(1, _(0, _n)) {}
+	void update(ll x, const Applier &src) {
 		_update(x, src, 0);
 	}
 	Info query(ll l, ll r) const {
 		return _query(l, r, 0);
 	}
 private:
-	vector<Info> info;
+	struct _ {
+		Info info;
+		ll l, r, ls, rs;
+		_() : info{}, l(0), r(0), ls(-1), rs(-1) {}
+		_(ll _l, ll _r) : info{}, l(_l), r(_r), ls(-1), rs(-1) {}
+	};
+	vector<_> info;
 	ll n;
-	void _update(ll x, const Info &src, ll u) {
+	void _update(ll x, const Applier &src, ll u) {
 		if(info[u].l == info[u].r - 1) {
-			src.apply(info[u]);
+			src.apply(info[u].info);
 			return;
 		}
 		ll mid = (info[u].l + info[u].r) / 2;
@@ -46,14 +48,12 @@ private:
 			}
 			_update(x, src, info[u].rs);
 		}
-		ll _l = info[u].l, _r = info[u].r, _ls = info[u].ls, _rs = info[u].rs;
-		info[u] = Info{};
-		if(_ls != -1) info[u] = info[u] + info[_ls];
-		if(_rs != -1) info[u] = info[u] + info[_rs];
-		info[u].l = _l; info[u].r = _r; info[u].ls = _ls; info[u].rs = _rs;
+		info[u].info = Info{};
+		if(info[u].ls != -1) info[u].info = info[u].info + info[info[u].ls].info;
+		if(info[u].rs != -1) info[u].info = info[u].info + info[info[u].rs].info;
 	}
 	Info _query(ll ql, ll qr, ll u) const {
-		if(ql <= info[u].l && qr >= info[u].r) return info[u];
+		if(ql <= info[u].l && qr >= info[u].r) return info[u].info;
 		Info ret{};
 		ll mid = (info[u].l + info[u].r) / 2;
 		if(ql < mid && info[u].ls != -1) ret = ret + _query(ql, qr, info[u].ls);
@@ -63,20 +63,17 @@ private:
 };
 
 struct Info {
-	ll l, r, ls, rs;
-	Info() : l(0), r(0), ls(-1), rs(-1) {
+	
+	Info() {}
+	Info operator+(const Info &other) const {
 		
 	}
-	Info(ll _l, ll _r) : l(_l), r(_r), ls(-1), rs(-1) {
+};
+
+struct Applier {
+	
+	void apply(ll &x) const {
 		
-	}
-	Info operator+(const Info &i) const {
-		Info ret{};
-
-		return ret;
-	}
-	void apply(Info &dst) const {
-
 	}
 };
 

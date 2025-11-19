@@ -46,7 +46,7 @@ struct Trie {
 		}
 		return nodes[rt].end;
 	}
-	int find_prefix(const string &str) const {
+	int prefix_count(const string &str) const {
 		int rt = 0;
 		for(int i = 0; i < str.size(); ++i) {
 			if((nodes[rt].nxt[getnum(str[i])]) == -1) {
@@ -67,13 +67,9 @@ private:
 	};
 	vector<Node> nodes;
 	static int getnum(char x) {
-		if(x >= 'A' && x <= 'Z') {
-			return x - 'A';
-		} else if(x >= 'a' && x <= 'z') {
-			return x - 'a' + 26;
-		} else {
-			return x - '0' + 52;
-		}
+		if(x >= 'A' && x <= 'Z') return x - 'A';
+		else if(x >= 'a' && x <= 'z') return x - 'a' + 26;
+		else return x - '0' + 52;
 	}
 };
 

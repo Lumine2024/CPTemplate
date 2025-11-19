@@ -21,46 +21,38 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 	return chkf(x, y, greater<T1>{});
 }
 
-string manacher(const string &_s) {
+vector<int> manacher(const string &_s) {
 	string s = "$";
 	for(char ch : _s) {
 		s += ch;
 		s += '$';
 	}
 	int n = s.size();
-	int max_right = 0;
-	int center = 0;
+	int mr = 0;
+	int c = 0;
 	vector<int> dp(n, 0);
-	auto expand = [&](int left, int right) {
-		while(left >= 0 && right < n && s[left] == s[right]) {
-			--left;
-			++right;
+	auto expand = [&](int l, int r) {
+		while(l >= 0 && r < n && s[l] == s[r]) {
+			--l;
+			++r;
 		}
-		return (right - left) / 2;
+		return (r - l) / 2;
 	};
 	for(int i = 0; i < n; ++i) {
-		int mirror = 2 * center - i;
-		if(i >= max_right) {
+		int m = 2 * c - i;
+		if(i >= mr) {
 			dp[i] = expand(i, i);
-			max_right = i + dp[i];
-			center = i;
-		} else if(dp[mirror] == max_right - i) {
-			dp[i] = expand(i - dp[mirror], i + dp[mirror]);
-			max_right = i + dp[i];
-			center = i;
+			mr = i + dp[i];
+			c = i;
+		} else if(dp[m] == mr - i) {
+			dp[i] = expand(i - dp[m], i + dp[m]);
+			mr = i + dp[i];
+			c = i;
 		} else {
-			dp[i] = min(dp[mirror], max_right - i);
+			dp[i] = min(dp[m], mr - i);
 		}
 	}
-	auto it = max_element(dp.begin(), dp.end());
-	int id = it - dp.begin(), len = *it;
-	string ret;
-	for(int i = id - len + 1; i < id + len; ++i) {
-		if(s[i] != '$') {
-			ret += s[i];
-		}
-	}
-	return ret;
+	return dp;
 }
 
 inline void solve() {
