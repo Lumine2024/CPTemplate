@@ -6,8 +6,6 @@ using ll = long long;
 using ull = unsigned long long;
 using ld = long double;
 
-inline constexpr ll inf = 0x3f3f3f3f3f3f3f3f;
-
 template<class T, class F> concept binary_func = convertible_to<F, function<bool(T, T)>>;
 template<class T1, class T2, class F> requires(binary_func<T1, F> &&convertible_to<T2, T1>) bool chkf(T1 &x, const T2 &y, F &&f) {
 	if(f(static_cast<T1>(y), x)) {
@@ -23,9 +21,11 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 	return chkf(x, y, greater<T1>{});
 }
 
+constexpr ll inf = 0x3f3f3f3f3f3f3f3f;
+
 ll prim(const vector<vector<pair<int, ll>>> &graph) {
 	int n = graph.size();
-	vector<bool> visited(n, false);
+	vector<bool> vis(n, false);
 	vector<ll> dist(n, inf);
 	dist[0] = 0;
 	priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<>> pq;
@@ -34,20 +34,18 @@ ll prim(const vector<vector<pair<int, ll>>> &graph) {
 	while(!pq.empty()) {
 		auto [w, v] = pq.top();
 		pq.pop();
-		if(visited[v]) continue;
-		visited[v] = true;
+		if(vis[v]) continue;
+		vis[v] = true;
 		ret += w;
 		for(auto [u, w] : graph[v]) {
-			if(!visited[u] && dist[u] > w) {
+			if(!vis[u] && dist[u] > w) {
 				dist[u] = w;
 				pq.emplace(w, u);
 			}
 		}
 	}
-	for(bool b : visited) {
-		if(!b) {
-			return inf;
-		}
+	for(bool b : vis) {
+		if(!b) return inf;
 	}
 	return ret;
 }

@@ -25,11 +25,11 @@ int hungarian(const vector<vector<int>> &graph, int vsz) {
 	int usz = graph.size();
 	vector<int> mu(usz, -1);
 	vector<int> mv(vsz, -1);
-	auto dfs = [&](auto &&dfs, int u, vector<bool> &visited) -> bool {
+	auto dfs = [&](auto &&dfs, int u, vector<bool> &vis) -> bool {
 		for(int v : graph[u]) {
-			if(visited[v]) continue;
-			visited[v] = true;
-			if(mv[v] == -1 || dfs(dfs, mv[v], visited)) {
+			if(vis[v]) continue;
+			vis[v] = true;
+			if(mv[v] == -1 || dfs(dfs, mv[v], vis)) {
 				mv[v] = u;
 				mu[u] = v;
 				return true;
@@ -40,10 +40,8 @@ int hungarian(const vector<vector<int>> &graph, int vsz) {
 	int ret = 0;
 	for(int u = 0; u < usz; ++u) {
 		if(mu[u] == -1) {
-			vector<bool> visited(vsz, false);
-			if(dfs(dfs, u, visited)) {
-				ret++;
-			}
+			vector<bool> vis(vsz, false);
+			if(dfs(dfs, u, vis)) ret++;
 		}
 	}
 	return ret;

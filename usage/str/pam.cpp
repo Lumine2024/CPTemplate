@@ -30,9 +30,7 @@ struct PAM {
 		s += ch;
 		int pos = s.size() - 1;
 		int p = last, id = ch - 'a';
-		while(s[pos - nodes[p].len - 1] != ch) {
-			p = nodes[p].fail;
-		}
+		while(s[pos - nodes[p].len - 1] != ch) p = nodes[p].fail;
 		if(nodes[p].nxt[id] == -1) {
 			int cur = nodes.size();
 			nodes[p].nxt[id] = cur;
@@ -41,16 +39,10 @@ struct PAM {
 				nodes[cur].fail = 1;
 			} else {
 				int f = nodes[p].fail;
-				while(s[pos - nodes[f].len - 1] != ch) {
-					f = nodes[f].fail;
-				}
+				while(s[pos - nodes[f].len - 1] != ch) f = nodes[f].fail;
 				nodes[cur].fail = nodes[f].nxt[id];
 			}
-			if(nodes[cur].len == 1) {
-				nodes[cur].cnt = 1;
-			} else {
-				nodes[cur].cnt = nodes[nodes[cur].fail].cnt + 1;
-			}
+			nodes[cur].cnt = nodes[cur].len == 1 ? 1 : nodes[nodes[cur].fail].cnt + 1;
 		}
 		last = nodes[p].nxt[id];
 		return nodes[last].cnt;

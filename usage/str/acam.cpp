@@ -96,8 +96,7 @@ struct ACAM {
 	}
 private:
 	struct Node {
-		int cnt;
-		int fail;
+		int cnt, fail;
 		array<int, 26> nxt1, nxt2;
 		Node() : cnt(0), fail(0) {
 			nxt1.fill(-1);

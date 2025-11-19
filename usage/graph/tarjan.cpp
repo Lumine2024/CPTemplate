@@ -24,6 +24,21 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 template<class T> concept EdgeT = requires(T t) {
 	{t.dst} -> convertible_to<int>;
 };
+#define CONSTRUCT_FROM_VARIABLE_GRAPH_T(name) \
+	template<class T> explicit name(const vector<vector<pair<int, T>>> &g) : graph(g.size()), nodes(g.size()) { \
+		int n = g.size(); \
+		for(int u = 0; u < n; ++u) { \
+			for(auto [v, _] : g[u]) addedge(u, v); \
+		} \
+		build(); \
+	} \
+	template<EdgeT T> explicit name(const vector<vector<T>> &g) : graph(g.size()), nodes(g.size()) { \
+		int n = g.size(); \
+		for(int u = 0; u < n; ++u) { \
+			for(const T &edge : g[u]) addedge(u, edge.dst); \
+		} \
+		build(); \
+	}
 
 // 强连通分量
 struct SCC {
@@ -31,24 +46,7 @@ struct SCC {
 	explicit SCC(const vector<vector<int>> &g) : graph(g), nodes(g.size()) {
 		build();
 	}
-	template<class T> explicit SCC(const vector<vector<pair<int, T>>> &g) : graph(g.size()), nodes(g.size()) {
-		int n = g.size();
-		for(int u = 0; u < n; ++u) {
-			for(auto [v, _] : g[u]) {
-				addedge(u, v);
-			}
-		}
-		build();
-	}
-	template<EdgeT T> explicit SCC(const vector<vector<T>> &g) : graph(g.size()), nodes(g.size()) {
-		int n = g.size();
-		for(int u = 0; u < n; ++u) {
-			for(const T &edge : g[u]) {
-				addedge(u, edge.dst);
-			}
-		}
-		build();
-	}
+	CONSTRUCT_FROM_VARIABLE_GRAPH_T(SCC);
 	void addedge(int u, int v) {
 		if(u != v) graph[u].push_back(v);
 	}
@@ -79,8 +77,7 @@ struct SCC {
 private:
 	stack<int> stk;
 	void dfs(int &dfn, int &cnt, int u) {
-		nodes[u].dfn = nodes[u].low = dfn;
-		++dfn;
+		nodes[u].dfn = nodes[u].low = dfn++;
 		stk.push(u);
 		nodes[u].ins = true;
 		for(int v : graph[u]) {
@@ -112,6 +109,7 @@ struct EBCC {
 	explicit EBCC(const vector<vector<int>> &g) : graph(g), nodes(g.size()), in_ebcc(g.size()) {
 		build();
 	}
+	CONSTRUCT_FROM_VARIABLE_GRAPH_T(EBCC);
 	void addedge(int u, int v) {
 		if(u == v) return;
 		graph[u].push_back(v);
@@ -138,9 +136,8 @@ struct EBCC {
 private:
 	stack<int> stk;
 	void dfs(int u, int fa, int &dfn) {
-		nodes[u].dfn = nodes[u].low = dfn;
+		nodes[u].dfn = nodes[u].low = dfn++;
 		nodes[u].ins = true;
-		dfn++;
 		stk.push(u);
 		for(int v : graph[u]) {
 			if(v == fa) continue;
@@ -170,6 +167,7 @@ struct DCC {
 	explicit DCC(const vector<vector<int>> &g) : graph(g), nodes(g.size()) {
 		build();
 	}
+	CONSTRUCT_FROM_VARIABLE_GRAPH_T(DCC);
 	void addedge(int u, int v) {
 		if(u == v) return;
 		graph[u].push_back(v);
@@ -192,16 +190,14 @@ struct DCC {
 	vector<vector<int>> dcc;
 private:
 	stack<int> stk;
-	void dfs(int u, int parent, int root, int &dfn_now) {
-		nodes[u].dfn = dfn_now;
-		nodes[u].low = dfn_now;
-		dfn_now++;
+	void dfs(int u, int parent, int root, int &dfn) {
+		nodes[u].dfn = nodes[u].low = dfn++;
 		stk.push(u);
 		int child = 0;
 		for(int v : graph[u]) {
 			if(v == parent) continue;
 			if(nodes[v].dfn == -1) {
-				dfs(v, u, root, dfn_now);
+				dfs(v, u, root, dfn);
 				nodes[u].low = min(nodes[u].low, nodes[v].low);
 				if(nodes[v].low >= nodes[u].dfn) {
 					++child;
@@ -225,11 +221,12 @@ private:
 	}
 };
 // 割点
-struct Cutpoint {
-	explicit Cutpoint(int n) : nodes(n), graph(n) {}
-	explicit Cutpoint(const vector<vector<int>> &g) : graph(g), nodes(g.size()) {
+struct AP {
+	explicit AP(int n) : nodes(n), graph(n) {}
+	explicit AP(const vector<vector<int>> &g) : graph(g), nodes(g.size()) {
 		build();
 	}
+	CONSTRUCT_FROM_VARIABLE_GRAPH_T(AP);
 	void addedge(int u, int v) {
 		graph[u].push_back(v);
 		graph[v].push_back(u);
@@ -268,12 +265,8 @@ private:
 				nodes[u].low = min(nodes[u].low, nodes[v].dfn);
 			}
 		}
-		if(fa == -1) {
-			flag = (child > 1);
-		}
-		if(flag) {
-			cutpoints.push_back(u);
-		}
+		if(fa == -1) flag = (child > 1);
+		if(flag) cutpoints.push_back(u);
 	}
 };
 // 桥
@@ -282,6 +275,7 @@ struct Bridge {
 	explicit Bridge(const vector<vector<int>> &g) : graph(g), nodes(g.size()) {
 		build();
 	}
+	CONSTRUCT_FROM_VARIABLE_GRAPH_T(Bridge);
 	void addedge(int u, int v) {
 		graph[u].push_back(v);
 		graph[v].push_back(u);
@@ -289,9 +283,7 @@ struct Bridge {
 	void build() {
 		int dfn = 0;
 		for(int i = 0; i < nodes.size(); ++i) {
-			if(nodes[i].dfn == -1) {
-				dfs(i, -1, dfn);
-			}
+			if(nodes[i].dfn == -1) dfs(i, -1, dfn);
 		}
 	}
 	struct Node {

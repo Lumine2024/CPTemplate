@@ -29,9 +29,7 @@ vector<int> zfn(const string &s) {
 			z[i] = z[i - l];
 		} else {
 			z[i] = max(0, r - i + 1);
-			while(i + z[i] < n && s[z[i]] == s[i + z[i]]) {
-				++z[i];
-			}
+			while(i + z[i] < n && s[z[i]] == s[i + z[i]]) ++z[i];
 		}
 		if(i + z[i] - 1 > r) {
 			l = i;

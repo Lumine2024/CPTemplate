@@ -90,25 +90,21 @@ private:
 // 请打一个SCC下来
 // 注意：蕴含式也要加另一条边，A->B要加B'->A'
 vector<int> twosat(int n, const vector<tuple<int, int, int, int>> &conds) {
-	SCC solver(2 * n);
-	for(auto [i, flag_i, j, flag_j] : conds) {
-		solver.addedge(2 * i + 1 - flag_i, 2 * j + flag_j);
-		solver.addedge(2 * j + 1 - flag_j, 2 * i + flag_i);
+	SCC scc(2 * n);
+	for(auto [i, fi, j, fj] : conds) {
+		scc.addedge(2 * i + 1 - fi, 2 * j + fj);
+		scc.addedge(2 * j + 1 - fj, 2 * i + fi);
 	}
-	solver.build();
+	scc.build();
 	for(int i = 0; i < n; ++i) {
-		if(solver.nodes[2 * i].inscc == solver.nodes[2 * i + 1].inscc) {
-			return {};
-		}
+		if(scc.nodes[2 * i].inscc == scc.nodes[2 * i + 1].inscc) return {};
 	}
 	vector<int> ans(n, -1);
-	for(int i = 0; i < solver.sccs.size(); ++i) {
-		for(int ii : solver.sccs[i]) {
+	for(int i = 0; i < scc.sccs.size(); ++i) {
+		for(int ii : scc.sccs[i]) {
 			int u = ii / 2;
 			int v = ii % 2;
-			if(ans[u] == -1) {
-				ans[u] = v;
-			}
+			if(ans[u] == -1) ans[u] = v;
 		}
 	}
 	return ans;

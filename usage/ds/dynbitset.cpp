@@ -126,6 +126,17 @@ struct DynamicBitSet {
 		return true;
 	}
 	int size() const { return sz; }
+	int count() const {
+		if(nums.empty()) return 0;
+		int ans = 0;
+		for(int i = 0; i < nums.size() - 1; ++i) {
+			ans += __builtin_popcountll(nums[i]);
+		}
+		for(int i = int(nums.size() * 64) - 64; i < sz; ++i) {
+			ans += int(getbit(i));
+		}
+		return ans;
+	}
 private:
 	vector<ull> nums;
 	int sz;

@@ -21,8 +21,7 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 	return chkf(x, y, greater<T1>{});
 }
 
-inline constexpr ld eps = 1e-9l, pi = numbers::pi_v<ld>, inf = 1e12l;
-
+constexpr ld eps = 1e-9l, pi = numbers::pi_v<ld>, inf = 1e12l;
 int sign(ld a) {
 	return (a < -eps) ? -1 : (a > eps) ? 1 : 0;
 }
@@ -34,7 +33,10 @@ strong_ordering cmpso(ld a, ld b) {
 }
 
 struct Point {
-	ld x, y;
+	union {
+		struct { ld x, y; };
+		ld coord[2];
+	};
 	Point() : x(0.0l), y(0.0l) {}
 	Point(ld _x, ld _y) : x(_x), y(_y) {}
 	Point(const complex<ld> &cd) : x(cd.real()), y(cd.imag()) {}
@@ -65,7 +67,7 @@ struct Point {
 	ld len() const {
 		return sqrt(x * x + y * y);
 	}
-	// [0, 2*geo_pi)
+	// [0, 2pi)
 	ld arg() const {
 		ld ret = atan2(y, x);
 		int c = cmp(ret, 0);
@@ -93,6 +95,9 @@ bool argcmp(const Point &x, const Point &y) {
 }
 ld dist(const Point &x, const Point &y) {
 	return (x - y).len();
+}
+ld dist2(const Point &x, const Point &y) {
+	return (x - y).len2();
 }
 int to_left(const Vector &a, const Vector &b) {
 	return sign(cross(a, b));
@@ -139,9 +144,7 @@ ld dist(const Point &p, const Line &ln) {
 	return abs(cross(ln.v, p - ln.p)) / ln.v.len();
 }
 ld dist(const Line &l1, const Line &l2) {
-	if(!parallel(l1, l2)) {
-		return 0;
-	}
+	if(!parallel(l1, l2)) return 0.0l;
 	return dist(l1.p, l2);
 }
 Point proj(const Point &p, const Line &ln) {
@@ -158,7 +161,10 @@ Line midperp(const Point &a, const Point &b) {
 }
 
 struct Lineseg {
-	Point a, b;
+	union {
+		struct { Point a, b; };
+		Point pts[2];
+	};
 	Lineseg() {}
 	Lineseg(const Point &_a, const Point &_b) : a(_a), b(_b) {}
 	ld len() const {
@@ -243,17 +249,12 @@ struct Circle {
 bool is_inter(const Circle &c1, const Circle &c2) {
 	ld dis = (c2.c - c1.c).len();
 	ld r1 = c1.r, r2 = c2.r;
-	if(abs(dis) <= eps) {
-		return false;
-	}
-	if(dis > r1 + r2 + eps || dis < abs(r1 - r2) - eps) {
-		return false;
-	}
+	if(abs(dis) <= eps) return false;
+	if(dis > r1 + r2 + eps || dis < abs(r1 - r2) - eps) return false;
 	return true;
 }
 pair<Point, Point> inter(const Circle &c1, const Circle &c2) {
-	if(!is_inter(c1, c2))
-		throw runtime_error("Circles do not intersect");
+	if(!is_inter(c1, c2)) throw runtime_error("Circles do not intersect");
 	ld dis = (c2.c - c1.c).len();
 	ld r1 = c1.r, r2 = c2.r;
 	ld cosa = clamp((r1 * r1 + dis * dis - r2 * r2) / (2 * r1 * dis), -1.0l, 1.0l);
