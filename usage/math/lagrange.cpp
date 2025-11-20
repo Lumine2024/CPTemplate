@@ -20,11 +20,10 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 }
 
 constexpr ll modulo = 998244353;
-constexpr ll qpow(ll x, ll n) {
+inline ll qpow(ll x, ll n) {
 	ll ret = 1;
-	for(; n != 0; n >>= 1, x = x * x % modulo) {
+	for(; n; n >>= 1, x = x * x % modulo)
 		if(n & 1) ret = ret * x % modulo;
-	}
 	return ret;
 }
 
