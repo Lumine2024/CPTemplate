@@ -285,9 +285,7 @@ vector<Point> andrew(vector<Point> points) {
 	});
 	points.erase(unique(points.begin(), points.end()), points.end());
 	int n = points.size();
-	if(n <= 2) {
-		return points;
-	}
+	if(n <= 2) return points;
 	vector<Point> stk;
 	for(int i = 0; i < n; ++i) {
 		while(stk.size() >= 2 && sign(cross(stk[stk.size() - 2], stk.back(), points[i])) <= 0) {
