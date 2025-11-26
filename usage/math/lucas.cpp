@@ -19,14 +19,6 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 	return chkf(x, y, greater<T1>{});
 }
 
-constexpr ll modulo = 998244353;
-inline ll qpow(ll x, ll n) {
-	ll ret = 1;
-	for(; n; n >>= 1, x = x * x % modulo)
-		if(n & 1) ret = ret * x % modulo;
-	return ret;
-}
-
 struct Lucas {
 	explicit Lucas(int m) : modulo(m), fact(m + 1, 1), invfact(m + 1, 1) {
 		for(ll i = 1; i <= m; ++i) {
