@@ -37,8 +37,10 @@ struct Comb {
 	}
 	static ll binom(ll n, ll m) {
 		if(m < 0 || m > n || n < 0) return 0;
-		return (((ll(fac[n]) * ll(ifac[m])) % modulo) * ll(ifac[n - m])) % modulo;
+		return (((ll(fac[n]) * ll(ifac[m])) % modulo) * ll(ifac[n - m])) %
+			   modulo;
 	}
+
 private:
 	static constexpr int maxn = 500005;
 	static inline int fac[maxn], ifac[maxn];
@@ -60,21 +62,22 @@ struct Catalan {
 	static ll get(int x) {
 		return _cat[x];
 	}
+
 private:
 	static constexpr int _maxn = 250005;
 	static inline int _cat[_maxn];
 	static inline int init = [] {
 		_cat[0] = 1;
 		for(int i = 1; i < _maxn; ++i) {
-			_cat[i] = (Comb::binom(2 * i, i) - Comb::binom(2 * i, i - 1) + modulo) % modulo;
+			_cat[i] =
+				(Comb::binom(2 * i, i) - Comb::binom(2 * i, i - 1) + modulo) %
+				modulo;
 		}
 		return 0;
 	}();
 };
 
-inline void solve() {
-
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

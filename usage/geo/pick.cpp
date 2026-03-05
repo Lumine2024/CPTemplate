@@ -41,6 +41,12 @@ struct Point {
 	ll len2() const {
 		return x * x + y * y;
 	}
+	ll &operator[](int i) {
+		return i == 0 ? x : y;
+	}
+	ll operator[](int i) const {
+		return i == 0 ? x : y;
+	}
 };
 using Vector = Point;
 ll dot(const Vector &x, const Vector &y) {
@@ -53,10 +59,10 @@ ll cross(const Point &o, const Point &a, const Point &b) {
 	return cross(a - o, b - o);
 }
 bool argcmp(const Point &x, const Point &y) {
-	bool bx = x.y > 0 || (x.y == 0 && x.x > 0);
-	bool by = y.y > 0 || (y.y == 0 && y.x > 0);
+	bool bx = x.y > 0 || (x.y == 0 && x.x > 0),
+		 by = y.y > 0 || (y.y == 0 && y.x > 0);
 	if(bx != by) return bx;
-	return cross(x, y) == 0;
+	return cross(x, y) > 0;
 }
 ll dist2(const Point &a, const Point &b) {
 	return (a - b).len2();
@@ -115,9 +121,7 @@ ll points_inside(const Polygon &poly) {
 	return (twos - border + 2) / 2;
 }
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

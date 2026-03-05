@@ -37,9 +37,7 @@ vector<int> zfn(const string &s) {
 	return z;
 }
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

@@ -60,6 +60,7 @@ struct Treap {
 		dfs(dfs, rt);
 		return ret;
 	}
+
 private:
 	struct Node {
 		int val, cnt, size, prio;
@@ -67,7 +68,8 @@ private:
 		bool rev;
 		static inline random_device rnd{};
 		Node(int v)
-			: val(v), cnt(1), size(1), prio(rnd()), left(nullptr), right(nullptr), rev(false) {}
+			: val(v), cnt(1), size(1), prio(rnd()), left(nullptr),
+			  right(nullptr), rev(false) {}
 		void usize() {
 			size = cnt;
 			if(left) size += left->size;
@@ -95,19 +97,17 @@ private:
 		delete ptr;
 	}
 	static pair<Node *, Node *> _sval(Node *const ptr, int key) {
-		if(!ptr) {
-			return { nullptr, nullptr };
-		}
+		if(!ptr) return {nullptr, nullptr};
 		if(ptr->val <= key) {
 			auto tmp = _sval(ptr->right, key);
 			ptr->right = tmp.first;
 			ptr->usize();
-			return { ptr, tmp.second };
+			return {ptr, tmp.second};
 		} else {
 			auto tmp = _sval(ptr->left, key);
 			ptr->left = tmp.second;
 			ptr->usize();
-			return { tmp.first, ptr };
+			return {tmp.first, ptr};
 		}
 	}
 	static Node *_merge(Node *const u, Node *const v) {
@@ -132,7 +132,8 @@ private:
 			ptr->usize();
 			return {pf, ptr};
 		} else {
-			auto [pf, ps] = _srev(ptr->right, k - 1 - (ptr->left ? ptr->left->size : 0));
+			auto [pf, ps] =
+				_srev(ptr->right, k - 1 - (ptr->left ? ptr->left->size : 0));
 			ptr->right = pf;
 			ptr->usize();
 			return {ptr, ps};
@@ -155,10 +156,7 @@ private:
 	}
 };
 
-
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

@@ -35,9 +35,7 @@ int peak(const vector<int> &nums) {
 	return l;
 }
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

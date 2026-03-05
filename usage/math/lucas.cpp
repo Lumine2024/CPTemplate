@@ -35,8 +35,10 @@ struct Lucas {
 			return ll(fact[n]) * ll(invfact[m]) * ll(invfact[n - m]) % modulo;
 		};
 		if(m == 0) return 1;
-		return ll(binom(n / modulo, m / modulo)) * _binom(n % modulo, m % modulo) % modulo;
+		return ll(binom(n / modulo, m / modulo)) *
+			   _binom(n % modulo, m % modulo) % modulo;
 	}
+
 private:
 	int modulo;
 	vector<int> fact, invfact;

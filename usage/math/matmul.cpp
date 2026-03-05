@@ -27,7 +27,9 @@ inline ll qpow(ll x, ll n) {
 	return ret;
 }
 
-template<class T> vector<vector<T>> matmul(const vector<vector<T>> &a, const vector<vector<T>> &b) {
+template<class T>
+vector<vector<T>> matmul(const vector<vector<T>> &a,
+						 const vector<vector<T>> &b) {
 	int m = a.size(), n = a[0].size(), p = b[0].size();
 	vector<vector<T>> ret(m, vector<T>(p, T(0)));
 	for(int i = 0; i < m; ++i) {
@@ -53,9 +55,7 @@ template<class T> vector<vector<T>> matpow(vector<vector<T>> mat, ll n) {
 	return ret;
 }
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

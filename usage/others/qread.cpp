@@ -52,15 +52,14 @@ struct Qread {
 	explicit operator bool() const {
 		return state;
 	}
+
 private:
 	bool state;
 	static constexpr int maxn = 1 << 21;
 	char buffer[maxn];
-}qread;
+} qread;
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

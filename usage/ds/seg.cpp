@@ -19,14 +19,17 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 	return chkf(x, y, greater<T1>{});
 }
 
-template<class Info, class Applier> concept SegInfo = requires(Info a, Info b, const Applier src) {
+template<class Info, class Applier>
+concept SegInfo = requires(Info a, Info b, const Applier src) {
 	Info{};
 	Info(a);
-	{a + b} -> same_as<Info>;
-	{src.apply(a)} -> same_as<void>;
-};
+	{ a + b } -> same_as<Info>;
+	{ src.apply(a) } -> same_as<void>;
+} && is_same_v<Info, typename vector<Info>::value_type>;
 
-template<class Info, class Applier> requires(SegInfo<Info, Applier>) struct SegTree {
+template<class Info, class Applier>
+	requires(SegInfo<Info, Applier>)
+struct SegTree {
 	SegTree() : n(0) {}
 	explicit SegTree(int sz) : n(sz), info(sz * 4, Info()) {}
 	explicit SegTree(const vector<Info> &v) : n(v.size()), info(v.size() * 4) {
@@ -48,6 +51,7 @@ template<class Info, class Applier> requires(SegInfo<Info, Applier>) struct SegT
 	void update(int x, const Applier &v) {
 		_update(x, v, 0, 0, n);
 	}
+
 private:
 	int n;
 	vector<Info> info;
@@ -82,26 +86,17 @@ private:
 };
 
 struct Info {
-	
-	Info() {
-		
-	}
-	Info operator+(const Info &i) const {
-		
-	}
+
+	Info() {}
+	Info operator+(const Info &i) const {}
 };
 
 struct Applier {
-	
-	void apply(Info &x) const {
-		
-	}
+
+	void apply(Info &x) const {}
 };
 
-
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

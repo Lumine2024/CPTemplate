@@ -57,11 +57,11 @@ struct Point {
 	ld cross(const Point &p) const {
 		return x * p.y - y * p.x;
 	}
-	ld norm() const {
+	ld norm2() const {
 		return x * x + y * y;
 	}
-	ld norm2() const {
-		return sqrt(norm());
+	ld norm() const {
+		return sqrt(x * x + y * y);
 	}
 };
 
@@ -87,9 +87,7 @@ bool cross_all(const vector<Point> &points) {
 	return okx || oky;
 }
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

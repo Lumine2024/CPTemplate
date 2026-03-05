@@ -48,9 +48,7 @@ ll prim(const vector<vector<pair<int, ll>>> &graph) {
 	return ret;
 }
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

@@ -158,6 +158,7 @@ struct HPINT {
 		ret *= r;
 		return ret;
 	}
+
 private:
 	vector<int> nums;
 	bool neg;
@@ -263,9 +264,7 @@ private:
 	}
 };
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

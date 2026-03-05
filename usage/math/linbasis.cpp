@@ -48,13 +48,12 @@ struct LinearBasis_XOR {
 		}
 		return ans;
 	}
+
 private:
 	vector<ll> base;
 };
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

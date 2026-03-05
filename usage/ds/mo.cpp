@@ -31,9 +31,7 @@ void mo_algo(vector<Query> &queries, const vector<int> &nums) {
 	int len = sqrt(n);
 	sort(queries.begin(), queries.end(), [&](const Query &ql, const Query &qr) {
 		int atl = ql.l / len, atr = qr.l / len;
-		if(atl != atr) {
-			return atl < atr;
-		}
+		if(atl != atr) return atl < atr;
 		return (bool)((atl % 2 == 0) ^ (ql.r < qr.r));
 	});
 	int l = 0, r = 0, ans = 0;
@@ -70,14 +68,11 @@ void mo_algo(vector<Query> &queries, const vector<int> &nums) {
 		}
 		q.ans = ans;
 	}
-	sort(queries.begin(), queries.end(), [](const Query &l, const Query &r) {
-		return l.idx < r.idx;
-	});
+	sort(queries.begin(), queries.end(),
+		 [](const Query &l, const Query &r) { return l.idx < r.idx; });
 }
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

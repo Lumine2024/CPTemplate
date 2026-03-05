@@ -76,13 +76,15 @@ struct Treap {
 		rt = _merge(tmp.first, tmp.second);
 		return ret;
 	}
+
 private:
 	struct Node {
 		int val, cnt, size, prio;
 		Node *left, *right;
 		static inline random_device rnd{};
 		Node(int v)
-			: val(v), cnt(1), size(1), prio(rnd()), left(nullptr), right(nullptr) {}
+			: val(v), cnt(1), size(1), prio(rnd()), left(nullptr),
+			  right(nullptr) {}
 		void usize() {
 			size = cnt;
 			if(left) size += left->size;
@@ -102,37 +104,37 @@ private:
 		delete ptr;
 	}
 	static pair<Node *, Node *> _sval(Node *const ptr, int key) {
-		if(!ptr) return { nullptr, nullptr };
+		if(!ptr) return {nullptr, nullptr};
 		if(ptr->val <= key) {
 			auto tmp = _sval(ptr->right, key);
 			ptr->right = tmp.first;
 			ptr->usize();
-			return { ptr, tmp.second };
+			return {ptr, tmp.second};
 		} else {
 			auto tmp = _sval(ptr->left, key);
 			ptr->left = tmp.second;
 			ptr->usize();
-			return { tmp.first, ptr };
+			return {tmp.first, ptr};
 		}
 	}
 	static tuple<Node *, Node *, Node *> _srnk(Node *const ptr, int rnk) {
-		if(!ptr) return { nullptr, nullptr, nullptr };
+		if(!ptr) return {nullptr, nullptr, nullptr};
 		int lsize = (ptr->left ? ptr->left->size : 0);
 		if(rnk < lsize) {
 			auto [lptr, mptr, rptr] = _srnk(ptr->left, rnk);
 			ptr->left = rptr;
 			ptr->usize();
-			return { lptr, mptr, ptr };
+			return {lptr, mptr, ptr};
 		} else if(rnk < lsize + ptr->cnt) {
 			Node *lptr = ptr->left;
 			Node *rptr = ptr->right;
 			ptr->left = ptr->right = nullptr;
-			return { lptr, ptr, rptr };
+			return {lptr, ptr, rptr};
 		} else {
 			auto [lptr, mptr, rptr] = _srnk(ptr->right, rnk - lsize - ptr->cnt);
 			ptr->right = lptr;
 			ptr->usize();
-			return { ptr, mptr, rptr };
+			return {ptr, mptr, rptr};
 		}
 	}
 	static Node *_merge(Node *const u, Node *const v) {
@@ -162,9 +164,7 @@ private:
 	}
 };
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

@@ -91,6 +91,7 @@ struct SAM {
 		}
 		return ans;
 	}
+
 private:
 	struct Node {
 		array<int, 26> nxt;
@@ -105,9 +106,7 @@ private:
 	int last;
 };
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

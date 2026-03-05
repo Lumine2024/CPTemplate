@@ -36,7 +36,8 @@ int kmp_find(const string &haystack, const string &needle, int off = 0) {
 	vector<int> f = kmp_f(needle);
 	for(int i = 0, j = off; j < m;) {
 		if(haystack[j] == needle[i]) {
-			++i; ++j;
+			++i;
+			++j;
 			if(i == n) return j - n;
 		} else {
 			(i == 0) ? (++j) : (i = f[i - 1]);
@@ -51,7 +52,8 @@ int kmp_count(const string &haystack, const string &needle) {
 	vector<int> f = kmp_f(needle);
 	for(int i = 0, j = 0; j < m;) {
 		if(haystack[j] == needle[i]) {
-			++i; ++j;
+			++i;
+			++j;
 			if(i == n) {
 				++ret;
 				i = f[i - 1];
@@ -63,9 +65,7 @@ int kmp_count(const string &haystack, const string &needle) {
 	return ret;
 }
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

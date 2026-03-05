@@ -26,9 +26,7 @@ tuple<ll, ll, ll> exgcd(ll a, ll b) {
 	return tuple(g, y, x - (a / b) * y);
 }
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

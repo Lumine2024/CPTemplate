@@ -34,7 +34,8 @@ struct DSU {
 		return -fs[find(x)];
 	}
 	void connect(int x, int y) {
-		x = find(x); y = find(y);
+		x = find(x);
+		y = find(y);
 		if(x == y) return;
 		int sx = size(x), sy = size(y);
 		if(sx < sy) {
@@ -45,6 +46,7 @@ struct DSU {
 			fs[y] = x;
 		}
 	}
+
 private:
 	vector<int> fs; // fa or size
 };
@@ -57,9 +59,8 @@ struct Edge {
 ll kruskal(vector<Edge> &edges, int n) {
 	DSU dsu(n);
 	ll ans = 0;
-	sort(edges.begin(), edges.end(), [](const Edge &a, const Edge &b) {
-		return a.w < b.w;
-	});
+	sort(edges.begin(), edges.end(),
+		 [](const Edge &a, const Edge &b) { return a.w < b.w; });
 	for(auto &e : edges) {
 		if(!dsu.is_connected(e.u, e.v)) {
 			dsu.connect(e.u, e.v);
@@ -72,9 +73,7 @@ ll kruskal(vector<Edge> &edges, int n) {
 	return ans;
 }
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

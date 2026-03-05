@@ -42,6 +42,7 @@ struct Fenwick {
 			nums[x] += v;
 		}
 	}
+
 private:
 	vector<ll> nums;
 	int n;
@@ -87,6 +88,7 @@ struct VST {
 	int qrange_cnt(int l, int r) const {
 		return _query(l, r, 0, 0, n);
 	}
+
 private:
 	vector<int> sum;
 	int n;
@@ -104,8 +106,7 @@ private:
 		sum[rt] = sum[lson] + sum[rson];
 	}
 	ll _query(int ql, int qr, int rt, int rl, int rr) const {
-		if(ql <= rl && qr >= rr)
-			return sum[rt];
+		if(ql <= rl && qr >= rr) return sum[rt];
 		int mid = (rl + rr) >> 1, lson = rt * 2 + 1, rson = rt * 2 + 2;
 		ll ans = 0;
 		if(ql < mid) {
@@ -117,8 +118,7 @@ private:
 		return ans;
 	}
 	int _qvr(int k, int rt, int rl, int rr) const {
-		if(rr - rl == 1)
-			return rl;
+		if(rr - rl == 1) return rl;
 		int mid = (rl + rr) >> 1, lson = rt * 2 + 1, rson = rt * 2 + 2;
 		if(k < sum[lson]) {
 			return _qvr(k, lson, rl, mid);
@@ -127,7 +127,6 @@ private:
 		}
 	}
 };
-
 
 // 均为0-based排列
 vector<int> lehmer(const vector<int> &a) {
@@ -158,9 +157,7 @@ vector<int> rev_lehmer(const vector<int> &l) {
 	return ret;
 }
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

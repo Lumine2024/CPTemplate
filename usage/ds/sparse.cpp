@@ -45,15 +45,14 @@ template<class T> struct Sparse {
 		int j = _log[len];
 		return func(table[l][j], table[r - (1 << j) + 1][j]);
 	}
+
 private:
 	vector<vector<T>> table;
 	vector<int> _log;
 	func_type func;
 };
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

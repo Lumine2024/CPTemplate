@@ -22,92 +22,55 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 struct ACAM {
 	ACAM() : nodes(1) {}
 	void insert(const string &str) {
-		int now = 0;
-		for(char ch : str) {
-			int id = ch - 'a';
-			int v = nodes[now].nxt1[id];
-			if(v == -1) {
-				v = nodes[now].nxt1[id] = nodes[now].nxt2[id] = nodes.size();
+		int rt = 0;
+		for(int i = 0; i < (int)str.size(); ++i) {
+			int id = str[i] - '0';
+			if(nodes[rt].nxt[id] == -1) {
+				nodes[rt].nxt[id] = nodes.size();
 				nodes.emplace_back();
 			}
-			now = v;
+			rt = nodes[rt].nxt[id];
 		}
-		nodes[now].cnt++;
 	}
 	void build() {
-		order.clear();
 		queue<int> q;
 		nodes[0].fail = 0;
-		for(int i = 0; i < 26; ++i) {
-			int v = nodes[0].nxt2[i];
-			if(v == -1) {
-				nodes[0].nxt2[i] = 0;
-			} else {
+		for(int i = 0; i < 2; ++i) {
+			int v = nodes[0].nxt[i];
+			if(v != -1) {
 				nodes[v].fail = 0;
 				q.push(v);
+			} else {
+				nodes[0].nxt[i] = 0;
 			}
 		}
 		while(!q.empty()) {
-			int now = q.front();
+			int rt = q.front();
 			q.pop();
-			order.push_back(now);
-			for(int i = 0; i < 26; ++i) {
-				int v = nodes[now].nxt2[i];
-				if(v == -1) {
-					nodes[now].nxt2[i] = nodes[nodes[now].fail].nxt2[i];
-				} else {
-					nodes[v].fail = nodes[nodes[now].fail].nxt2[i];
+			for(int i = 0; i < 2; ++i) {
+				int v = nodes[rt].nxt[i];
+				if(v != -1) {
+					nodes[v].fail = nodes[nodes[rt].fail].nxt[i];
 					q.push(v);
+				} else {
+					nodes[rt].nxt[i] = nodes[nodes[rt].fail].nxt[i];
 				}
 			}
 		}
 	}
-	int find(const string &s) const {
-		int now = 0;
-		for(char ch : s) {
-			int v = nodes[now].nxt1[ch - 'a'];
-			if(v == -1) {
-				return -1;
-			}
-			now = v;
-		}
-		return now;
-	}
-	vector<int> frequency(const string &str) const {
-		vector<int> ret(nodes.size(), 0);
-		int now = 0;
-		for(char ch : str) {
-			int id = ch - 'a';
-			now = nodes[now].nxt2[id];
-			ret[now]++;
-		}
-		for(int i = order.size() - 1; i >= 0; --i) {
-			int u = order[i];
-			if(u != 0) {
-				ret[nodes[u].fail] += ret[u];
-			}
-		}
-		return ret;
-	}
-	int size() const {
-		return nodes.size();
-	}
+
 private:
 	struct Node {
-		int cnt, fail;
-		array<int, 26> nxt1, nxt2;
-		Node() : cnt(0), fail(0) {
-			nxt1.fill(-1);
-			nxt2.fill(-1);
+		array<int, 2> nxt;
+		int fail;
+		Node() : fail(0) {
+			nxt.fill(-1);
 		}
 	};
 	vector<Node> nodes;
-	vector<int> order;
 };
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

@@ -75,9 +75,7 @@ vector<ll> multiply(const vector<ll> &a, const vector<ll> &b) {
 	return ca;
 }
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

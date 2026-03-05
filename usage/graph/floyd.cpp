@@ -30,9 +30,7 @@ void floyd(vector<vector<ll>> &graph) {
 	}
 }
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

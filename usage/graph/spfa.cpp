@@ -50,9 +50,7 @@ vector<ll> spfa(const vector<vector<pair<int, ll>>> &graph, int start) {
 	return dist;
 }
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

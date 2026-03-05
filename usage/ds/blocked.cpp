@@ -58,6 +58,7 @@ struct Block {
 		}
 		return ans;
 	}
+
 private:
 	vector<ll> nums;
 	ll lazy;
@@ -87,13 +88,12 @@ struct BlockedArray {
 		}
 		return ans;
 	}
+
 private:
 	vector<Block> blocks;
 };
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

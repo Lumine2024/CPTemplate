@@ -32,6 +32,7 @@ struct Sterling {
 	static int get(int n, int m) {
 		return ster[n][m];
 	}
+
 private:
 	static constexpr int maxn = 5005;
 	static inline int ster[maxn][maxn];
@@ -40,16 +41,15 @@ private:
 		for(ll i = 1; i < maxn; ++i) {
 			ster[i][0] = 0;
 			for(ll j = 1; j < i; ++j) {
-				ster[i][j] = (ll(ster[i - 1][j - 1]) + ll(ster[i - 1][j]) * j) % modulo;
+				ster[i][j] =
+					(ll(ster[i - 1][j - 1]) + ll(ster[i - 1][j]) * j) % modulo;
 			}
 		}
 		return 0;
 	}();
 };
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

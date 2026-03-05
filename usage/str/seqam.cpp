@@ -20,11 +20,12 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 }
 
 struct SeqAM {
-	explicit SeqAM(const string &s) : n(s.size()), nxt(s.size() + 2, [&] {
-		array<int, 26> ret;
-		ret.fill(s.size() + 1);
-		return ret;
-	}()) {
+	explicit SeqAM(const string &s)
+		: n(s.size()), nxt(s.size() + 2, [&] {
+			  array<int, 26> ret;
+			  ret.fill(s.size() + 1);
+			  return ret;
+		  }()) {
 		for(int i = n - 1; i >= 0; --i) {
 			nxt[i] = nxt[i + 1];
 			nxt[i][s[i] - 'a'] = i + 1;
@@ -37,14 +38,13 @@ struct SeqAM {
 		}
 		return now != (n + 1);
 	}
+
 private:
 	int n;
 	vector<array<int, 26>> nxt;
 };
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

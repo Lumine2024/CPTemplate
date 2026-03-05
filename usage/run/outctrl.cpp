@@ -19,28 +19,44 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 	return chkf(x, y, greater<T1>{});
 }
 
-string minrep(const string &str) {
-	int n = str.size(), i = 0, j = 1, k = 0;
-	string s = str + str;
-	while(i < n && j < n) {
-		while(k < n && s[i + k] == s[j + k]) ++k;
-		if(k == n) break;
-		if(s[i + k] > s[j + k]) i += (k + 1);
-		else j += (k + 1);
-		if(i == j) ++j;
-		k = 0;
+template<class T>
+concept CanOutput = requires(ostream os, T t) { os << t; };
+
+template<class T> concept CanOutput = requires(ostream os, T t) {
+	os << t;
+};
+class OutputController {
+public:
+	OutputController() {}
+	template<CanOutput T> OutputController &operator<<(const T &t) {
+		ss << t;
+		return *this;
 	}
-	return s.substr(min(i, j), n);
-}
+	void flush() {
+		cout << ss.str();
+		ss.str("");
+	}
+	~OutputController() {
+		flush();
+	}
+	template<CanOutput T> void force_output(const T &t) {
+		cout << t;
+	}
+
+private:
+	stringstream ss;
+};
+OutputController oc;
+#define cout oc
 
 inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(nullptr);
-	int t = 1;
-	// cin >> t;
-	while(t--) {
+	int n = 1;
+	cin >> n;
+	while(n--) {
 		solve();
 	}
 	return 0;

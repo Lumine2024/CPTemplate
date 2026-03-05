@@ -35,7 +35,8 @@ ll __qpow(ll x, ll n) {
 	return ret;
 }
 
-template<class F> concept eularsieve_func = requires(F &&f, int p, int k) {
+template<class F>
+concept eularsieve_func = requires(F &&f, int p, int k) {
 	{ f(p, k) } -> convertible_to<ll>;
 };
 
@@ -62,7 +63,8 @@ struct EularSieve {
 			}
 		}
 	}
-	template<eularsieve_func F> EularSieve(int n, F &&f) : lpf(n + 1), lpow(n + 1), fv(n + 1) {
+	template<eularsieve_func F>
+	EularSieve(int n, F &&f) : lpf(n + 1), lpow(n + 1), fv(n + 1) {
 		fv[1] = 1;
 		for(ll i = 2; i <= n; ++i) {
 			if(lpf[i] == 0) {
@@ -107,9 +109,7 @@ int factor_sum_f(int p, int k) {
 	return (__qpow(p, k + 1) - 1ll) / ll(p - 1);
 }
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);
