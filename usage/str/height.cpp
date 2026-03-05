@@ -25,7 +25,7 @@ vector<int> suffix_array(const string &str) {
 	for(int i = 0; i < n; ++i) cnt[rk[i] = str[i]]++;
 	for(int i = 1; i < m; ++i) cnt[i] += cnt[i - 1];
 	for(int i = n - 1; i >= 0; --i) sa[--cnt[rk[i]]] = i;
-	for(int w = 1; ; w <<= 1, m = p + 1) {
+	for(int w = 1;; w <<= 1, m = p + 1) {
 		int cur = 0;
 		for(int i = n - w; i < n; ++i) id[cur++] = i;
 		for(int i = 0; i < n; ++i) {
@@ -40,7 +40,8 @@ vector<int> suffix_array(const string &str) {
 		rk[sa[0]] = 0;
 		for(int i = 1; i < n; ++i) {
 			if(oldrk[sa[i]] != oldrk[sa[i - 1]] ||
-				oldrk[sa[i] + w] != oldrk[sa[i - 1] + w]) ++p;
+			   oldrk[sa[i] + w] != oldrk[sa[i - 1] + w])
+				++p;
 			rk[sa[i]] = p;
 		}
 		if(p == n - 1) break;
@@ -61,10 +62,7 @@ vector<int> height(const string &str) {
 	return h;
 }
 
-
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

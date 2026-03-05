@@ -66,6 +66,7 @@ struct Comb {
 		ll fn = fac[n], im = ifac[m], inm = ifac[n - m];
 		return fn * im % modulo * inm % modulo;
 	}
+
 private:
 	static constexpr int maxn = 500005;
 	static inline int fac[maxn], ifac[maxn];
@@ -106,9 +107,7 @@ ll lagrange(const vector<ll> &y, ll x0) {
 	return ret;
 }
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

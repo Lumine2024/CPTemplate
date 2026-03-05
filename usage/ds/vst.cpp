@@ -19,8 +19,6 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 	return chkf(x, y, greater<T1>{});
 }
 
-inline constexpr int maxn = 100005, inf = 0x3f3f3f3f;
-
 // value segment tree
 struct VST {
 	VST(int maxn) : sum((maxn + 1) * 4), n(maxn + 1) {}
@@ -58,6 +56,7 @@ struct VST {
 	int qrange_cnt(int l, int r) const {
 		return _query(l, r, 0, 0, n);
 	}
+
 private:
 	vector<int> sum;
 	int n;
@@ -75,8 +74,7 @@ private:
 		sum[rt] = sum[lson] + sum[rson];
 	}
 	ll _query(int ql, int qr, int rt, int rl, int rr) const {
-		if(ql <= rl && qr >= rr)
-			return sum[rt];
+		if(ql <= rl && qr >= rr) return sum[rt];
 		int mid = (rl + rr) >> 1, lson = rt * 2 + 1, rson = rt * 2 + 2;
 		ll ans = 0;
 		if(ql < mid) {
@@ -88,8 +86,7 @@ private:
 		return ans;
 	}
 	int _qvr(int k, int rt, int rl, int rr) const {
-		if(rr - rl == 1)
-			return rl;
+		if(rr - rl == 1) return rl;
 		int mid = (rl + rr) >> 1, lson = rt * 2 + 1, rson = rt * 2 + 2;
 		if(k < sum[lson]) {
 			return _qvr(k, lson, rl, mid);
@@ -99,9 +96,7 @@ private:
 	}
 };
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

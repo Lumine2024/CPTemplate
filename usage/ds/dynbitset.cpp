@@ -123,7 +123,9 @@ struct DynamicBitSet {
 		}
 		return true;
 	}
-	int size() const { return sz; }
+	int size() const {
+		return sz;
+	}
 	int count() const {
 		if(nums.empty()) return 0;
 		int ans = 0;
@@ -135,14 +137,13 @@ struct DynamicBitSet {
 		}
 		return ans;
 	}
+
 private:
 	vector<ull> nums;
 	int sz;
 };
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

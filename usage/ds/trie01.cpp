@@ -46,6 +46,7 @@ struct Trie01 {
 		}
 		return ans;
 	}
+
 private:
 	static constexpr int height = 63;
 	struct Node {
@@ -57,9 +58,7 @@ private:
 	vector<Node> nodes;
 };
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

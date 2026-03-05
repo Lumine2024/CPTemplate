@@ -1,10 +1,10 @@
 *
 
 !*/
-
 !*.cpp
-!*.hpp
+!*.py
 !.gitignore
+!.clang-format
 !*.md
 !*.pdf
 !CMakeLists.txt

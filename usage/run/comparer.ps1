@@ -1,3 +1,4 @@
+#!/usr/bin/env pwsh
 Set-Alias println Write-Host
 
 g++ gen.cpp -o gen -std=c++23 -O2

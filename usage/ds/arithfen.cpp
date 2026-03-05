@@ -19,9 +19,10 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 	return chkf(x, y, greater<T1>{});
 }
 
-template<class T> concept FenwickInfo = requires(T a, T b) {
+template<class T>
+concept FenwickInfo = requires(T a, T b) {
 	T{};
-	{a + b} -> convertible_to<T>;
+	{ a + b } -> convertible_to<T>;
 };
 template<FenwickInfo T> struct Fenwick {
 	explicit Fenwick(int n) : _nums(n + 1, 0), _n(n) {}
@@ -33,13 +34,13 @@ template<FenwickInfo T> struct Fenwick {
 	void update(int x, const T &v) {
 		for(; x <= _n; x += x & -x) _nums[x] = _nums[x] + v;
 	}
+
 private:
 	vector<T> _nums;
 	int _n;
 };
 struct ArithmeticFenwick {
-	explicit ArithmeticFenwick(int n)
-		: f1(n + 2), f2(n + 2) {}
+	explicit ArithmeticFenwick(int n) : f1(n + 2), f2(n + 2) {}
 	// a*idx+b
 	void update(int l, int r, ll a, ll b) {
 		f1.update(l, b);
@@ -50,13 +51,12 @@ struct ArithmeticFenwick {
 	ll query(ll idx) const {
 		return f1.query(idx) + idx * f2.query(idx);
 	}
+
 private:
 	Fenwick<ll> f1, f2;
 };
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

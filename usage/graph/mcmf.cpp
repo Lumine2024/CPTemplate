@@ -32,8 +32,8 @@ struct EK {
 	explicit EK(int _n) : n(_n), graph(_n) {}
 	void addedge(int u, int v, ll flow, ll weight) {
 		int iu = graph[u].size(), iv = graph[v].size();
-		graph[u].push_back({ v, iv, weight, flow, false });
-		graph[v].push_back({ u, iu, -weight, 0, true });
+		graph[u].push_back({v, iv, weight, flow, false});
+		graph[v].push_back({u, iu, -weight, 0, true});
 	}
 	pair<ll, ll> mcmf(int s, int t) {
 		ll cost = 0, flow = 0;
@@ -76,13 +76,11 @@ struct EK {
 			flow += add;
 			cost += add * d[t];
 		}
-		return { cost, flow };
+		return {cost, flow};
 	}
 };
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

@@ -19,10 +19,11 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 	return chkf(x, y, greater<T1>{});
 }
 
-template<class T> concept FenwickInfo = requires(T a, T b) {
+template<class T>
+concept FenwickInfo = requires(T a, T b) {
 	T{};
-	{a + b} -> convertible_to<T>;
-};
+	{ a + b } -> convertible_to<T>;
+} && is_same_v<T, typename vector<T>::value_type>;
 template<FenwickInfo T> struct Fenwick {
 	explicit Fenwick(int n) : _nums(n + 1, 0), _n(n) {}
 	T query(int x) const {
@@ -33,14 +34,16 @@ template<FenwickInfo T> struct Fenwick {
 	void update(int x, const T &v) {
 		for(; x <= _n; x += x & -x) _nums[x] = _nums[x] + v;
 	}
+
 private:
 	vector<T> _nums;
 	int _n;
 };
-template<class T> concept RangeFenwickInfo = requires(T a, T b, int c) {
-	{a - b} -> convertible_to<T>;
-	{a * c} -> convertible_to<T>;
-	{-a} -> convertible_to<T>;
+template<class T>
+concept RangeFenwickInfo = requires(T a, T b, int c) {
+	{ a - b } -> convertible_to<T>;
+	{ a * c } -> convertible_to<T>;
+	{ -a } -> convertible_to<T>;
 } && FenwickInfo<T>;
 template<RangeFenwickInfo T> struct RangeFenwick {
 	explicit RangeFenwick(int n) : _f1(n), _f2(n), _n(n) {}
@@ -51,6 +54,7 @@ template<RangeFenwickInfo T> struct RangeFenwick {
 	T query(int x) const {
 		return x * _f1.query(x) - _f2.query(x);
 	}
+
 private:
 	Fenwick<T> _f1, _f2;
 	int _n;
@@ -60,9 +64,7 @@ private:
 	}
 };
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

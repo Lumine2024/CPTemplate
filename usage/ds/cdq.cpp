@@ -19,8 +19,9 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 	return chkf(x, y, greater<T1>{});
 }
 
-template<class T> concept FenwickInfo = requires(T a, T b) {
-	{a + b} -> convertible_to<T>;
+template<class T>
+concept FenwickInfo = requires(T a, T b) {
+	{ a + b } -> convertible_to<T>;
 };
 template<FenwickInfo T> struct Fenwick {
 	explicit Fenwick(int n) : _nums(n + 1, 0), _n(n) {}
@@ -32,6 +33,7 @@ template<FenwickInfo T> struct Fenwick {
 	void update(int x, const T &v) {
 		for(; x <= _n; x += x & -x) _nums[x] = _nums[x] + v;
 	}
+
 private:
 	vector<T> _nums;
 	int _n;
@@ -55,8 +57,8 @@ vector<int> threed_partial(int n, int k, vector<Data> _datas) {
 	for(int i = 0; i < n; ++i) {
 		++cnt;
 		if((i == n - 1) || (_datas[i].x != _datas[i + 1].x) ||
-			(_datas[i].y != _datas[i + 1].y) ||
-			(_datas[i].z != _datas[i + 1].z)) {
+		   (_datas[i].y != _datas[i + 1].y) ||
+		   (_datas[i].z != _datas[i + 1].z)) {
 			datas.emplace_back(_datas[i].x, _datas[i].y, _datas[i].z).cnt = cnt;
 			cnt = 0;
 		}
@@ -67,14 +69,16 @@ vector<int> threed_partial(int n, int k, vector<Data> _datas) {
 		int mid = (l + r) / 2;
 		cdq(cdq, l, mid);
 		cdq(cdq, mid, r);
-		sort(datas.begin() + l, datas.begin() + mid, [](const Data &l, const Data &r) {
-			if(l.y != r.y) return l.y < r.y;
-			return l.z < r.z;
-		});
-		sort(datas.begin() + mid, datas.begin() + r, [](const Data &l, const Data &r) {
-			if(l.y != r.y) return l.y < r.y;
-			return l.z < r.z;
-		});
+		sort(datas.begin() + l, datas.begin() + mid,
+			 [](const Data &l, const Data &r) {
+				 if(l.y != r.y) return l.y < r.y;
+				 return l.z < r.z;
+			 });
+		sort(datas.begin() + mid, datas.begin() + r,
+			 [](const Data &l, const Data &r) {
+				 if(l.y != r.y) return l.y < r.y;
+				 return l.z < r.z;
+			 });
 		int j = l;
 		for(int i = mid; i < r; ++i) {
 			while(datas[j].y <= datas[i].y && j < mid) {
@@ -93,9 +97,7 @@ vector<int> threed_partial(int n, int k, vector<Data> _datas) {
 	return ans;
 }
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

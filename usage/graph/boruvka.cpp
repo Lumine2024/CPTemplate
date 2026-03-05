@@ -34,7 +34,8 @@ struct DSU {
 		return -fs[find(x)];
 	}
 	void connect(int x, int y) {
-		x = find(x); y = find(y);
+		x = find(x);
+		y = find(y);
 		if(x == y) return;
 		int sx = size(x), sy = size(y);
 		if(sx < sy) {
@@ -45,6 +46,7 @@ struct DSU {
 			fs[y] = x;
 		}
 	}
+
 private:
 	vector<int> fs; // fa or size
 };
@@ -87,9 +89,7 @@ ll boruvka(const vector<Edge> &edges, int n) {
 	return ans;
 }
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

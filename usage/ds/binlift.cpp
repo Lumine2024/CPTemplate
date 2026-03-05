@@ -20,7 +20,8 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 }
 
 struct BinaryLift {
-	explicit BinaryLift(int n) : tree(n), anc(n, vector<int>(LOG, -1)), depth(n) {}
+	explicit BinaryLift(int n)
+		: tree(n), anc(n, vector<int>(LOG, -1)), depth(n) {}
 	void addedge(int u, int v) {
 		tree[u].push_back(v);
 		tree[v].push_back(u);
@@ -56,6 +57,7 @@ struct BinaryLift {
 		return x;
 	}
 	vector<vector<int>> tree;
+
 private:
 	static constexpr int LOG = 20;
 	vector<vector<int>> anc;
@@ -78,9 +80,7 @@ private:
 	}
 };
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

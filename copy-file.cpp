@@ -19,7 +19,8 @@ public:
 	void add_argument(const std::string &arg) {
 		args.insert(arg);
 	}
-	std::unordered_map<std::string, std::string> parse(int argc, char **argv) const {
+	std::unordered_map<std::string, std::string> parse(int argc,
+													   char **argv) const {
 		std::unordered_map<std::string, std::string> ret;
 		std::string main_chain;
 		for(int i = 0; i < argc; ++i) {
@@ -36,6 +37,7 @@ public:
 		ret["main_chain"] = main_chain;
 		return ret;
 	}
+
 private:
 	std::unordered_set<std::string> args;
 };
@@ -49,7 +51,8 @@ void print_usage(const std::string &myname) {
 	std::cout << "usage:\n";
 	std::cout << myname << " -src [source-file] -dst [destination-position]\n";
 	std::cout << "example:\n";
-	std::cout << myname << " -src \"usage/ds/seg.cpp\" -dst \"D:/contest/D.cpp\"\n";
+	std::cout << myname
+			  << " -src \"usage/ds/seg.cpp\" -dst \"D:/contest/D.cpp\"\n";
 	std::cout << std::endl;
 }
 
@@ -72,8 +75,10 @@ int main(int argc, char **argv) {
 			return unused;
 		}
 
-		// we may assume that parse_result have key "main_chain", "-src" and "-dst"
-		std::string src_name = parse_result["-src"], dst_name = parse_result["-dst"];
+		// we may assume that parse_result have key "main_chain", "-src" and
+		// "-dst"
+		std::string src_name = parse_result["-src"],
+					dst_name = parse_result["-dst"];
 		fs::path src(src_name), dst(dst_name);
 
 		if(!fs::exists(src)) {

@@ -38,9 +38,9 @@ struct SCC {
 		for(int u = 0; u < graph.size(); ++u) {
 			for(int v : graph[u]) {
 				int bu = nodes[u].inscc, bv = nodes[v].inscc;
-				if(bu != bv && !edges.contains({ bu, bv })) {
+				if(bu != bv && !edges.contains({bu, bv})) {
 					dag[bu].emplace_back(bv);
-					edges.insert({ bu, bv });
+					edges.insert({bu, bv});
 				}
 			}
 		}
@@ -52,6 +52,7 @@ struct SCC {
 	};
 	vector<Node> nodes;
 	vector<vector<int>> sccs, dag;
+
 private:
 	vector<vector<int>> graph;
 	stack<int> st;
@@ -83,7 +84,6 @@ private:
 	}
 };
 
-
 // 本题给的是析取式，在这里我转化为了蕴含式求解
 // 请打一个SCC下来
 // 注意：蕴含式也要加另一条边，A->B要加B'->A'
@@ -108,9 +108,7 @@ vector<int> twosat(int n, const vector<tuple<int, int, int, int>> &conds) {
 	return ans;
 }
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

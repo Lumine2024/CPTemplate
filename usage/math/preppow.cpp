@@ -51,14 +51,13 @@ struct PreprocessedPow {
 	ll operator[](ll n) const {
 		return pow(n);
 	}
+
 private:
 	int m;
 	vector<int> powerk, powerkm;
 };
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

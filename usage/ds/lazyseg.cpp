@@ -19,7 +19,9 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 	return chkf(x, y, greater<T1>{});
 }
 
-template<class Info, class Tag> concept SegInfoTag = requires(Info a, Info b, Tag c, Tag d, int l, int r) {
+// clang-format off
+template<class Info, class Tag>
+concept SegInfoTag = requires(Info a, Info b, Tag c, Tag d, int l, int r) {
 	Info{};
 	Tag{};
 	{ a + b } -> same_as<Info>;
@@ -27,11 +29,15 @@ template<class Info, class Tag> concept SegInfoTag = requires(Info a, Info b, Ta
 	{ c.apply(d, l, r) } -> same_as<void>;
 	{ c.empty() } -> same_as<bool>;
 	{ c.clear() } -> same_as<void>;
-} && !is_same_v<Info, bool>;
-template<class Info, class Tag> requires(SegInfoTag<Info, Tag>) struct LazySegTree {
+} && is_same_v<Info, typename vector<Info>::value_type>
+  && is_same_v<Tag, typename vector<Tag>::value_type>;
+template<class Info, class Tag> requires(SegInfoTag<Info, Tag>)
+struct LazySegTree {
+	// clang-format on
 	LazySegTree() : n(0) {}
 	explicit LazySegTree(int n_) : n(n_), info(4 * n_), tag(4 * n_) {}
-	explicit LazySegTree(const vector<Info> &v) : n(v.size()), info(4 * v.size()), tag(4 * v.size()) {
+	explicit LazySegTree(const vector<Info> &v)
+		: n(v.size()), info(4 * v.size()), tag(4 * v.size()) {
 		_build(v, 0, 0, n);
 	}
 	void assign(int n_) {
@@ -51,6 +57,7 @@ template<class Info, class Tag> requires(SegInfoTag<Info, Tag>) struct LazySegTr
 	void update(int l, int r, const Tag &t) {
 		_update(l, r, t, 0, 0, n);
 	}
+
 private:
 	int n;
 	vector<Info> info;
@@ -61,7 +68,8 @@ private:
 			return;
 		}
 		int mid = (rl + rr) / 2, ls = u * 2 + 1, rs = u * 2 + 2;
-		_build(v, ls, rl, mid); _build(v, rs, mid, rr);
+		_build(v, ls, rl, mid);
+		_build(v, rs, mid, rr);
 		info[u] = info[ls] + info[rs];
 	}
 	void _pushdown(int u, int rl, int rr) {
@@ -97,34 +105,18 @@ private:
 };
 
 struct Info {
-	Info() {
-		
-	}
-	Info operator+(const Info &i) const {
-		
-	}
+	Info() {}
+	Info operator+(const Info &i) const {}
 };
 struct Tag {
-	Tag() {
-		
-	}
-	bool empty() const {
-		
-	}
-	void clear() {
-		
-	}
-	void apply(Info &dst, int l, int r) const {
-		
-	}
-	void apply(Tag &dst, int l, int r) const {
-		
-	}
+	Tag() {}
+	bool empty() const {}
+	void clear() {}
+	void apply(Info &dst, int l, int r) const {}
+	void apply(Tag &dst, int l, int r) const {}
 };
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

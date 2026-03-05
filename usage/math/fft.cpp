@@ -38,7 +38,7 @@ vector<ld> multiply(const vector<ld> &a, const vector<ld> &b) {
 		int n = f.size();
 		if(n == 1) return;
 		vector<cd> f0(n / 2), f1(n / 2);
-		for (int i = 0; i < n / 2; ++i) {
+		for(int i = 0; i < n / 2; ++i) {
 			f0[i] = f[2 * i];
 			f1[i] = f[2 * i + 1];
 		}
@@ -46,7 +46,7 @@ vector<ld> multiply(const vector<ld> &a, const vector<ld> &b) {
 		fft(fft, f1, invert);
 		ld theta = 2.l * pi / n * (invert ? -1.l : 1.l);
 		cd wt = 1, w(cos(theta), sin(theta));
-		for (int t = 0; t < n / 2; ++t) {
+		for(int t = 0; t < n / 2; ++t) {
 			cd u = f0[t], v = wt * f1[t];
 			f[t] = u + v;
 			f[t + n / 2] = u - v;
@@ -72,9 +72,7 @@ vector<ld> multiply(const vector<ld> &a, const vector<ld> &b) {
 	return ret;
 }
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

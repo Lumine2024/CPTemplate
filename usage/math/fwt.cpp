@@ -24,8 +24,8 @@ void fwt_or(vector<ll> &a, bool invert) {
 	ll n = a.size(), type = invert ? -1 : 1;
 	for(ll x = 2; x <= n; x <<= 1) {
 		ll k = x >> 1;
-		for(ll i = 0; i < n; i += x) 
-			for(ll j = 0; j < k; ++j) 
+		for(ll i = 0; i < n; i += x)
+			for(ll j = 0; j < k; ++j)
 				a[i + j + k] = (a[i + j + k] + a[i + j] * type) % modulo;
 	}
 }
@@ -33,8 +33,8 @@ void fwt_and(vector<ll> &a, bool invert) {
 	ll n = a.size(), type = invert ? -1 : 1;
 	for(ll x = 2; x <= n; x <<= 1) {
 		ll k = x >> 1;
-		for(ll i = 0; i < n; i += x) 
-			for(ll j = 0; j < k; ++j) 
+		for(ll i = 0; i < n; i += x)
+			for(ll j = 0; j < k; ++j)
 				a[i + j] = (a[i + j] + a[i + j + k] * type) % modulo;
 	}
 }
@@ -58,7 +58,8 @@ void fwt_xnor(vector<ll> &a, bool invert) {
 	fwt_xor(a, invert);
 	reverse(a.begin(), a.end());
 }
-vector<ll> fwt_transform(const vector<ll> &a, const vector<ll> &b, void (*func)(vector<ll> &a, bool invert)) {
+vector<ll> fwt_transform(const vector<ll> &a, const vector<ll> &b,
+						 void (*func)(vector<ll> &a, bool invert)) {
 	ll n = 1;
 	while(n < max(a.size(), b.size())) n <<= 1;
 	vector<ll> A(n, 0), B(n, 0), C(n, 0);
@@ -76,9 +77,7 @@ vector<ll> fwt_transform(const vector<ll> &a, const vector<ll> &b, void (*func)(
 	return C;
 }
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

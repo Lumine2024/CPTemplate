@@ -19,11 +19,12 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 	return chkf(x, y, greater<T1>{});
 }
 
-template<class Info> concept SegInfo = requires(Info a, Info b) {
+template<class Info>
+concept SegInfo = requires(Info a, Info b) {
 	Info{};
 	{ a + b } -> same_as<Info>;
 	{ a.update(b) } -> same_as<void>;
-};
+} && is_same_v<Info, typename vector<Info>::value_type>;
 
 template<SegInfo Info> struct SegTree {
 public:
@@ -48,6 +49,7 @@ public:
 	void update(int x, const Info &v) {
 		_update(x, v, 0, 0, n);
 	}
+
 private:
 	int n;
 	vector<Info> info;
@@ -143,6 +145,7 @@ struct HLD {
 		ans += seg.query(lca_pos, lca_pos + 1).val;
 		return ans;
 	}
+
 private:
 	struct _Node {
 		int dep, fa, toc, dfn, sz, hs;
@@ -164,8 +167,7 @@ private:
 			if(next == fa) continue;
 			dfs1(g, next, x);
 			nodes[x].sz += nodes[next].sz;
-			if(nodes[x].hs == -1 ||
-				nodes[nodes[x].hs].sz < nodes[next].sz) {
+			if(nodes[x].hs == -1 || nodes[nodes[x].hs].sz < nodes[next].sz) {
 				nodes[x].hs = next;
 			}
 		}
@@ -185,9 +187,7 @@ private:
 	}
 };
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

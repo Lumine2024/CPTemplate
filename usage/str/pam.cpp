@@ -40,11 +40,13 @@ struct PAM {
 				while(s[pos - nodes[f].len - 1] != ch) f = nodes[f].fail;
 				nodes[cur].fail = nodes[f].nxt[id];
 			}
-			nodes[cur].cnt = nodes[cur].len == 1 ? 1 : nodes[nodes[cur].fail].cnt + 1;
+			nodes[cur].cnt =
+				nodes[cur].len == 1 ? 1 : nodes[nodes[cur].fail].cnt + 1;
 		}
 		last = nodes[p].nxt[id];
 		return nodes[last].cnt;
 	}
+
 private:
 	struct Node {
 		int len, fail, cnt;
@@ -58,9 +60,7 @@ private:
 	int last;
 };
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

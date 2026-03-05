@@ -19,24 +19,10 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 	return chkf(x, y, greater<T1>{});
 }
 
-template<class T> concept EdgeT = requires(T t) {
-	{t.dst} -> convertible_to<int>;
+template<class T>
+concept EdgeT = requires(T t) {
+	{ t.dst } -> convertible_to<int>;
 };
-#define CONSTRUCT_FROM_VARIABLE_GRAPH_T(name) \
-	template<class T> explicit name(const vector<vector<pair<int, T>>> &g) : graph(g.size()), nodes(g.size()) { \
-		int n = g.size(); \
-		for(int u = 0; u < n; ++u) { \
-			for(auto [v, _] : g[u]) addedge(u, v); \
-		} \
-		build(); \
-	} \
-	template<EdgeT T> explicit name(const vector<vector<T>> &g) : graph(g.size()), nodes(g.size()) { \
-		int n = g.size(); \
-		for(int u = 0; u < n; ++u) { \
-			for(const T &edge : g[u]) addedge(u, edge.dst); \
-		} \
-		build(); \
-	}
 
 // 强连通分量
 struct SCC {
@@ -44,7 +30,24 @@ struct SCC {
 	explicit SCC(const vector<vector<int>> &g) : graph(g), nodes(g.size()) {
 		build();
 	}
-	CONSTRUCT_FROM_VARIABLE_GRAPH_T(SCC);
+	template<class T>
+	explicit SCC(const vector<vector<pair<int, T>>> &g)
+		: graph(g.size()), nodes(g.size()) {
+		int n = g.size();
+		for(int u = 0; u < n; ++u) {
+			for(auto [v, _] : g[u]) addedge(u, v);
+		}
+		build();
+	}
+	template<EdgeT T>
+	explicit SCC(const vector<vector<T>> &g)
+		: graph(g.size()), nodes(g.size()) {
+		int n = g.size();
+		for(int u = 0; u < n; ++u) {
+			for(const T &edge : g[u]) addedge(u, edge.dst);
+		}
+		build();
+	}
 	void addedge(int u, int v) {
 		if(u != v) graph[u].push_back(v);
 	}
@@ -58,9 +61,9 @@ struct SCC {
 		for(int u = 0; u < graph.size(); ++u) {
 			for(int v : graph[u]) {
 				int bu = nodes[u].inscc, bv = nodes[v].inscc;
-				if(bu != bv && !edges.contains({ bu, bv })) {
+				if(bu != bv && !edges.contains({bu, bv})) {
 					dag[bu].push_back(bv);
-					edges.insert({ bu, bv });
+					edges.insert({bu, bv});
 				}
 			}
 		}
@@ -72,6 +75,7 @@ struct SCC {
 	};
 	vector<Node> nodes;
 	vector<vector<int>> graph, sccs, dag;
+
 private:
 	stack<int> stk;
 	void dfs(int &dfn, int &cnt, int u) {
@@ -104,10 +108,28 @@ private:
 // 边双
 struct EBCC {
 	explicit EBCC(int n) : nodes(n), graph(n), in_ebcc(n) {}
-	explicit EBCC(const vector<vector<int>> &g) : graph(g), nodes(g.size()), in_ebcc(g.size()) {
+	explicit EBCC(const vector<vector<int>> &g)
+		: graph(g), nodes(g.size()), in_ebcc(g.size()) {
 		build();
 	}
-	CONSTRUCT_FROM_VARIABLE_GRAPH_T(EBCC);
+	template<class T>
+	explicit EBCC(const vector<vector<pair<int, T>>> &g)
+		: graph(g.size()), nodes(g.size()), in_ebcc(g.size()) {
+		int n = g.size();
+		for(int u = 0; u < n; ++u) {
+			for(auto [v, _] : g[u]) addedge(u, v);
+		}
+		build();
+	}
+	template<EdgeT T>
+	explicit EBCC(const vector<vector<T>> &g)
+		: graph(g.size()), nodes(g.size()), in_ebcc(g.size()) {
+		int n = g.size();
+		for(int u = 0; u < n; ++u) {
+			for(const T &edge : g[u]) addedge(u, edge.dst);
+		}
+		build();
+	}
 	void addedge(int u, int v) {
 		if(u == v) return;
 		graph[u].push_back(v);
@@ -131,6 +153,7 @@ struct EBCC {
 		Node() : dfn(-1), low(-1), ins(false) {}
 	};
 	vector<Node> nodes;
+
 private:
 	stack<int> stk;
 	void dfs(int u, int fa, int &dfn) {
@@ -165,7 +188,24 @@ struct DCC {
 	explicit DCC(const vector<vector<int>> &g) : graph(g), nodes(g.size()) {
 		build();
 	}
-	CONSTRUCT_FROM_VARIABLE_GRAPH_T(DCC);
+	template<class T>
+	explicit DCC(const vector<vector<pair<int, T>>> &g)
+		: graph(g.size()), nodes(g.size()) {
+		int n = g.size();
+		for(int u = 0; u < n; ++u) {
+			for(auto [v, _] : g[u]) addedge(u, v);
+		}
+		build();
+	}
+	template<EdgeT T>
+	explicit DCC(const vector<vector<T>> &g)
+		: graph(g.size()), nodes(g.size()) {
+		int n = g.size();
+		for(int u = 0; u < n; ++u) {
+			for(const T &edge : g[u]) addedge(u, edge.dst);
+		}
+		build();
+	}
 	void addedge(int u, int v) {
 		if(u == v) return;
 		graph[u].push_back(v);
@@ -181,11 +221,12 @@ struct DCC {
 	}
 	struct Node {
 		int dfn, low;
-		Node() :dfn(-1), low(-1) {}
+		Node() : dfn(-1), low(-1) {}
 	};
 	vector<Node> nodes;
 	vector<vector<int>> graph;
 	vector<vector<int>> dcc;
+
 private:
 	stack<int> stk;
 	void dfs(int u, int parent, int root, int &dfn) {
@@ -199,7 +240,7 @@ private:
 				nodes[u].low = min(nodes[u].low, nodes[v].low);
 				if(nodes[v].low >= nodes[u].dfn) {
 					++child;
-					vector<int> f = { u };
+					vector<int> f = {u};
 					while(!stk.empty()) {
 						int x = stk.top();
 						stk.pop();
@@ -224,7 +265,23 @@ struct AP {
 	explicit AP(const vector<vector<int>> &g) : graph(g), nodes(g.size()) {
 		build();
 	}
-	CONSTRUCT_FROM_VARIABLE_GRAPH_T(AP);
+	template<class T>
+	explicit AP(const vector<vector<pair<int, T>>> &g)
+		: graph(g.size()), nodes(g.size()) {
+		int n = g.size();
+		for(int u = 0; u < n; ++u) {
+			for(auto [v, _] : g[u]) addedge(u, v);
+		}
+		build();
+	}
+	template<EdgeT T>
+	explicit AP(const vector<vector<T>> &g) : graph(g.size()), nodes(g.size()) {
+		int n = g.size();
+		for(int u = 0; u < n; ++u) {
+			for(const T &edge : g[u]) addedge(u, edge.dst);
+		}
+		build();
+	}
 	void addedge(int u, int v) {
 		graph[u].push_back(v);
 		graph[v].push_back(u);
@@ -237,7 +294,8 @@ struct AP {
 			}
 		}
 		sort(cutpoints.begin(), cutpoints.end());
-		cutpoints.erase(unique(cutpoints.begin(), cutpoints.end()), cutpoints.end());
+		cutpoints.erase(unique(cutpoints.begin(), cutpoints.end()),
+						cutpoints.end());
 	}
 	struct Node {
 		int dfn, low;
@@ -246,6 +304,7 @@ struct AP {
 	vector<Node> nodes;
 	vector<vector<int>> graph;
 	vector<int> cutpoints;
+
 private:
 	void dfs(int u, int fa, int &dfn) {
 		nodes[u].dfn = nodes[u].low = dfn++;
@@ -273,7 +332,24 @@ struct Bridge {
 	explicit Bridge(const vector<vector<int>> &g) : graph(g), nodes(g.size()) {
 		build();
 	}
-	CONSTRUCT_FROM_VARIABLE_GRAPH_T(Bridge);
+	template<class T>
+	explicit Bridge(const vector<vector<pair<int, T>>> &g)
+		: graph(g.size()), nodes(g.size()) {
+		int n = g.size();
+		for(int u = 0; u < n; ++u) {
+			for(auto [v, _] : g[u]) addedge(u, v);
+		}
+		build();
+	}
+	template<EdgeT T>
+	explicit Bridge(const vector<vector<T>> &g)
+		: graph(g.size()), nodes(g.size()) {
+		int n = g.size();
+		for(int u = 0; u < n; ++u) {
+			for(const T &edge : g[u]) addedge(u, edge.dst);
+		}
+		build();
+	}
 	void addedge(int u, int v) {
 		graph[u].push_back(v);
 		graph[v].push_back(u);
@@ -292,6 +368,7 @@ struct Bridge {
 	vector<Node> nodes;
 	vector<vector<int>> graph;
 	vector<pair<int, int>> bridges;
+
 private:
 	void dfs(int u, int fa, int &dfn) {
 		nodes[u].dfn = nodes[u].low = dfn++;
@@ -309,9 +386,7 @@ private:
 	}
 };
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

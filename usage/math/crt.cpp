@@ -29,7 +29,6 @@ tuple<ll, ll, ll> exgcd(ll a, ll b) {
 	return tuple(g, y, x - (a / b) * y);
 }
 
-
 // @returns (a, b) so that answer is a + kb, k\in N_+
 pair<ll, ll> crt(const vector<ll> &rem, const vector<ll> &mod) {
 	int n = rem.size();
@@ -52,7 +51,7 @@ pair<ll, ll> excrt(const vector<ll> &rem, const vector<ll> &mod) {
 		ll r2 = rem[i], m2 = mod[i];
 		auto [g, p, _] = exgcd(m1, m2);
 		if((r2 - r1) % g != 0) {
-			return { -1, -1 };
+			return {-1, -1};
 		}
 		ll v = m2 / g, x = (r2 - r1) / g;
 		ll u = p % v * x % v;
@@ -60,12 +59,10 @@ pair<ll, ll> excrt(const vector<ll> &rem, const vector<ll> &mod) {
 		r1 += w * m1;
 		m1 = lcm(m1, m2);
 	}
-	return { (r1 % m1 + m1) % m1, m1 };
+	return {(r1 % m1 + m1) % m1, m1};
 }
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

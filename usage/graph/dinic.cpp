@@ -27,12 +27,11 @@ struct Dinic {
 		ll cap;
 	};
 	vector<vector<Edge>> graph;
-	Dinic(int n, int s, int e)
-		: graph(n), level(n), start(s), end(e), n(n) {}
+	Dinic(int n, int s, int e) : graph(n), level(n), start(s), end(e), n(n) {}
 	void addedge(int u, int v, ll w) {
 		int iv = graph[v].size(), iu = graph[u].size();
-		graph[u].push_back({ v, iv, w });
-		graph[v].push_back({ u, iu, 0 });
+		graph[u].push_back({v, iv, w});
+		graph[v].push_back({u, iu, 0});
 	}
 	ll maxflow() {
 		ll mf = 0;
@@ -45,6 +44,7 @@ struct Dinic {
 		}
 		return mf;
 	}
+
 private:
 	vector<int> level;
 	int n, start, end;
@@ -85,9 +85,7 @@ private:
 	}
 };
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

@@ -33,6 +33,7 @@ struct PST {
 	int query(int k, int ver1, int ver2) const {
 		return _query(k, vers[ver1 - 1], vers[ver2], 0, n - 1);
 	}
+
 private:
 	struct Node {
 		int l, r;
@@ -68,13 +69,12 @@ private:
 		int mid = (l + r) / 2;
 		int cntl = nodes[nodes[root2].l].cnt - nodes[nodes[root1].l].cnt;
 		if(k <= cntl) return _query(k, nodes[root1].l, nodes[root2].l, l, mid);
-		else return _query(k - cntl, nodes[root1].r, nodes[root2].r, mid + 1, r);
+		else
+			return _query(k - cntl, nodes[root1].r, nodes[root2].r, mid + 1, r);
 	}
 };
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

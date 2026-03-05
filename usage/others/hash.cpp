@@ -20,7 +20,8 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 }
 
 struct MyHash {
-	size_t operator()(ll x) const noexcept {
+	size_t operator()(ll _x) const noexcept {
+		ull x = _x;
 		x ^= c;
 		x ^= (x >> 21);
 		x ^= (x << 37);
@@ -32,13 +33,13 @@ struct MyHash {
 		x ^= (x >> 31);
 		return x ^ c;
 	}
+
 private:
-	static inline const size_t c = (size_t)chrono::steady_clock::now().time_since_epoch().count();
+	static inline const size_t c =
+		(size_t)chrono::steady_clock::now().time_since_epoch().count();
 };
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);

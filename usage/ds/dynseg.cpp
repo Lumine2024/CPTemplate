@@ -19,14 +19,17 @@ template<class T1, class T2> bool chkmax(T1 &x, const T2 &y) {
 	return chkf(x, y, greater<T1>{});
 }
 
-template<class Info, class Applier> concept DynSegInfo = requires(Info a, Info b, const Applier src) {
+template<class Info, class Applier>
+concept DynSegInfo = requires(Info a, Info b, const Applier src) {
 	Info{};
 	Info(a);
-	{a + b} -> same_as<Info>;
-	{src.apply(a)} -> same_as<void>;
-};
+	{ a + b } -> same_as<Info>;
+	{ src.apply(a) } -> same_as<void>;
+} && is_same_v<Info, typename vector<Info>::value_type>;
 
-template<class Info, class Applier> requires DynSegInfo<Info, Applier> struct DynSegTree {
+template<class Info, class Applier>
+	requires(DynSegInfo<Info, Applier>)
+struct DynSegTree {
 	explicit DynSegTree(ll _n) : n(_n), info(1, _(0, _n)) {}
 	void update(ll x, const Applier &src) {
 		_update(x, src, 0);
@@ -34,6 +37,7 @@ template<class Info, class Applier> requires DynSegInfo<Info, Applier> struct Dy
 	Info query(ll l, ll r) const {
 		return _query(l, r, 0);
 	}
+
 private:
 	struct _ {
 		Info info;
@@ -63,8 +67,10 @@ private:
 			_update(x, src, info[u].rs);
 		}
 		info[u].info = Info{};
-		if(info[u].ls != -1) info[u].info = info[u].info + info[info[u].ls].info;
-		if(info[u].rs != -1) info[u].info = info[u].info + info[info[u].rs].info;
+		if(info[u].ls != -1)
+			info[u].info = info[u].info + info[info[u].ls].info;
+		if(info[u].rs != -1)
+			info[u].info = info[u].info + info[info[u].rs].info;
 	}
 	Info _query(ll ql, ll qr, ll u) const {
 		if(ql <= info[u].l && qr >= info[u].r) return info[u].info;
@@ -77,23 +83,17 @@ private:
 };
 
 struct Info {
-	
+
 	Info() {}
-	Info operator+(const Info &other) const {
-		
-	}
+	Info operator+(const Info &other) const {}
 };
 
 struct Applier {
-	
-	void apply(ll &x) const {
-		
-	}
+
+	void apply(Info &dst) const {}
 };
 
-inline void solve() {
-	
-}
+inline void solve() {}
 
 int main() {
 	ios_base::sync_with_stdio(false);
