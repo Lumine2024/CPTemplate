@@ -2,6 +2,7 @@
 
 !*/
 !*.cpp
+!*.h
 !*.py
 !.gitignore
 !.clang-format
