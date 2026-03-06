@@ -18,3 +18,5 @@
 /.vs/
 /.vscode/
 /out/
+!*.yml
+!*.yaml
