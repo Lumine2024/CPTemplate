@@ -25,7 +25,7 @@ def read(p: Popen[str]) -> str:
 def wrong(p: Popen[str], msg):
     p.kill()
     print(f"Wrong answer: {msg}")
-    _run("rm -rf tc/input.txt tc/sol1.txt tc/sol2.txt")
+    Popen("rm -rf tc/input.txt tc/sol1.txt tc/sol2.txt")
     sys.exit(1)
 
 q = 0

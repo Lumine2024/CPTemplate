@@ -1,0 +1,26 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            kind: gcc
+          - os: ubuntu-latest
+            kind: clang
+          - os: windows-latest
+            kind: msvc
+          - os: windows-latest
+            kind: clang
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run CI Script
+        shell: pwsh
+        run: ./ci.ps1 -Compiler '${{ matrix.kind }}'
