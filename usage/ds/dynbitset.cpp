@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 struct DynamicBitSet {
 	explicit DynamicBitSet(int n = 0) : nums((n + 63) >> 6, 0), sz(n) {}

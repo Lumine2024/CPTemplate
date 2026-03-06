@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 constexpr ld pi = numbers::pi_v<ld>;
 

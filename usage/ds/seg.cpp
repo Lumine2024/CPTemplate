@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 template<class Info, class Applier>
 concept SegInfo = requires(Info a, Info b, const Applier src) {

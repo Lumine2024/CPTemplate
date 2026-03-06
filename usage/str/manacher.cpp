@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 vector<int> manacher(const string &_s) {
 	string s = "$";

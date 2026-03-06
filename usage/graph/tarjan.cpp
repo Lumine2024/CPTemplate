@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 template<class T>
 concept EdgeT = requires(T t) {

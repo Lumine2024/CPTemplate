@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 constexpr int maxn = 100005, inf = 0x3f3f3f3f;
 

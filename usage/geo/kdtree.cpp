@@ -1,4 +1,4 @@
-#include "basic.h"
+#include "geo/basic.h"
 
 struct TwoDTree {
 	explicit TwoDTree(const vector<Point> &pts) : nodes(pts.size()) {

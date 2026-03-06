@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 struct DSU {
 	explicit DSU(int n) : fs(n, -1) {}

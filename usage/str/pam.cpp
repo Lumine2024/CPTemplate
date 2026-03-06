@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 struct PAM {
 	PAM() : s("#"), last(1) {

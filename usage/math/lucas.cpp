@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 struct Lucas {
 	explicit Lucas(int m) : modulo(m), fact(m + 1, 1), invfact(m + 1, 1) {

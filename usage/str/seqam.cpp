@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 struct SeqAM {
 	explicit SeqAM(const string &s)

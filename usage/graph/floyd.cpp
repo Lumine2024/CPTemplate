@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 // 操作后，graph就变成了最短路
 void floyd(vector<vector<ll>> &graph) {

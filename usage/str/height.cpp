@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 vector<int> suffix_array(const string &str) {
 	int n = str.size(), m = 128, p = 0;

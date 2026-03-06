@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 struct SAM {
 	SAM() : nodes(1, Node(-1, 0)), last(0) {}

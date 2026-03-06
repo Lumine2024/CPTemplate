@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 constexpr ll modulo = 998244353, inv2 = 499122177;
 void fwt_or(vector<ll> &a, bool invert) {

@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 // 得到用于KMP的数组
 vector<int> kmp_f(const string &s) {

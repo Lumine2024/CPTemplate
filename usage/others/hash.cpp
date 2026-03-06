@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 struct MyHash {
 	size_t operator()(ll _x) const noexcept {

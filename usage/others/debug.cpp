@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 #ifndef LOCAL
 #define debug(...) (void(0))

@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 struct StringHash {
 	explicit StringHash(const string &s)

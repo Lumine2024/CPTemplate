@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 template<class T> struct Sparse {
 	using func_type = function<T(T, T)>;
