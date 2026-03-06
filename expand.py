@@ -106,8 +106,8 @@ def main() -> None:
         metavar="DIR",
         help=(
             "Add DIR to the include search path (can be specified multiple times). "
-            f"Defaults to the 'include/' directory next to this script: "
-            f"{_DEFAULT_INCLUDE_DIRS[0]}"
+            "Defaults to the 'include/' directory next to this script"
+            + (f": {_DEFAULT_INCLUDE_DIRS[0]}" if _DEFAULT_INCLUDE_DIRS else ".")
         ),
         default=None,
     )

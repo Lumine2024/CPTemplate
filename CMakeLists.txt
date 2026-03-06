@@ -11,6 +11,9 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 # Collect all usage source files and register each as a separate executable.
 # Targets are named after their path relative to the usage/ directory, with
 # directory separators replaced by underscores (e.g. ds/seg.cpp -> ds_seg).
+#
+# Note: GLOB_RECURSE is used here for convenience. If you add or remove source
+# files, re-run CMake (e.g. `cmake ..`) to pick up the change before building.
 file(GLOB_RECURSE USAGE_SOURCES RELATIVE "${CMAKE_SOURCE_DIR}/usage" "usage/*.cpp")
 
 foreach(rel_source IN LISTS USAGE_SOURCES)
