@@ -1,0 +1,68 @@
+#pragma once
+#include "common.h"
+
+constexpr ll inf = 0x3f3f3f3f3f3f3f3f;
+
+struct Dinic {
+	struct Edge {
+		int to, rev;
+		ll cap;
+	};
+	vector<vector<Edge>> graph;
+	Dinic(int n, int s, int e) : graph(n), level(n), start(s), end(e), n(n) {}
+	void addedge(int u, int v, ll w) {
+		int iv = graph[v].size(), iu = graph[u].size();
+		graph[u].push_back({v, iv, w});
+		graph[v].push_back({u, iu, 0});
+	}
+	ll maxflow() {
+		ll mf = 0;
+		while(bfs()) {
+			ll flow = dfs(start, inf);
+			while(flow > 0) {
+				mf += flow;
+				flow = dfs(start, inf);
+			}
+		}
+		return mf;
+	}
+
+private:
+	vector<int> level;
+	int n, start, end;
+	bool bfs() {
+		fill(level.begin(), level.end(), -1);
+		level[start] = 0;
+		queue<int> q;
+		q.emplace(start);
+		while(!q.empty()) {
+			int u = q.front();
+			q.pop();
+			for(const auto &e : graph[u]) {
+				if(level[e.to] == -1 && e.cap > 0) {
+					level[e.to] = level[u] + 1;
+					q.emplace(e.to);
+				}
+			}
+		}
+		return level[end] != -1;
+	}
+	ll dfs(int u, ll mf) {
+		if(u == end || mf == 0) return mf;
+		ll nf = 0;
+		for(auto &e : graph[u]) {
+			if(level[e.to] == level[u] + 1 && e.cap > 0) {
+				ll min_flow = min(mf, e.cap);
+				ll push = dfs(e.to, min_flow);
+				if(push > 0) {
+					e.cap -= push;
+					graph[e.to][e.rev].cap += push;
+					nf += push;
+					mf -= push;
+					if(mf == 0) return nf;
+				}
+			}
+		}
+		return nf;
+	}
+};

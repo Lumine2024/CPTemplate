@@ -15,8 +15,8 @@ Include resolution order:
      this script) is searched in order.
 
 Example:
-    python expand.py usage/geo/rotcal.cpp -o contest/D.cpp
-    python expand.py usage/ds/seg.cpp -I /path/to/include
+    python expand.py usage/geo/rotcal.h -o contest/D.cpp
+    python expand.py usage/ds/seg.h -I /path/to/include
 """
 
 import argparse

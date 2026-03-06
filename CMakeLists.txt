@@ -8,18 +8,32 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # "common.h" and "geo/basic.h" can be found without any relative-path prefix.
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
-# Collect all usage source files and register each as a separate executable.
-# Targets are named after their path relative to the usage/ directory, with
-# directory separators replaced by underscores (e.g. ds/seg.cpp -> ds_seg).
+# Collect all usage header files and register each as a separate CI test
+# executable.  Targets are named after their path relative to the usage/
+# directory, with directory separators replaced by underscores
+# (e.g. ds/seg.h -> ds_seg).
 #
-# Note: GLOB_RECURSE is used here for convenience. If you add or remove source
-# files, re-run CMake (e.g. `cmake ..`) to pick up the change before building.
-file(GLOB_RECURSE USAGE_SOURCES RELATIVE "${CMAKE_SOURCE_DIR}/usage" "usage/*.cpp")
+# Because the usage files are now header-only (no main()), a thin wrapper
+# .cpp is generated in the build tree for each header.  The wrapper simply
+# includes the header and provides an empty main(), which is enough to
+# confirm the header compiles cleanly.
+#
+# Note: GLOB_RECURSE is used here for convenience.  If you add or remove
+# header files, re-run CMake (e.g. `cmake ..`) to pick up the change before
+# building.
+file(GLOB_RECURSE USAGE_HEADERS RELATIVE "${CMAKE_SOURCE_DIR}/usage" "usage/*.h")
 
-foreach(rel_source IN LISTS USAGE_SOURCES)
+foreach(rel_header IN LISTS USAGE_HEADERS)
     # Derive a unique, filesystem-safe target name from the relative path.
-    string(REPLACE "/" "_" target_name "${rel_source}")
-    string(REPLACE ".cpp" "" target_name "${target_name}")
+    string(REPLACE "/" "_" target_name "${rel_header}")
+    string(REPLACE ".h" "" target_name "${target_name}")
 
-    add_executable(${target_name} "usage/${rel_source}")
+    # Generate a minimal wrapper that includes the header and supplies main().
+    set(wrapper "${CMAKE_BINARY_DIR}/test_wrappers/${target_name}.cpp")
+    file(WRITE "${wrapper}"
+        "#include \"${CMAKE_SOURCE_DIR}/usage/${rel_header}\"\nint main(){}\n")
+
+    add_executable(${target_name} "${wrapper}")
+    target_include_directories(${target_name} PRIVATE
+        ${CMAKE_SOURCE_DIR}/include)
 endforeach()
