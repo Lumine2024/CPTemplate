@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 struct Block {
 	Block() : l(-1), r(-1) {}

@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 constexpr ld eps = 1e-9;
 int sign(ld a) {

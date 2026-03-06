@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 int peak(const vector<int> &nums) {
 	int n = nums.size();

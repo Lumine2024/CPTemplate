@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 // persistent segment tree
 struct PST {

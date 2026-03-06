@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 // 强连通分量
 struct SCC {

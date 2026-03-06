@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 constexpr ll modulo = 998244353;
 ll qpow(ll x, ll n) {

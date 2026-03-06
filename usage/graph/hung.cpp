@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 int hungarian(const vector<vector<int>> &graph, int vsz) {
 	int usz = graph.size();

@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 // @returns (gcd, x, y) so that gcd = ax + by
 tuple<ll, ll, ll> exgcd(ll a, ll b) {

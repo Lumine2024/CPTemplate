@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 constexpr ld eps = 2e-10l, pi = 3.14159265358979323846264338327950288l;
 int sign(ld x) {

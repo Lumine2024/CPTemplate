@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 // clang-format off
 template<class Info, class Tag>

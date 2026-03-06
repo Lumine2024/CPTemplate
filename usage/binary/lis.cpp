@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 vector<int> lis(const vector<int> &nums) {
 	int n = nums.size();

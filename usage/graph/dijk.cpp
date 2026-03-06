@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 inline constexpr ll inf = 0x3f3f3f3f3f3f3f3f;
 

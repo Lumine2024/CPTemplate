@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 vector<int> zfn(const string &s) {
 	int n = s.size();

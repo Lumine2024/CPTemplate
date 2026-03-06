@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 struct HPINT {
 	HPINT() : nums(1, 0), neg(false) {}

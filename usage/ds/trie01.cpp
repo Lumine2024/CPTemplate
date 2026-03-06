@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 struct Trie01 {
 	Trie01() : nodes(1) {}

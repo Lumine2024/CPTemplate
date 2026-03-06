@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 
 vector<string> duval(const string &s) {
 	int n = s.size();

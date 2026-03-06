@@ -1,4 +1,4 @@
-#include "basic.h"
+#include "geo/basic.h"
 
 // (A invert to C)'s shape, true is circle, false is line
 bool inv_shape(const Circle &c, const Circle &a) {
