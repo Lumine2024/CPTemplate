@@ -43,6 +43,11 @@ Invoke-Step "Expand" {
     }
     New-Item -ItemType Directory -Path "expanded" -Force
     Copy-Item -Path "expanded_cmakelists.txt" -Destination "expanded\CMakeLists.txt"
+    $includeRoot = [System.IO.Path]::Combine("..", "include")
+    [string[]]$includeDirs = @(
+        (Resolve-Path $includeRoot).Path
+        Get-ChildItem -Path $includeRoot -Directory -Recurse | ForEach-Object { $_.FullName }
+    )
     [string[]]$cppFiles = @(
         Get-ChildItem -Recurse -File -Filter "*.cpp" -Path . | ForEach-Object {
             [System.IO.Path]::GetRelativePath((Resolve-Path ".").Path, $_.FullName)
@@ -50,10 +55,19 @@ Invoke-Step "Expand" {
     )
     foreach($cppFile in $cppFiles) {
         if($cppFile.Contains("build")) { continue }
-        $folder = Split-Path $cppFile -Parent
-        $includeDir = [System.IO.Path]::Combine("..", "include", $folder)
         $outputPath = [System.IO.Path]::Combine("expanded", $cppFile)
-        python ([System.IO.Path]::Combine("..", "expand.py")) $cppFile -I $includeDir -o $outputPath
+        $outputDir = Split-Path $outputPath -Parent
+        if($outputDir -and -not (Test-Path $outputDir)) {
+            New-Item -ItemType Directory -Path $outputDir -Force | Out-Null
+        }
+
+        $expandArgs = @($cppFile)
+        foreach($includeDir in $includeDirs) {
+            $expandArgs += @("-I", $includeDir)
+        }
+        $expandArgs += @("-o", $outputPath)
+
+        python ([System.IO.Path]::Combine("..", "expand.py")) @expandArgs
     }
 }
 Invoke-Step "Configure" {
