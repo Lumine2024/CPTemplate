@@ -50,8 +50,10 @@ Invoke-Step "Expand" {
     )
     foreach($cppFile in $cppFiles) {
         if($cppFile.Contains("build")) { continue }
-        $folder = $cppFile.Substring(0, ($cppFile.LastIndexOf('\')))
-        python "..\expand.py" $cppFile -I "..\include\$folder" -o "expanded\$cppFile"
+        $folder = Split-Path $cppFile -Parent
+        $includeDir = [System.IO.Path]::Combine("..", "include", $folder)
+        $outputPath = [System.IO.Path]::Combine("expanded", $cppFile)
+        python ([System.IO.Path]::Combine("..", "expand.py")) $cppFile -I $includeDir -o $outputPath
     }
 }
 Invoke-Step "Configure" {
