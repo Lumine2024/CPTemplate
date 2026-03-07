@@ -54,6 +54,9 @@ Invoke-Step "Expand" {
         $includeDir = [System.IO.Path]::Combine("..", "include", $folder)
         $outputPath = [System.IO.Path]::Combine("expanded", $cppFile)
         python ([System.IO.Path]::Combine("..", "expand.py")) $cppFile -I $includeDir -o $outputPath
+        if ($LASTEXITCODE -ne 0) {
+            throw "expand.py failed for $cppFile with exit code $LASTEXITCODE"
+        }
     }
 }
 Invoke-Step "Configure" {
