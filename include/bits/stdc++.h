@@ -8,6 +8,7 @@
 #include <array>
 #include <bitset>
 #include <cassert>
+#include <chrono>
 #include <cctype>
 #include <climits>
 #include <cmath>
