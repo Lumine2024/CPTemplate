@@ -18,6 +18,10 @@ jobs:
             kind: msvc
           - os: windows-latest
             kind: clang
+          - os: windows-latest
+            kind: gcc
+          - os: windows-latest
+            kind: clang-cl
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4

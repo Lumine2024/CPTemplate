@@ -1,3 +1,5 @@
+#!/usr/bin/env pwsh
+
 param(
     [Parameter(Mandatory = $true)]
     [string]$Compiler
@@ -6,7 +8,7 @@ param(
 $ErrorActionPreference = 'Stop'
 
 function Invoke-Step([string]$name, [scriptblock]$body) {
-    Write-Host "[CI] ==> $name"
+    Write-Output "[CI] ==> $name"
     & $body
 }
 
@@ -34,12 +36,31 @@ switch($Compiler) {
     }
 }
 
+Invoke-Step "Expand" {
+    Set-Location "tests"
+    if(Test-Path "expanded") {
+        Remove-Item -Recurse -Force "expanded"
+    }
+    New-Item -ItemType Directory -Path "expanded" -Force
+    Copy-Item -Path "expanded_cmakelists.txt" -Destination "expanded\CMakeLists.txt"
+    [string[]]$cppFiles = @(
+        Get-ChildItem -Recurse -File -Filter "*.cpp" -Path . | ForEach-Object {
+            [System.IO.Path]::GetRelativePath((Resolve-Path ".").Path, $_.FullName)
+        }
+    )
+    foreach($cppFile in $cppFiles) {
+        if($cppFile.Contains("build")) { continue }
+        $folder = $cppFile.Substring(0, ($cppFile.LastIndexOf('\')))
+        python "..\expand.py" $cppFile -I "..\include\$folder" -o "expanded\$cppFile"
+    }
+}
 Invoke-Step "Configure" {
+    Set-Location ".."
     cmake -S . -B $buildDir -G Ninja -D CMAKE_BUILD_TYPE=Release -D CMAKE_C_COMPILER=$cc -D CMAKE_CXX_COMPILER=$cxx
 }
-Invoke-Step "build" {
+Invoke-Step "Build" {
     cmake --build $buildDir -j
 }
-Invoke-Step "test" {
-    ctest --test-dir $buildDir --output-on-failure
+Invoke-Step "Test" {
+    ctest --test-dir $buildDir -V
 }
