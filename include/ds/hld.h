@@ -1,75 +1,11 @@
 #pragma once
-#include "common.h"
-
-template<class Info>
-concept SegInfo = requires(Info a, Info b) {
-	Info{};
-	{ a + b } -> same_as<Info>;
-	{ a.update(b) } -> same_as<void>;
-} && is_same_v<Info, typename vector<Info>::value_type>;
-
-template<SegInfo Info> struct SegTree {
-public:
-	SegTree() : n(0) {}
-	explicit SegTree(int sz) : n(sz), info(sz * 4, Info()) {}
-	explicit SegTree(const vector<Info> &v) : n(v.size()), info(v.size() * 4) {
-		_build(v, 0, 0, n);
-	}
-	void assign(int sz) {
-		n = sz;
-		info.assign(n * 4, Info());
-	}
-	void assign(const vector<Info> &v) {
-		n = v.size();
-		info.assign(n * 4, Info());
-		_build(v, 0, 0, n);
-	}
-	Info query(int l, int r) const {
-		if(l == r) return Info();
-		return _query(l, r, 0, 0, n);
-	}
-	void update(int x, const Info &v) {
-		_update(x, v, 0, 0, n);
-	}
-
-private:
-	int n;
-	vector<Info> info;
-	void _build(const vector<Info> &v, int u, int rl, int rr) {
-		if(rl == rr - 1) {
-			info[u] = v[rl];
-			return;
-		}
-		int mid = (rl + rr) / 2, ls = u * 2 + 1, rs = u * 2 + 2;
-		_build(v, ls, rl, mid);
-		_build(v, rs, mid, rr);
-		info[u] = info[ls] + info[rs];
-	}
-	Info _query(int ql, int qr, int u, int rl, int rr) const {
-		if(ql <= rl && qr >= rr) return info[u];
-		int mid = (rl + rr) >> 1, ls = u * 2 + 1, rs = u * 2 + 2;
-		Info res{};
-		if(ql < mid) res = res + _query(ql, qr, ls, rl, mid);
-		if(qr > mid) res = res + _query(ql, qr, rs, mid, rr);
-		return res;
-	}
-	void _update(int x, const Info &v, int u, int rl, int rr) {
-		if(rl == rr - 1) {
-			v.update(info[u]);
-			return;
-		}
-		int mid = (rl + rr) >> 1, ls = u * 2 + 1, rs = u * 2 + 2;
-		if(x < mid) _update(x, v, ls, rl, mid);
-		else _update(x, v, rs, mid, rr);
-		info[u] = info[ls] + info[rs];
-	}
-};
+#include "seg.h"
 
 struct HLDInfo {
 	ll val;
 	explicit HLDInfo(ll v) : val(v) {}
 	HLDInfo() : val(0) {}
-	void update(HLDInfo &dst) const {
+	void apply(HLDInfo &dst) const {
 		dst.val = val;
 	}
 	HLDInfo operator+(const HLDInfo &x) const {
@@ -134,7 +70,7 @@ private:
 	};
 	vector<_Node> nodes;
 	vector<int> nfd;
-	SegTree<HLDInfo> seg;
+	SegTree<HLDInfo, HLDInfo> seg;
 	void dfs1(const vector<Node> &g, int x, int fa) {
 		if(fa == -1) {
 			nodes[x].dep = 0;
