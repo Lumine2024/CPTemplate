@@ -18,8 +18,21 @@ public:
 	~OutputController() {
 		flush();
 	}
-	template<CanOutput T> void force_output(const T &t) {
+	template<CanOutput T> OutputController &force_output(const T &t) {
 		cout << t;
+		return *this;
+	}
+	streambuf *rdbuf() const {
+		return cout.rdbuf();
+	}
+	streambuf *rdbuf(streambuf *buf) {
+		return cout.rdbuf(buf);
+	}
+	ostream *tie(ostream *os) {
+		return cout.tie(os);
+	}
+	ostream *tie() {
+		return cout.tie();
 	}
 
 private:

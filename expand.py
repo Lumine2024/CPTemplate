@@ -19,17 +19,18 @@ Example:
     python expand.py usage/ds/seg.h -I /path/to/include
 """
 
+from __future__ import annotations
+
 import argparse
-import os
 import re
 import sys
+from pathlib import Path
 
 # Default include directory: the 'include/' folder next to this script.
-_SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-_DEFAULT_INCLUDE_DIRS = [os.path.join(_SCRIPT_DIR, "include")]
+_SCRIPT_DIR = Path(__file__).resolve().parent
+_DEFAULT_INCLUDE_DIRS = [_SCRIPT_DIR / "include", _SCRIPT_DIR]
 
-
-def expand(filepath: str, included: set, include_dirs: list) -> str:
+def expand(filepath: Path, included: set[Path], include_dirs: list[Path]) -> str:
     """Recursively expand local includes in a file.
 
     Args:
@@ -41,19 +42,19 @@ def expand(filepath: str, included: set, include_dirs: list) -> str:
     Returns:
         The expanded file content as a string.
     """
-    abs_path = os.path.abspath(filepath)
+    abs_path = filepath.resolve()
     if abs_path in included:
         return ""
     included.add(abs_path)
 
-    file_dir = os.path.dirname(abs_path)
+    file_dir = abs_path.parent
     result = []
 
     try:
-        with open(filepath, "r") as f:
+        with abs_path.open("r") as f:
             lines = f.readlines()
     except FileNotFoundError:
-        print(f"Error: file not found: {filepath}", file=sys.stderr)
+        print(f"Error: file not found: {abs_path}", file=sys.stderr)
         sys.exit(1)
 
     for line in lines:
@@ -67,13 +68,13 @@ def expand(filepath: str, included: set, include_dirs: list) -> str:
             include_path = m.group(1)
 
             # 1. Try relative to the current file's directory.
-            full_include = os.path.normpath(os.path.join(file_dir, include_path))
+            full_include = (file_dir / include_path).resolve()
 
             # 2. If not found, search the configured include directories.
-            if not os.path.isfile(full_include):
+            if not full_include.is_file():
                 for inc_dir in include_dirs:
-                    candidate = os.path.normpath(os.path.join(inc_dir, include_path))
-                    if os.path.isfile(candidate):
+                    candidate = (inc_dir / include_path).resolve()
+                    if candidate.is_file():
                         full_include = candidate
                         break
 
@@ -87,7 +88,7 @@ def expand(filepath: str, included: set, include_dirs: list) -> str:
     return "".join(result)
 
 
-def main() -> None:
+def main():
     parser = argparse.ArgumentParser(
         description="Expand local #include directives in C++ files for contest submission."
     )
@@ -106,28 +107,30 @@ def main() -> None:
         metavar="DIR",
         help=(
             "Add DIR to the include search path (can be specified multiple times). "
-            "Defaults to the 'include/' directory next to this script"
-            + (f": {_DEFAULT_INCLUDE_DIRS[0]}" if _DEFAULT_INCLUDE_DIRS else ".")
+            + "Defaults to: "
+            + ", ".join(str(p) for p in _DEFAULT_INCLUDE_DIRS)
         ),
         default=None,
     )
     args = parser.parse_args()
 
-    if not os.path.isfile(args.input):
+    input_path = Path(args.input).resolve()
+    if not input_path.is_file():
         print(f"Error: '{args.input}' is not a file or does not exist.", file=sys.stderr)
         sys.exit(1)
 
-    include_dirs = args.include_dirs if args.include_dirs is not None else _DEFAULT_INCLUDE_DIRS
+    include_dirs = ([Path(p).resolve() for p in args.include_dirs] if args.include_dirs is not None else [])
+    include_dirs.extend(_DEFAULT_INCLUDE_DIRS)
 
-    included: set = set()
-    result = expand(args.input, included, include_dirs)
+    included: set[Path] = set()
+    result = expand(input_path, included, include_dirs)
 
     if args.output:
-        out_dir = os.path.dirname(os.path.abspath(args.output))
-        os.makedirs(out_dir, exist_ok=True)
-        with open(args.output, "w") as f:
+        output_path = Path(args.output).resolve()
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        with output_path.open("w") as f:
             f.write(result)
-        print(f"Expanded output written to: {args.output}")
+        print(f"Expanded output written to: {output_path}")
     else:
         sys.stdout.write(result)
 
