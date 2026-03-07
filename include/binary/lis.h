@@ -6,9 +6,9 @@ vector<int> lis(const vector<int> &nums) {
 	vector<int> dp, pos(n), pre(n, -1);
 	for(int i = 0; i < n; ++i) {
 		auto it = lower_bound(dp.begin(), dp.end(), nums[i]);
+		int j = it - dp.begin();
 		if(it == dp.end()) dp.push_back(nums[i]);
 		else *it = nums[i];
-		int j = it - dp.begin();
 		pos[j] = i;
 		if(j != 0) pre[i] = pos[j - 1];
 	}

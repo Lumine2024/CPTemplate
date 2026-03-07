@@ -33,6 +33,7 @@
 #include <atomic>
 #include <bitset>
 #include <cassert>
+#include <chrono>
 #include <cctype>
 #include <cerrno>
 #include <cfenv>

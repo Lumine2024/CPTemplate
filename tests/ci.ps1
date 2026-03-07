@@ -68,6 +68,9 @@ Invoke-Step "Expand" {
         $expandArgs += @("-o", $outputPath)
 
         python ([System.IO.Path]::Combine("..", "expand.py")) @expandArgs
+        if ($LASTEXITCODE -ne 0) {
+            throw "expand.py failed for $cppFile with exit code $LASTEXITCODE"
+        }
     }
 }
 Invoke-Step "Configure" {
