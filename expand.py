@@ -51,7 +51,7 @@ def expand(filepath: Path, included: set[Path], include_dirs: list[Path]) -> str
     result = []
 
     try:
-        with abs_path.open("r") as f:
+        with abs_path.open("r", encoding="utf-8") as f:
             lines = f.readlines()
     except FileNotFoundError:
         print(f"Error: file not found: {abs_path}", file=sys.stderr)
@@ -128,7 +128,7 @@ def main():
     if args.output:
         output_path = Path(args.output).resolve()
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        with output_path.open("w") as f:
+        with output_path.open("w", encoding="utf-8") as f:
             f.write(result)
         print(f"Expanded output written to: {output_path}")
     else:
