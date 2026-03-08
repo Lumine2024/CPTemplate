@@ -9,7 +9,9 @@
 #endif
 
 // c libraries
+#ifdef _MSC_VER
 #include <conio.h>
+#endif
 #include <crtdbg.h>
 #include <direct.h>
 #include <fpieee.h>
@@ -228,7 +230,6 @@ constexpr int __builtin_popcountll(unsigned long long x) noexcept {
 #include <syncstream>
 
 #if CCVER > 202002L
-#include <bit>
 #include <expected>
 #include <print>
 #include <spanstream>

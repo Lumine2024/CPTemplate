@@ -2,12 +2,13 @@
 #include "common.h"
 
 template<class Info, class Applier>
-concept SegInfo = requires(Info a, Info b, const Applier src) {
+concept SegInfo = requires(Info a, Info b, const Applier src, vector<Info> vi) {
 	Info{};
 	Info(a);
 	{ a + b } -> same_as<Info>;
 	{ src.apply(a) } -> same_as<void>;
-} && is_same_v<Info, typename vector<Info>::value_type>;
+	{ vi[0] } -> same_as<Info &>;
+};
 
 template<class Info, class Applier>
 	requires(SegInfo<Info, Applier>)
@@ -65,15 +66,4 @@ private:
 		else _update(x, v, rs, mid, rr);
 		info[u] = info[ls] + info[rs];
 	}
-};
-
-struct Info {
-
-	Info() {}
-	Info operator+(const Info &i) const {}
-};
-
-struct Applier {
-
-	void apply(Info &x) const {}
 };
