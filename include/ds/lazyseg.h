@@ -1,9 +1,9 @@
 #pragma once
 #include "common.h"
 
-// clang-format off
 template<class Info, class Tag>
-concept SegInfoTag = requires(Info a, Info b, Tag c, Tag d, int l, int r) {
+concept SegInfoTag = requires(Info a, Info b, Tag c, Tag d, int l, int r,
+							  vector<Info> vi, vector<Tag> vt) {
 	Info{};
 	Tag{};
 	{ a + b } -> same_as<Info>;
@@ -11,11 +11,12 @@ concept SegInfoTag = requires(Info a, Info b, Tag c, Tag d, int l, int r) {
 	{ c.apply(d, l, r) } -> same_as<void>;
 	{ c.empty() } -> same_as<bool>;
 	{ c.clear() } -> same_as<void>;
-} && is_same_v<Info, typename vector<Info>::value_type>
-  && is_same_v<Tag, typename vector<Tag>::value_type>;
-template<class Info, class Tag> requires(SegInfoTag<Info, Tag>)
+	{ vi[l] } -> same_as<Info &>;
+	{ vt[l] } -> same_as<Tag &>;
+};
+template<class Info, class Tag>
+	requires(SegInfoTag<Info, Tag>)
 struct LazySegTree {
-	// clang-format on
 	LazySegTree() : n(0) {}
 	explicit LazySegTree(int n_) : n(n_), info(4 * n_), tag(4 * n_) {}
 	explicit LazySegTree(const vector<Info> &v)
@@ -84,16 +85,4 @@ private:
 		if(ur > mid) _update(ul, ur, t, rs, mid, rr);
 		info[u] = info[ls] + info[rs];
 	}
-};
-
-struct Info {
-	Info() {}
-	Info operator+(const Info &i) const {}
-};
-struct Tag {
-	Tag() {}
-	bool empty() const {}
-	void clear() {}
-	void apply(Info &dst, int l, int r) const {}
-	void apply(Tag &dst, int l, int r) const {}
 };

@@ -23,9 +23,9 @@ template<class T> struct Sparse {
 		}
 	}
 	T query(int l, int r) const {
-		int len = r - l + 1;
+		int len = r - l;
 		int j = _log[len];
-		return func(table[l][j], table[r - (1 << j) + 1][j]);
+		return func(table[l][j], table[r - 1 - (1 << j) + 1][j]);
 	}
 
 private:

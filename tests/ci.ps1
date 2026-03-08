@@ -11,6 +11,11 @@ function Invoke-Step([string]$name, [scriptblock]$body) {
     Write-Output "[CI] ==> $name"
     & $body
 }
+function Test-LastExitCode([string]$message) {
+    if($LASTEXITCODE -ne 0) {
+        throw $message
+    }
+}
 
 $buildDir = "build"
 
@@ -68,18 +73,22 @@ Invoke-Step "Expand" {
         $expandArgs += @("-o", $outputPath)
 
         python ([System.IO.Path]::Combine("..", "expand.py")) @expandArgs
-        if ($LASTEXITCODE -ne 0) {
-            throw "expand.py failed for $cppFile with exit code $LASTEXITCODE"
-        }
+        Test-LastExitCode "expand.py failed for $cppFile with exit code $LASTEXITCODE"
     }
 }
 Invoke-Step "Configure" {
     Set-Location ".."
+    if(Test-Path $buildDir) {
+        Remove-Item $buildDir -Recurse -Force
+    }
     cmake -S . -B $buildDir -G Ninja -D CMAKE_BUILD_TYPE=Release -D CMAKE_C_COMPILER=$cc -D CMAKE_CXX_COMPILER=$cxx
+    Test-LastExitCode "CMake configure failed, exit code is $LASTEXITCODE"
 }
 Invoke-Step "Build" {
     cmake --build $buildDir -j
+    Test-LastExitCode "CMake build failed, exit code is $LASTEXITCODE"
 }
 Invoke-Step "Test" {
     ctest --test-dir $buildDir -V
+    Test-LastExitCode "CTest failed, exit code is $LASTEXITCODE"
 }
