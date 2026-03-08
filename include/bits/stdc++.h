@@ -118,10 +118,12 @@
 #include <strstream>
 
 // int128 extension
+#ifndef __clang__
 #include <__msvc_int128.hpp>
 using __int128_t = std::_Signed128;
 using __uint128_t = std::_Unsigned128;
 #define __int128 __int128_t
+#endif // __clang__ (int128)
 // bit extension
 #ifndef __clang__
 #if CCVER > 201703L
