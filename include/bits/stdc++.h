@@ -11,7 +11,6 @@
 // c libraries
 #ifdef _MSC_VER
 #include <conio.h>
-#endif
 #include <crtdbg.h>
 #include <direct.h>
 #include <fpieee.h>
@@ -28,6 +27,7 @@
 #include <sys/types.h>
 #include <sys/utime.h>
 #include <tchar.h>
+#endif
 
 // c++ libraries
 #include <algorithm>
@@ -123,6 +123,7 @@ using __int128_t = std::_Signed128;
 using __uint128_t = std::_Unsigned128;
 #define __int128 __int128_t
 // bit extension
+#ifndef __clang__
 #if CCVER > 201703L
 #include <bit>
 constexpr int __builtin_clz(unsigned x) noexcept {
@@ -201,6 +202,7 @@ constexpr int __builtin_popcountll(unsigned long long x) noexcept {
 	return res;
 }
 #endif
+#endif // __clang__
 #endif
 
 #if CCVER > 201402L
