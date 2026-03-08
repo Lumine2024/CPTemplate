@@ -81,7 +81,20 @@ Invoke-Step "Configure" {
     if(Test-Path $buildDir) {
         Remove-Item $buildDir -Recurse -Force
     }
-    cmake -S . -B $buildDir -G Ninja -D CMAKE_BUILD_TYPE=Release -D CMAKE_C_COMPILER=$cc -D CMAKE_CXX_COMPILER=$cxx
+    if($Compiler -eq "msvc") {
+        $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+        $vsPath = (& $vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath).Trim()
+        $vcvarsall = Join-Path $vsPath "VC\Auxiliary\Build\vcvars64.bat"
+        $envVars = cmd.exe /c "`"$vcvarsall`" > nul 2>&1 && set"
+        foreach ($line in $envVars) {
+            if ($line -match '^([^=]+)=(.+)$') {
+                [System.Environment]::SetEnvironmentVariable($Matches[1], $Matches[2], "Process")
+            }
+        }
+        cmake -S . -B $buildDir -G Ninja -D CMAKE_BUILD_TYPE=Release
+    } else {
+        cmake -S . -B $buildDir -G Ninja -D CMAKE_BUILD_TYPE=Release -D CMAKE_C_COMPILER=$cc -D CMAKE_CXX_COMPILER=$cxx
+    }
     Test-LastExitCode "CMake configure failed, exit code is $LASTEXITCODE"
 }
 Invoke-Step "Build" {
