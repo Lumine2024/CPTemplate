@@ -11,23 +11,23 @@
 // c libraries
 #ifdef _MSC_VER
 #include <conio.h>
-#endif
 #include <crtdbg.h>
 #include <direct.h>
 #include <fpieee.h>
 #include <io.h>
-#include <malloc.h>
 #include <mbstring.h>
 #include <process.h>
 #include <sal.h>
-#include <search.h>
 #include <share.h>
 #include <sys/locking.h>
+#include <sys/utime.h>
+#include <tchar.h>
+#endif
+#include <malloc.h>
+#include <search.h>
 #include <sys/stat.h>
 #include <sys/timeb.h>
 #include <sys/types.h>
-#include <sys/utime.h>
-#include <tchar.h>
 
 // c++ libraries
 #include <algorithm>
@@ -108,7 +108,7 @@
 #include <vector>
 #include <version>
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(__clang__)
 // Legacy C/C++ headers kept only for MSVC compatibility.
 #include <ccomplex>
 #include <ciso646>
