@@ -49,3 +49,26 @@ TEST(range_fenwick_multiple_updates) {
 	ENSURE(rf.query(4) == 6);
 	ENSURE(rf.query(5) == 6);
 }
+
+void check_fenwick_values(const Fenwick<ll> &f) {
+	ENSURE(f.query(1) == 1);
+	ENSURE(f.query(3) == 6);
+	ENSURE(f.query(5) == 15);
+}
+
+TEST(ensure_in_helper_function) {
+	Fenwick<ll> f(5);
+	for(int i = 1; i <= 5; ++i) f.update(i, i);
+	check_fenwick_values(f);
+}
+
+TEST(ensure_in_lambda) {
+	Fenwick<ll> f(5);
+	for(int i = 1; i <= 5; ++i) f.update(i, i);
+	auto check = [&]() {
+		ENSURE(f.query(1) == 1);
+		ENSURE(f.query(3) == 6);
+		ENSURE(f.query(5) == 15);
+	};
+	check();
+}

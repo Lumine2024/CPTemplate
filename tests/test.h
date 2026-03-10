@@ -1,7 +1,11 @@
 #pragma once
 #include <bits/stdc++.h>
 
-std::vector<std::pair<std::string, std::function<void(int &)>>> actions;
+struct EnsureFailure {
+	const char *cond;
+};
+
+std::vector<std::pair<std::string, std::function<void()>>> actions;
 
 int main() {
 	int fail_cnt = 0;
@@ -9,10 +13,10 @@ int main() {
 	std::vector<std::string> failed_tests;
 	for(auto [name, action] : actions) {
 		std::cout << "Running test " << name << '\n';
-		int ec = 0;
-		action(ec);
-		if(ec == 0) std::cout << "OK\n";
-		else {
+		try {
+			action();
+			std::cout << "OK\n";
+		} catch(const EnsureFailure &) {
 			std::cout << "Failed\n";
 			fail_cnt++;
 			failed_tests.push_back(name);
@@ -30,17 +34,14 @@ int main() {
 }
 
 #define TEST(test_name)                                                        \
-	void test_name(int &ec);                                                   \
+	void test_name();                                                          \
 	int __init_##test_name##__ = [] {                                          \
 		actions.emplace_back(#test_name, test_name);                           \
 		return 0;                                                              \
 	}();                                                                       \
-	void test_name(int &ec)
+	void test_name()
 
 #define ENSURE(cond)                                                           \
 	do {                                                                       \
-		if(!(cond)) {                                                          \
-			ec = 1;                                                            \
-			return;                                                            \
-		}                                                                      \
+		if(!(cond)) { throw EnsureFailure{#cond}; }                            \
 	} while(false);
