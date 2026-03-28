@@ -16,8 +16,8 @@ int main() {
 		try {
 			action();
 			std::cout << "OK\n";
-		} catch(const EnsureFailure &) {
-			std::cout << "Failed\n";
+		} catch(const EnsureFailure &fail) {
+			std::cout << "Failed: " << fail.cond << '\n';
 			fail_cnt++;
 			failed_tests.push_back(name);
 		}
@@ -43,5 +43,7 @@ int main() {
 
 #define ENSURE(cond)                                                           \
 	do {                                                                       \
-		if(!(cond)) { throw EnsureFailure{#cond}; }                            \
-	} while(false);
+		if(!(cond)) {                                                          \
+			throw EnsureFailure{#cond};                                        \
+		}                                                                      \
+	} while(false)

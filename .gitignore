@@ -21,3 +21,5 @@ build/
 !*.yml
 !*.yaml
 /tests/expanded/
+!*.gdb
+!LICENSE
