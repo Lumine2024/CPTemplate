@@ -1,15 +1,7 @@
 #pragma once
-#include "common.h"
+#include "exgcd.h"
 
 constexpr ll modulo = 998244353;
-
-// @returns (gcd, x, y) so that gcd = ax + by
-// note that we may need use __int128
-tuple<ll, ll, ll> exgcd(ll a, ll b) {
-	if(b == 0) return tuple(a, 1, 0);
-	auto [g, x, y] = exgcd(b, a % b);
-	return tuple(g, y, x - (a / b) * y);
-}
 
 // @returns (a, b) so that answer is a + kb, k\in N_+
 pair<ll, ll> crt(const vector<ll> &rem, const vector<ll> &mod) {
