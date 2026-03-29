@@ -1,5 +1,5 @@
 #pragma once
-#include "geo/basic.h"
+#include "basic.h"
 
 struct LiChao {
 	vector<Lineseg> lines;

@@ -1,5 +1,5 @@
 #pragma once
-#include "geo/basic.h"
+#include "basic.h"
 
 struct TwoDTree {
 	explicit TwoDTree(const vector<Point> &pts) : nodes(pts.size()) {

@@ -1,15 +1,14 @@
 #pragma once
 #include "common.h"
 
-constexpr ll modulo = 998244353;
-inline ll qpow(ll x, ll n) {
+template<ll modulo> constexpr ll qpow(ll x, ll n) {
 	ll ret = 1;
 	for(; n; n >>= 1, x = x * x % modulo)
 		if(n & 1) ret = ret * x % modulo;
 	return ret;
 }
 
-struct PreprocessedPow {
+template<ll modulo> struct PreprocessedPow {
 	PreprocessedPow(ll k, ll maxn) {
 		k %= modulo;
 		m = ceil(sqrt(maxn + 1.5));

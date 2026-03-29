@@ -1,14 +1,6 @@
 #pragma once
 #include "common.h"
 
-constexpr ll modulo = 998244353;
-inline ll qpow(ll x, ll n) {
-	ll ret = 1;
-	for(; n; n >>= 1, x = x * x % modulo)
-		if(n & 1) ret = ret * x % modulo;
-	return ret;
-}
-
 ll __qpow(ll x, ll n) {
 	ll ret = 1;
 	for(; n != 0; n >>= 1, x = x * x) {

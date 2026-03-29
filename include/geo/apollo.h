@@ -1,5 +1,5 @@
 #pragma once
-#include "geo/basic.h"
+#include "basic.h"
 
 // PA / PB = lambda
 optional<Circle> apollonius(const Point &a, const Point &b, ld lambda) {

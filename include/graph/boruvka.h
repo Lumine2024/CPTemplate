@@ -1,37 +1,7 @@
 #pragma once
-#include "common.h"
+#include "dsu.h"
 
 constexpr ll inf = 0x3f3f3f3f3f3f3f3f;
-
-struct DSU {
-	explicit DSU(int n) : fs(n, -1) {}
-	int find(int x) {
-		if(fs[x] < 0) return x;
-		return fs[x] = find(fs[x]);
-	}
-	bool is_connected(int x, int y) {
-		return find(x) == find(y);
-	}
-	int size(int x) {
-		return -fs[find(x)];
-	}
-	void connect(int x, int y) {
-		x = find(x);
-		y = find(y);
-		if(x == y) return;
-		int sx = size(x), sy = size(y);
-		if(sx < sy) {
-			fs[y] -= sx;
-			fs[x] = y;
-		} else {
-			fs[x] -= sy;
-			fs[y] = x;
-		}
-	}
-
-private:
-	vector<int> fs; // fa or size
-};
 
 struct Edge {
 	int u, v;

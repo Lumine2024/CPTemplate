@@ -1,23 +1,12 @@
 #pragma once
 #include "common.h"
 
-constexpr ll modulo = 998244353;
-inline ll qpow(ll x, ll n) {
-	ll ret = 1;
-	for(; n; n >>= 1, x = x * x % modulo)
-		if(n & 1) ret = ret * x % modulo;
-	return ret;
-}
-
-struct Sterling {
+template<ll maxn, ll modulo> struct Sterling {
 	Sterling() = delete;
-	static int get(int n, int m) {
-		return ster[n][m];
-	}
+	static inline int ster[maxn][maxn];
 
 private:
-	static constexpr int maxn = 5005;
-	static inline int ster[maxn][maxn];
+	// static constexpr int maxn = 5005;
 	static inline int init = [] {
 		ster[0][0] = 1;
 		for(ll i = 1; i < maxn; ++i) {
