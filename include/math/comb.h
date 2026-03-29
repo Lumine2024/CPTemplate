@@ -1,28 +1,27 @@
 #pragma once
-#include "common.h"
+#include "preppow.h"
 
-inline constexpr ll modulo = 998244353;
-constexpr ll qpow(ll x, ll n) {
-	ll ret = 1;
-	for(; n != 0; n >>= 1, x = x * x % modulo)
-		if(n & 1) ret = ret * x % modulo;
-	return ret;
-}
-
-struct Comb {
+template<ll modulo> struct Comb {
 	Comb() = delete;
+	static void ensure_init() {
+		(void)init;
+	}
 	static ll fact(ll n) {
+		ensure_init();
 		return fac[n];
 	}
 	static ll invfact(ll n) {
+		ensure_init();
 		return ifac[n];
 	}
 	static ll perm(ll n, ll m) {
+		ensure_init();
 		if(m < 0 || m > n || n < 0) return 0;
 		ll fn = fac[n], inm = ifac[n - m];
 		return fn * inm % modulo;
 	}
 	static ll binom(ll n, ll m) {
+		ensure_init();
 		if(m < 0 || m > n || n < 0) return 0;
 		ll fn = fac[n], im = ifac[m], inm = ifac[n - m];
 		return fn * im % modulo * inm % modulo;
@@ -36,7 +35,7 @@ private:
 		for(ll i = 1; i < maxn; ++i) {
 			fac[i] = (ll(fac[i - 1]) * i) % modulo;
 		}
-		ifac[maxn - 1] = qpow(fac[maxn - 1], modulo - 2);
+		ifac[maxn - 1] = qpow<modulo>(fac[maxn - 1], modulo - 2);
 		for(ll i = maxn - 2; i >= 0; --i) {
 			ifac[i] = (ll(ifac[i + 1]) * (i + 1)) % modulo;
 		}

@@ -1,5 +1,5 @@
 #pragma once
-#include "geo/andrew.h"
+#include "andrew.h"
 
 ld farthest_dist(const vector<Point> &pts) {
 	int n = pts.size();

@@ -1,5 +1,5 @@
 #pragma once
-#include "geo/basic.h"
+#include "basic.h"
 
 struct Convex : public Polygon {
 	using Polygon::Polygon;

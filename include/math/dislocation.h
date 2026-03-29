@@ -1,9 +1,7 @@
 #pragma once
 #include "common.h"
 
-constexpr ll modulo = 998244353;
-
-struct Dislocation {
+template<ll modulo> struct Dislocation {
 	Dislocation() = delete;
 	static ll get(int i) {
 		return nums[i];

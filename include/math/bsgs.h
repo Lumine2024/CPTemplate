@@ -1,17 +1,9 @@
 #pragma once
-#include "common.h"
 #include "hash.h"
-
-constexpr ll modulo = 998244353;
-inline ll qpow(ll x, ll n) {
-	ll ret = 1;
-	for(; n; n >>= 1, x = x * x % modulo)
-		if(n & 1) ret = ret * x % modulo;
-	return ret;
-}
+#include "preppow.h"
 
 // returns ret so that qpow(ret, a) = b, -1 if not exist
-ll mlog(ll a, ll b) {
+template<ll modulo> ll mlog(ll a, ll b) {
 	if(b == 1) return 0;
 	ll t = ceil(sqrt(modulo));
 	ll now = b;

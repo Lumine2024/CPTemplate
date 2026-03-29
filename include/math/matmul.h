@@ -1,14 +1,6 @@
 #pragma once
 #include "common.h"
 
-constexpr ll modulo = 998244353;
-inline ll qpow(ll x, ll n) {
-	ll ret = 1;
-	for(; n; n >>= 1, x = x * x % modulo)
-		if(n & 1) ret = ret * x % modulo;
-	return ret;
-}
-
 template<class T>
 vector<vector<T>> matmul(const vector<vector<T>> &a,
 						 const vector<vector<T>> &b) {
@@ -18,8 +10,6 @@ vector<vector<T>> matmul(const vector<vector<T>> &a,
 		for(int j = 0; j < p; ++j) {
 			for(int k = 0; k < n; ++k) {
 				ret[i][j] = ret[i][j] + a[i][k] * b[k][j];
-				// 增广矩乘：ret[i][j] = min(ret[i][j], lhs[i][k] + rhs[k][j]);
-				// 对的对的，这就是floyd，对的对的
 			}
 		}
 	}

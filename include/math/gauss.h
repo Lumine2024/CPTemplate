@@ -1,14 +1,7 @@
 #pragma once
-#include "common.h"
+#include "preppow.h"
 
-constexpr ll modulo = 998244353;
-inline ll qpow(ll x, ll n) {
-	ll ret = 1;
-	for(; n; n >>= 1, x = x * x % modulo)
-		if(n & 1) ret = ret * x % modulo;
-	return ret;
-}
-
+template<ll modulo>
 optional<vector<vector<ll>>> gauss(const vector<vector<ll>> &a,
 								   const vector<vector<ll>> &b) {
 	int r = a.size(), n = a[0].size(), m = b[0].size(), row = 0;
@@ -24,7 +17,7 @@ optional<vector<vector<ll>>> gauss(const vector<vector<ll>> &a,
 		while(sel < r && aug[sel][col] == 0) ++sel;
 		if(sel == r) continue;
 		swap(aug[row], aug[sel]);
-		ll inv = qpow(aug[row][col], modulo - 2);
+		ll inv = qpow<modulo>(aug[row][col], modulo - 2);
 		for(int j = col; j < n + m; ++j) {
 			aug[row][j] = aug[row][j] * inv % modulo;
 		}

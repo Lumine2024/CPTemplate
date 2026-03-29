@@ -1,14 +1,6 @@
 #pragma once
 #include "common.h"
 
-constexpr ll modulo = 998244353;
-inline ll qpow(ll x, ll n) {
-	ll ret = 1;
-	for(; n; n >>= 1, x = x * x % modulo)
-		if(n & 1) ret = ret * x % modulo;
-	return ret;
-}
-
 struct LinearBasis_XOR {
 	LinearBasis_XOR() : base(61) {}
 	void insert(ll val) {
