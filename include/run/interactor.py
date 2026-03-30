@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from argparse import *
 from subprocess import *
+import shutil
 import sys
 
 ap = ArgumentParser()
@@ -25,30 +26,32 @@ def read(p: Popen[str]) -> str:
 def wrong(p: Popen[str], msg):
     p.kill()
     print(f"Wrong answer: {msg}")
-    Popen("rm -rf tc/input.txt tc/sol1.txt tc/sol2.txt")
     sys.exit(1)
 
-q = 0
-with Popen(
-    " ".join(args.program), shell=True,
-    stdin=PIPE, stdout=PIPE, universal_newlines=True
-) as p:
-    while True:
-        q += 1
-        if q > 50:
-            wrong(p, "too many queries")
-        try:
-            s = read(p)
-            guess = int(s)
-        except:
-            wrong(p, f"invalid input: {s}")
-        if guess == args.x:
-            write(p, '=')
-            break
-        elif guess > args.x:
-            write(p, '>')
-        else:
-            write(p, '<')
-    sys.stdout.write(f"Number of query: {q}\n")
-    sys.stdout.flush()
-
+try:
+    q = 0
+    with Popen(
+        " ".join(args.program), shell=True,
+        stdin=PIPE, stdout=PIPE, universal_newlines=True
+    ) as p:
+        while True:
+            q += 1
+            if q > 50:
+                wrong(p, "too many queries")
+            try:
+                s = read(p)
+                guess = int(s)
+            except:
+                wrong(p, f"invalid input: {s}")
+            if guess == args.x:
+                write(p, '=')
+                break
+            elif guess > args.x:
+                write(p, '>')
+            else:
+                write(p, '<')
+        sys.stdout.write("Accepted")
+        sys.stdout.write(f"Number of query: {q}\n")
+        sys.stdout.flush()
+finally:
+    shutil.rmtree("tc")
