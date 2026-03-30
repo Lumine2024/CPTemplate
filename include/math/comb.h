@@ -1,11 +1,8 @@
 #pragma once
 #include "preppow.h"
 
-template<ll modulo> struct Comb {
+template<ll modulo, ll maxn = 500005> struct Comb {
 	Comb() = delete;
-	static void ensure_init() {
-		(void)init;
-	}
 	static ll fact(ll n) {
 		ensure_init();
 		return fac[n];
@@ -28,9 +25,10 @@ template<ll modulo> struct Comb {
 	}
 
 private:
-	static constexpr int maxn = 500005;
 	static inline int fac[maxn], ifac[maxn];
-	static inline int init = [] {
+	static inline bool inited = false;
+	static void ensure_init() {
+		if(inited) return;
 		fac[0] = 1;
 		for(ll i = 1; i < maxn; ++i) {
 			fac[i] = (ll(fac[i - 1]) * i) % modulo;
@@ -39,6 +37,5 @@ private:
 		for(ll i = maxn - 2; i >= 0; --i) {
 			ifac[i] = (ll(ifac[i + 1]) * (i + 1)) % modulo;
 		}
-		return 0;
-	}();
+	}
 };

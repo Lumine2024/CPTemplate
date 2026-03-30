@@ -1,6 +1,5 @@
 #!/usr/bin/env pwsh
 Set-Alias println Write-Host
-
 g++ gen.cpp -o gen -std=c++23 -O2
 g++ sol.cpp -o sol -std=c++23 -O2
 g++ sol2.cpp -o sol2 -std=c++23 -O2

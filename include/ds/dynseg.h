@@ -63,14 +63,3 @@ private:
 		return ret;
 	}
 };
-
-struct Info {
-
-	Info() {}
-	Info operator+(const Info &other) const {}
-};
-
-struct Applier {
-
-	void apply(Info &dst) const {}
-};

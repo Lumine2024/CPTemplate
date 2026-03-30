@@ -1,3 +1,4 @@
+#pragma once
 #include "dynbitset.h"
 
 DynamicBitSet ks_bitset(const vector<int> &val, int ma) {
