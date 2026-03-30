@@ -2,26 +2,26 @@
 #include "seg.h"
 
 template<class Info>
-concept HLDInfo = requires(Info a, Info b) {
+concept HldInfo = requires(Info a, Info b) {
 	Info{};
 	Info(a);
 	{ a + b } -> same_as<Info>;
 };
 
 template<class Applier, class Info>
-concept HLDApplier = requires(const Applier src, Info &dst) {
+concept HldApplier = requires(const Applier src, Info &dst) {
 	{ src.apply(dst) } -> same_as<void>;
 };
 
-template<HLDInfo Info> struct HLDNode {
+template<HldInfo Info> struct HldNode {
 	Info w;
 	vector<int> e;
 };
 
-template<HLDInfo Info, class Applier = Info>
-	requires(HLDApplier<Applier, Info> && SegInfo<Info, Applier>)
+template<HldInfo Info, class Applier = Info>
+	requires(HldApplier<Applier, Info> && SegInfo<Info, Applier>)
 struct HLD {
-	using Node = HLDNode<Info>;
+	using Node = HldNode<Info>;
 	explicit HLD(const vector<Node> &g, int r = 0) : nodes(g.size()) {
 		dfs1(g, r, -1);
 		int now = 0;

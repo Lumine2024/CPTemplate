@@ -2,12 +2,12 @@
 #include "common.h"
 
 struct Lucas {
-	explicit Lucas(int m) : modulo(m), fact(m + 1, 1), invfact(m + 1, 1) {
-		for(ll i = 1; i <= m; ++i) {
+	explicit Lucas(int m) : modulo(m), fact(m, 1), invfact(m, 1) {
+		for(ll i = 1; i < modulo; ++i) {
 			fact[i] = (ll)fact[i - 1] * i % modulo;
 		}
-		invfact[m] = qpow(fact[m], modulo - 2);
-		for(ll i = m - 1; i >= 0; --i) {
+		invfact[modulo - 1] = qpow(fact[modulo - 1], modulo - 2);
+		for(ll i = modulo - 2; i >= 0; --i) {
 			invfact[i] = ll(invfact[i + 1]) * (i + 1) % modulo;
 		}
 	}

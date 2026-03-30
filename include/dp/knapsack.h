@@ -1,3 +1,4 @@
+#pragma once
 #include "common.h"
 
 struct Item {
@@ -22,9 +23,11 @@ ll knapsack_full(const vector<Item> &s, int mw) {
 	}
 	return dp[mw];
 }
+
 struct MultiItem {
 	ll w, v, cnt;
 };
+
 ll knapsack_multi(const vector<MultiItem> &s, int mw) {
 	vector<Item> ss;
 	for(auto [w, v, cnt] : s) {

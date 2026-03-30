@@ -41,7 +41,8 @@ template<ll modulo> ll lagrange(const vector<ll> &y, ll x0) {
 		ll term = y[i];
 		if(i > 0) term = term * pre[i - 1] % modulo;
 		if(i < n - 1) term = term * suf[i + 1] % modulo;
-		ll den = Comb::invfact(i) * Comb::invfact(n - 1 - i) % modulo;
+		ll den = Comb<modulo>::invfact(i) * Comb<modulo>::invfact(n - 1 - i) %
+				 modulo;
 		if((n - 1 - i) % 2) den = modulo - den;
 		ret = (ret + term * den) % modulo;
 	}
