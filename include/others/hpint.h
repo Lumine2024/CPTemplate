@@ -25,6 +25,7 @@ struct HPINT {
 		}
 		for(; off < n; ++off) nums.push_back(s[off] - '0');
 		reverse(nums.begin(), nums.end());
+		_norm();
 	}
 	explicit operator string() const {
 		string ret;
@@ -56,6 +57,7 @@ struct HPINT {
 		} else {
 			_add(nums, r.nums);
 		}
+		_norm();
 		return *this;
 	}
 	HPINT &operator-=(const HPINT &r) {
@@ -85,11 +87,13 @@ struct HPINT {
 				_sub(nums, r.nums);
 			}
 		}
+		_norm();
 		return *this;
 	}
 	HPINT &operator*=(const HPINT &r) {
 		neg ^= r.neg;
 		_mul(nums, r.nums);
+		_norm();
 		return *this;
 	}
 	friend ostream &operator<<(ostream &os, const HPINT &hp) {
@@ -111,6 +115,7 @@ struct HPINT {
 		hp.nums.resize(buffer.size());
 		int n = buffer.size();
 		for(int i = 0; i < n; ++i) hp.nums[i] = buffer[n - i - 1] - '0';
+		hp._norm();
 		return is;
 	}
 	bool operator==(const HPINT &r) const {
@@ -144,6 +149,10 @@ struct HPINT {
 private:
 	vector<int> nums;
 	bool neg;
+	void _norm() {
+		while(nums.size() > 1 && nums.back() == 0) nums.pop_back();
+		if(nums.size() == 1 && nums[0] == 0) neg = false;
+	}
 	static void _add(vector<int> &a, const vector<int> &b) {
 		int carry = 0;
 		for(int i = 0; i < b.size(); ++i) {
