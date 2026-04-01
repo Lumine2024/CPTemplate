@@ -5,6 +5,7 @@ param(
     [string]$Compiler
 )
 
+Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 function Invoke-Step([string]$name, [scriptblock]$body) {
@@ -58,24 +59,23 @@ Invoke-Step "Expand" {
             [System.IO.Path]::GetRelativePath((Resolve-Path ".").Path, $_.FullName)
         }
     )
-    $expandScript = [System.IO.Path]::Combine("..", "expand.py")
-    $cppFiles | Where-Object { -not $_.Contains("build") } | ForEach-Object -Parallel {
-        $cppFile = $_
+    $expandOperationScript = [System.IO.Path]::Combine("..", "pwsh", "expand.operation.ps1")
+    foreach($cppFile in $cppFiles) {
+        if(($cppFile -split '[\\/]') -contains 'build') {
+            continue
+        }
+
         $outputPath = [System.IO.Path]::Combine("expanded", $cppFile)
         $outputDir = Split-Path $outputPath -Parent
         if($outputDir -and -not (Test-Path $outputDir)) {
             New-Item -ItemType Directory -Path $outputDir -Force | Out-Null
         }
 
-        $expandArgs = @($cppFile)
-        foreach($includeDir in $using:includeDirs) {
-            $expandArgs += @("-I", $includeDir)
-        }
-        $expandArgs += @("-o", $outputPath)
-
-        python $using:expandScript @expandArgs
-        if($LASTEXITCODE -ne 0) {
-            throw "expand.py failed for $cppFile with exit code $LASTEXITCODE"
+        . $expandOperationScript
+        try {
+            Invoke-ExpandOperation -InputFile $cppFile -OutputFile $outputPath -IncludeDirs $includeDirs
+        } catch {
+            throw "expand failed, msg: $_"
         }
     }
 }

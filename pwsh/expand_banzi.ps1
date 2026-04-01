@@ -99,4 +99,3 @@ if(-not [string]::IsNullOrEmpty($destDir)) {
 
 Set-Content -Path $destPath -Value $expanded -Encoding utf8
 Write-Host "文件已展开至: $destPath"
-

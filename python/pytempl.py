@@ -9,7 +9,7 @@ def input() -> str:
     return sys.stdin.readline().strip()
 
 def solve():
-    ...
+    pass
 
 T = 1
 # T = int(input())

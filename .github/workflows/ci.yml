@@ -27,4 +27,4 @@ jobs:
       - uses: actions/checkout@v4
       - name: Run CI Script
         shell: pwsh
-        run: ./tests/ci.ps1 -Compiler '${{ matrix.kind }}'
+        run: ./pwsh/ci.ps1 -Compiler '${{ matrix.kind }}'
