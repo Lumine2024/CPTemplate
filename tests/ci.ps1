@@ -58,8 +58,9 @@ Invoke-Step "Expand" {
             [System.IO.Path]::GetRelativePath((Resolve-Path ".").Path, $_.FullName)
         }
     )
-    foreach($cppFile in $cppFiles) {
-        if($cppFile.Contains("build")) { continue }
+    $expandScript = [System.IO.Path]::Combine("..", "expand.py")
+    $cppFiles | Where-Object { -not $_.Contains("build") } | ForEach-Object -Parallel {
+        $cppFile = $_
         $outputPath = [System.IO.Path]::Combine("expanded", $cppFile)
         $outputDir = Split-Path $outputPath -Parent
         if($outputDir -and -not (Test-Path $outputDir)) {
@@ -67,15 +68,18 @@ Invoke-Step "Expand" {
         }
 
         $expandArgs = @($cppFile)
-        foreach($includeDir in $includeDirs) {
+        foreach($includeDir in $using:includeDirs) {
             $expandArgs += @("-I", $includeDir)
         }
         $expandArgs += @("-o", $outputPath)
 
-        python ([System.IO.Path]::Combine("..", "expand.py")) @expandArgs
-        Test-LastExitCode "expand.py failed for $cppFile with exit code $LASTEXITCODE"
+        python $using:expandScript @expandArgs
+        if($LASTEXITCODE -ne 0) {
+            throw "expand.py failed for $cppFile with exit code $LASTEXITCODE"
+        }
     }
 }
+
 Invoke-Step "Configure" {
     Set-Location ".."
     if(Test-Path $buildDir) {
