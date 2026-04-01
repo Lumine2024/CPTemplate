@@ -6,9 +6,11 @@ I have trimmed my competitive programming templates into two versions: one is ma
 2. Readability, following the project specifics. Balancing the need for readability and contest, my codes are convenient for learning and usage during contests.
 3. Using 0-indexed and left-closed, right-open intervals, avoiding classified discussion, and matches up with C++ STL containers
 4. Having neccessary comments when in need, avoiding errors when use
+5. Using automation tools like expand.py to avoid human operations and errors.
+6. Using CI to grant compilability and correctness, and CI is itself a usage example of my template.
 
 ## Usage
-Download the zipped file and extract them, print the markdown document for regionals, and paste the cpp files for online tests(like Codeforces)
+Download the zipped file and extract them, print the markdown document for regionals, and include the files in include directory and use expand.py to submit them on online judges like Codeforces.
 
 ## Contributions
 This repository is an outcome for my personal learning, so contributions are temporary unaccepted. If you want to modify them, you have to fork this repository into your own account
