@@ -1,35 +1,29 @@
 #pragma once
 #include "common.h"
 
-template<class T> struct Sparse {
-	using func_type = function<T(T, T)>;
-	Sparse(const vector<T> &vec, func_type fn) : func(fn) {
-		int n = vec.size();
-		_log.resize(n + 1);
-		_log[0] = -1;
-		for(int i = 1; i <= n; ++i) {
-			_log[i] = _log[i >> 1] + 1;
-		}
-		int k = _log[n] + 1;
-		table.resize(n, vector<T>(k));
+template<class T, class F> struct Sparse {
+	Sparse(const vector<T> &v, F f) : func(f) {
+		int n = v.size();
+		int k = bit_width<unsigned>(n);
+		table.resize(n);
 		for(int i = 0; i < n; ++i) {
-			table[i][0] = vec[i];
+			table[i][0] = v[i];
 		}
 		for(int j = 1; j < k; ++j) {
-			int step = 1 << (j - 1);
-			for(int i = 0; i + step < n; ++i) {
-				table[i][j] = func(table[i][j - 1], table[i + step][j - 1]);
+			int st = 1 << (j - 1);
+			for(int i = 0; i + st < n; ++i) {
+				table[i][j] = func(table[i][j - 1], table[i + st][j - 1]);
 			}
 		}
 	}
 	T query(int l, int r) const {
 		int len = r - l;
-		int j = _log[len];
+		int j = bit_width<unsigned>(len) - 1;
 		return func(table[l][j], table[r - 1 - (1 << j) + 1][j]);
 	}
 
 private:
-	vector<vector<T>> table;
-	vector<int> _log;
-	func_type func;
+	vector<array<T, 25>> table;
+	F func;
 };
+template<class T, class F> Sparse(const vector<T> &v, F f) -> Sparse<T, F>;
