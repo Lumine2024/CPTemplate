@@ -3,7 +3,7 @@
 
 template<class T>
 concept EdgeT = requires(T t) {
-	{ t.dst } -> convertible_to<int>;
+	{ t.v } -> convertible_to<int>;
 };
 
 // 强连通分量
@@ -12,21 +12,12 @@ struct SCC {
 	explicit SCC(const vector<vector<int>> &g) : graph(g), nodes(g.size()) {
 		build();
 	}
-	template<class T>
-	explicit SCC(const vector<vector<pair<int, T>>> &g)
-		: graph(g.size()), nodes(g.size()) {
-		int n = g.size();
-		for(int u = 0; u < n; ++u) {
-			for(auto [v, _] : g[u]) addedge(u, v);
-		}
-		build();
-	}
 	template<EdgeT T>
 	explicit SCC(const vector<vector<T>> &g)
 		: graph(g.size()), nodes(g.size()) {
 		int n = g.size();
 		for(int u = 0; u < n; ++u) {
-			for(const T &edge : g[u]) addedge(u, edge.dst);
+			for(const T &edge : g[u]) addedge(u, edge.v);
 		}
 		build();
 	}
@@ -94,21 +85,12 @@ struct EBCC {
 		: graph(g), nodes(g.size()), in_ebcc(g.size()) {
 		build();
 	}
-	template<class T>
-	explicit EBCC(const vector<vector<pair<int, T>>> &g)
-		: graph(g.size()), nodes(g.size()), in_ebcc(g.size()) {
-		int n = g.size();
-		for(int u = 0; u < n; ++u) {
-			for(auto [v, _] : g[u]) addedge(u, v);
-		}
-		build();
-	}
 	template<EdgeT T>
 	explicit EBCC(const vector<vector<T>> &g)
 		: graph(g.size()), nodes(g.size()), in_ebcc(g.size()) {
 		int n = g.size();
 		for(int u = 0; u < n; ++u) {
-			for(const T &edge : g[u]) addedge(u, edge.dst);
+			for(const T &edge : g[u]) addedge(u, edge.v);
 		}
 		build();
 	}
@@ -170,21 +152,12 @@ struct DCC {
 	explicit DCC(const vector<vector<int>> &g) : graph(g), nodes(g.size()) {
 		build();
 	}
-	template<class T>
-	explicit DCC(const vector<vector<pair<int, T>>> &g)
-		: graph(g.size()), nodes(g.size()) {
-		int n = g.size();
-		for(int u = 0; u < n; ++u) {
-			for(auto [v, _] : g[u]) addedge(u, v);
-		}
-		build();
-	}
 	template<EdgeT T>
 	explicit DCC(const vector<vector<T>> &g)
 		: graph(g.size()), nodes(g.size()) {
 		int n = g.size();
 		for(int u = 0; u < n; ++u) {
-			for(const T &edge : g[u]) addedge(u, edge.dst);
+			for(const T &edge : g[u]) addedge(u, edge.v);
 		}
 		build();
 	}
@@ -247,20 +220,11 @@ struct AP {
 	explicit AP(const vector<vector<int>> &g) : graph(g), nodes(g.size()) {
 		build();
 	}
-	template<class T>
-	explicit AP(const vector<vector<pair<int, T>>> &g)
-		: graph(g.size()), nodes(g.size()) {
-		int n = g.size();
-		for(int u = 0; u < n; ++u) {
-			for(auto [v, _] : g[u]) addedge(u, v);
-		}
-		build();
-	}
 	template<EdgeT T>
 	explicit AP(const vector<vector<T>> &g) : graph(g.size()), nodes(g.size()) {
 		int n = g.size();
 		for(int u = 0; u < n; ++u) {
-			for(const T &edge : g[u]) addedge(u, edge.dst);
+			for(const T &edge : g[u]) addedge(u, edge.v);
 		}
 		build();
 	}
@@ -314,21 +278,12 @@ struct Bridge {
 	explicit Bridge(const vector<vector<int>> &g) : graph(g), nodes(g.size()) {
 		build();
 	}
-	template<class T>
-	explicit Bridge(const vector<vector<pair<int, T>>> &g)
-		: graph(g.size()), nodes(g.size()) {
-		int n = g.size();
-		for(int u = 0; u < n; ++u) {
-			for(auto [v, _] : g[u]) addedge(u, v);
-		}
-		build();
-	}
 	template<EdgeT T>
 	explicit Bridge(const vector<vector<T>> &g)
 		: graph(g.size()), nodes(g.size()) {
 		int n = g.size();
 		for(int u = 0; u < n; ++u) {
-			for(const T &edge : g[u]) addedge(u, edge.dst);
+			for(const T &edge : g[u]) addedge(u, edge.v);
 		}
 		build();
 	}

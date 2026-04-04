@@ -2,8 +2,8 @@
 #include "mst_test_cases.h"
 #include "../test.h"
 
-static vector<vector<pair<int, ll>>> to_graph(const MstCase &tc) {
-	vector<vector<pair<int, ll>>> g(tc.n);
+static vector<vector<WeightedEdge>> to_graph(const MstCase &tc) {
+	vector<vector<WeightedEdge>> g(tc.n);
 	for(const auto &e : tc.edges) {
 		g[e.u].push_back({e.v, e.w});
 		g[e.v].push_back({e.u, e.w});

@@ -1,10 +1,9 @@
 #pragma once
-#include "common.h"
-
-constexpr ll inf = 0x3f3f3f3f3f3f3f3f;
+#include "edge.h"
 
 // 返回空vector说明有负环
-vector<ll> spfa(const vector<vector<pair<int, ll>>> &graph, int start) {
+template<WeightedEdgeT Edge>
+vector<ll> spfa(const vector<vector<Edge>> &graph, int start) {
 	int n = graph.size();
 	vector<ll> dist(n, inf);
 	vector<int> cnt(n, 0);
@@ -17,14 +16,14 @@ vector<ll> spfa(const vector<vector<pair<int, ll>>> &graph, int start) {
 		int u = q.front();
 		q.pop();
 		inq[u] = false;
-		for(auto [v, w] : graph[u]) {
-			if(dist[v] > dist[u] + w) {
-				dist[v] = dist[u] + w;
-				if(!inq[v]) {
-					inq[v] = true;
-					q.push(v);
-					cnt[v] = cnt[u] + 1;
-					if(cnt[v] > n) return {};
+		for(auto &e : graph[u]) {
+			if(dist[e.v] > dist[u] + e.w) {
+				dist[e.v] = dist[u] + e.w;
+				if(!inq[e.v]) {
+					inq[e.v] = true;
+					q.push(e.v);
+					cnt[e.v] = cnt[u] + 1;
+					if(cnt[e.v] > n) return {};
 				}
 			}
 		}

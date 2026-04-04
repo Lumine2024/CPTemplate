@@ -1,9 +1,7 @@
 #pragma once
-#include "common.h"
+#include "edge.h"
 
-constexpr ll inf = 0x3f3f3f3f3f3f3f3f;
-
-ll prim(const vector<vector<pair<int, ll>>> &graph) {
+template<WeightedEdgeT Edge> ll prim(const vector<vector<Edge>> &graph) {
 	int n = graph.size();
 	vector<bool> vis(n, false);
 	vector<ll> dist(n, inf);
@@ -17,10 +15,10 @@ ll prim(const vector<vector<pair<int, ll>>> &graph) {
 		if(vis[v]) continue;
 		vis[v] = true;
 		ret += w;
-		for(auto [u, w] : graph[v]) {
-			if(!vis[u] && dist[u] > w) {
-				dist[u] = w;
-				pq.emplace(w, u);
+		for(auto &e : graph[v]) {
+			if(!vis[e.v] && dist[e.v] > e.w) {
+				dist[e.v] = e.w;
+				pq.emplace(e.w, e.v);
 			}
 		}
 	}
