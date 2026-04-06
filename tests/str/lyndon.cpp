@@ -1,4 +1,4 @@
-#include "lyndon.h"
+#include "str/lyndon.h"
 #include "../test.h"
 
 TEST(lyndon_single_char) {

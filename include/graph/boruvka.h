@@ -1,5 +1,5 @@
 #pragma once
-#include "dsu.h"
+#include "ds/dsu.h"
 
 constexpr ll inf = 0x3f3f3f3f3f3f3f3f;
 

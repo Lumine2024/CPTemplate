@@ -1,6 +1,6 @@
 #pragma once
-#include "hash.h"
-#include "preppow.h"
+#include "others/hash.h"
+#include "math/preppow.h"
 
 // returns ret so that qpow(ret, a) = b, -1 if not exist
 template<ll modulo> ll mlog(ll a, ll b) {

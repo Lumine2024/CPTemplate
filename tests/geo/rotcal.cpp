@@ -1,4 +1,4 @@
-#include "rotcal.h"
+#include "geo/rotcal.h"
 #include "../test.h"
 
 TEST(rotcal_simple_segment) {

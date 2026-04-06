@@ -1,5 +1,5 @@
 #pragma once
-#include "seg.h"
+#include "ds/seg.h"
 
 template<class Info>
 concept HldInfo = requires(Info a, Info b) {

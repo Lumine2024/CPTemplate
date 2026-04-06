@@ -1,5 +1,5 @@
 #pragma once
-#include "edge.h"
+#include "graph/edge.h"
 
 template<WeightedEdgeT Edge> ll prim(const vector<vector<Edge>> &graph) {
 	int n = graph.size();

@@ -1,4 +1,4 @@
-#include "pick.h"
+#include "geo/pick.h"
 #include "../test.h"
 
 TEST(pick_unit_square) {

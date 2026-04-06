@@ -1,4 +1,4 @@
-#include "tarjan.h"
+#include "graph/tarjan.h"
 #include "../test.h"
 
 TEST(scc_single_node) {

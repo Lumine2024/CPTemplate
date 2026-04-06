@@ -1,4 +1,4 @@
-#include "kmp.h"
+#include "str/kmp.h"
 #include "../test.h"
 
 TEST(kmp_f_simple) {

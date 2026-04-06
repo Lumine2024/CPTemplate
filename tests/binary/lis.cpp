@@ -1,4 +1,4 @@
-#include "lis.h"
+#include "binary/lis.h"
 #include "../test.h"
 
 TEST(lis_basic) {

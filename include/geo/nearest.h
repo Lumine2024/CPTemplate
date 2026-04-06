@@ -1,5 +1,5 @@
 #pragma once
-#include "basic.h"
+#include "geo/basic.h"
 
 ld nearest(vector<Point> pts) {
 	if(pts.size() == 1) return 0.0l;

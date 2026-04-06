@@ -1,5 +1,5 @@
 #pragma once
-#include "sa.h"
+#include "str/sa.h"
 
 vector<int> height(const string &str) {
 	int n = str.size();

@@ -1,4 +1,4 @@
-#include "seg.h"
+#include "ds/seg.h"
 #include "../test.h"
 
 struct SumInfo {

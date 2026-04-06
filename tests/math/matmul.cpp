@@ -1,4 +1,4 @@
-#include "matmul.h"
+#include "math/matmul.h"
 #include "../test.h"
 
 TEST(matmul_identity) {

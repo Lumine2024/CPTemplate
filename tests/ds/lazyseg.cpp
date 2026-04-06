@@ -1,4 +1,4 @@
-#include "lazyseg.h"
+#include "ds/lazyseg.h"
 #include "../test.h"
 
 struct RangeSumInfo {

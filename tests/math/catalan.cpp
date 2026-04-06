@@ -1,4 +1,4 @@
-#include "catalan.h"
+#include "math/catalan.h"
 #include "../test.h"
 
 constexpr ll mod = 998244353;

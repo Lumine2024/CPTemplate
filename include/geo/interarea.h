@@ -1,5 +1,5 @@
 #pragma once
-#include "basic.h"
+#include "geo/basic.h"
 
 ld sector_area(Circle c, Point u, Point v) {
 	u = u - c.c, v = v - c.c, c.c = {};

@@ -25,6 +25,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v5
-      - name: Run CI Script
+      - name: CI with expand
         shell: pwsh
-        run: ./pwsh/ci.ps1 -Compiler '${{ matrix.kind }}'
+        run: ./pwsh/ci.ps1 -Compiler '${{ matrix.kind }}' -TestWithExpand
+      - name: CI without expand
+        shell: pwsh
+        run: ./pwsh/ci.ps1 -Compiler '${{ matrix.kind }}' -TestWithoutExpand

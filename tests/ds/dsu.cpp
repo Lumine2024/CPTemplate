@@ -1,4 +1,4 @@
-#include "dsu.h"
+#include "ds/dsu.h"
 #include "../test.h"
 
 TEST(dsu_basic) {

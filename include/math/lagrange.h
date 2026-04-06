@@ -1,6 +1,6 @@
 #pragma once
-#include "preppow.h"
-#include "comb.h"
+#include "math/preppow.h"
+#include "math/comb.h"
 
 template<ll modulo>
 ll lagrange(const vector<ll> &x, const vector<ll> &y, ll x0) {

@@ -1,4 +1,4 @@
-#include "kruskal.h"
+#include "graph/kruskal.h"
 #include "mst_test_cases.h"
 #include "../test.h"
 

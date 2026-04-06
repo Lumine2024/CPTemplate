@@ -1,4 +1,4 @@
-#include "halfinter.h"
+#include "geo/halfinter.h"
 #include "../test.h"
 
 static void ensure_point_eq(const Point &a, const Point &b) {

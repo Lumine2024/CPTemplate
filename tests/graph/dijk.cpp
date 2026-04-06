@@ -1,4 +1,4 @@
-#include "dijk.h"
+#include "graph/dijk.h"
 #include "shortest_path_cases.h"
 #include "../test.h"
 

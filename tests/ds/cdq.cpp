@@ -1,5 +1,5 @@
-#include "cdq.h"
-#include "fenwick.h"
+#include "ds/cdq.h"
+#include "ds/fenwick.h"
 #include "../test.h"
 
 struct ThreeDPartialOrderInfo {

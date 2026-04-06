@@ -1,5 +1,5 @@
 #pragma once
-#include "fenwick.h"
+#include "ds/fenwick.h"
 
 struct ArithmeticFenwick {
 	explicit ArithmeticFenwick(int n) : f1(n + 2), f2(n + 2) {}

@@ -2,7 +2,9 @@
 
 param(
     [Parameter(Mandatory = $true)]
-    [string]$Compiler
+    [string]$Compiler,
+    [switch]$TestWithExpand,
+    [switch]$TestWithoutExpand
 )
 
 Set-StrictMode -Version Latest
@@ -19,6 +21,18 @@ function Test-LastExitCode([string]$message) {
 }
 
 $buildDir = "build"
+$repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".."))
+$useExpandedTests = "OFF"
+
+if($TestWithExpand -and $TestWithoutExpand) {
+    throw "TestWithExpand and TestWithoutExpand are mutually exclusive."
+}
+if(-not $TestWithExpand -and -not $TestWithoutExpand) {
+    $TestWithExpand = $true
+}
+if($TestWithExpand) {
+    $useExpandedTests = "ON"
+}
 
 switch($Compiler) {
     "gcc" {
@@ -42,46 +56,45 @@ switch($Compiler) {
     }
 }
 
-Invoke-Step "Expand" {
-    Set-Location "tests"
-    if(Test-Path "expanded") {
-        Remove-Item -Recurse -Force "expanded"
-    }
-    New-Item -ItemType Directory -Path "expanded" -Force
-    Copy-Item -Path "expanded_cmakelists.txt" -Destination "expanded\CMakeLists.txt"
-    $includeRoot = [System.IO.Path]::Combine("..", "include")
-    [string[]]$includeDirs = @(
-        (Resolve-Path $includeRoot).Path
-        Get-ChildItem -Path $includeRoot -Directory -Recurse | ForEach-Object { $_.FullName }
-    )
-    [string[]]$cppFiles = @(
-        Get-ChildItem -Recurse -File -Filter "*.cpp" -Path . | ForEach-Object {
-            [System.IO.Path]::GetRelativePath((Resolve-Path ".").Path, $_.FullName)
+if($TestWithExpand) {
+    Invoke-Step "Expand" {
+        Set-Location (Join-Path $repoRoot "tests")
+        if(Test-Path "expanded") {
+            Remove-Item -Recurse -Force "expanded"
         }
-    )
-    $expandOperationScript = [System.IO.Path]::Combine("..", "pwsh", "expand.operation.ps1")
-    foreach($cppFile in $cppFiles) {
-        if(($cppFile -split '[\\/]') -contains 'build') {
-            continue
-        }
-
-        $outputPath = [System.IO.Path]::Combine("expanded", $cppFile)
-        $outputDir = Split-Path $outputPath -Parent
-        if($outputDir -and -not (Test-Path $outputDir)) {
-            New-Item -ItemType Directory -Path $outputDir -Force | Out-Null
-        }
-
+        New-Item -ItemType Directory -Path "expanded" -Force
+        Copy-Item -Path "expanded_cmakelists.txt" -Destination "expanded\CMakeLists.txt"
+        $includeRoot = Join-Path $repoRoot "include"
+        [string[]]$includeDirs = @((Resolve-Path $includeRoot).Path)
+        [string[]]$cppFiles = @(
+            Get-ChildItem -Recurse -File -Filter "*.cpp" -Path . | ForEach-Object {
+                [System.IO.Path]::GetRelativePath((Resolve-Path ".").Path, $_.FullName)
+            }
+        )
+        $expandOperationScript = Join-Path $repoRoot "pwsh\expand.operation.ps1"
         . $expandOperationScript
-        try {
-            Invoke-ExpandOperation -InputFile $cppFile -OutputFile $outputPath -IncludeDirs $includeDirs
-        } catch {
-            throw "expand failed, msg: $_"
+        foreach($cppFile in $cppFiles) {
+            if(($cppFile -split '[\\/]') -contains 'build') {
+                continue
+            }
+
+            $outputPath = [System.IO.Path]::Combine("expanded", $cppFile)
+            $outputDir = Split-Path $outputPath -Parent
+            if($outputDir -and -not (Test-Path $outputDir)) {
+                New-Item -ItemType Directory -Path $outputDir -Force | Out-Null
+            }
+
+            try {
+                Invoke-ExpandOperation -InputFile $cppFile -OutputFile $outputPath -IncludeDirs $includeDirs
+            } catch {
+                throw "expand failed, msg: $_"
+            }
         }
     }
 }
 
 Invoke-Step "Configure" {
-    Set-Location ".."
+    Set-Location $repoRoot
     if(Test-Path $buildDir) {
         Remove-Item $buildDir -Recurse -Force
     }
@@ -95,9 +108,9 @@ Invoke-Step "Configure" {
                 [System.Environment]::SetEnvironmentVariable($Matches[1], $Matches[2], "Process")
             }
         }
-        cmake -S . -B $buildDir -G Ninja -D CMAKE_BUILD_TYPE=Release
+        cmake -S . -B $buildDir -G Ninja -D CMAKE_BUILD_TYPE=Release -D CP_TEMPLATE_USE_EXPANDED_TESTS=$useExpandedTests
     } else {
-        cmake -S . -B $buildDir -G Ninja -D CMAKE_BUILD_TYPE=Release -D CMAKE_C_COMPILER=$cc -D CMAKE_CXX_COMPILER=$cxx
+        cmake -S . -B $buildDir -G Ninja -D CMAKE_BUILD_TYPE=Release -D CP_TEMPLATE_USE_EXPANDED_TESTS=$useExpandedTests -D CMAKE_C_COMPILER=$cc -D CMAKE_CXX_COMPILER=$cxx
     }
     Test-LastExitCode "CMake configure failed, exit code is $LASTEXITCODE"
 }

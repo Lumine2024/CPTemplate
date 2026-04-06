@@ -1,4 +1,4 @@
-#include "dinic.h"
+#include "graph/dinic.h"
 #include "../test.h"
 
 TEST(dinic_simple) {

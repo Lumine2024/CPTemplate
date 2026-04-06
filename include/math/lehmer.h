@@ -1,7 +1,7 @@
 #pragma once
-#include "preppow.h"
-#include "vst.h"
-#include "fenwick.h"
+#include "math/preppow.h"
+#include "ds/vst.h"
+#include "ds/fenwick.h"
 
 // 均为0-based排列
 vector<int> lehmer(const vector<int> &a) {

@@ -1,4 +1,4 @@
-#include "fenwick.h"
+#include "ds/fenwick.h"
 #include "../test.h"
 
 TEST(empty_fenwick_test) {

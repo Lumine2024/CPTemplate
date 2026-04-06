@@ -1,4 +1,4 @@
-#include "twosat.h"
+#include "graph/twosat.h"
 #include "../test.h"
 
 // Each condition (i, fi, j, fj) means: (x_i == fi) OR (x_j == fj)

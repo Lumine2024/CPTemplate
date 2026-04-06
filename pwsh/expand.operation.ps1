@@ -34,10 +34,41 @@ function Invoke-ExpandOperation {
     $normalizedIncludeDirs = [System.Collections.Generic.List[string]]::new()
     foreach($dir in $IncludeDirs) {
         $normalized = Resolve-NormalizedPath -PathValue $dir
-        if(-not (Test-Path -LiteralPath $normalized -PathType Container)) {
-            throw "Include directory does not exist: $dir"
+        if(Test-Path -LiteralPath $normalized -PathType Container) {
+            $normalizedIncludeDirs.Add($normalized)
         }
-        $normalizedIncludeDirs.Add($normalized)
+    }
+
+    $includeFileNameIndex = @{}
+    foreach($incDir in $normalizedIncludeDirs) {
+        Get-ChildItem -Path $incDir -Recurse -File | ForEach-Object {
+            $name = $_.Name
+            if(-not $includeFileNameIndex.ContainsKey($name)) {
+                $includeFileNameIndex[$name] = [System.Collections.Generic.List[string]]::new()
+            }
+            $includeFileNameIndex[$name].Add($_.FullName)
+        }
+    }
+
+    function Resolve-IncludeByFileName {
+        param(
+            [Parameter(Mandatory = $true)]
+            [string]$IncludePath
+        )
+
+        if($IncludePath -match '[\\/]') {
+            return $null
+        }
+        if(-not $includeFileNameIndex.ContainsKey($IncludePath)) {
+            return $null
+        }
+
+        $candidates = $includeFileNameIndex[$IncludePath]
+        if($candidates.Count -eq 1) {
+            return $candidates[0]
+        }
+
+        throw "Ambiguous include '$IncludePath' resolved to multiple files: $($candidates -join ', ')"
     }
 
     function Expand-FileInternal {
@@ -80,6 +111,9 @@ function Invoke-ExpandOperation {
                             $resolvedInclude = $incCandidate
                             break
                         }
+                    }
+                    if($null -eq $resolvedInclude) {
+                        $resolvedInclude = Resolve-IncludeByFileName -IncludePath $includePath
                     }
                 }
 

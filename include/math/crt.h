@@ -1,5 +1,5 @@
 #pragma once
-#include "exgcd.h"
+#include "math/exgcd.h"
 
 // @returns (a, b) so that answer is a + kb, k\in N_+
 pair<ll, ll> crt(const vector<ll> &rem, const vector<ll> &mod) {

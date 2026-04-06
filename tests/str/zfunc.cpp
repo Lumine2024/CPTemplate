@@ -1,4 +1,4 @@
-#include "zfunc.h"
+#include "str/zfunc.h"
 #include "../test.h"
 
 TEST(zfunc_basic) {

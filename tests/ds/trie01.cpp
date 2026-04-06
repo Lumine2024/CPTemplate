@@ -1,4 +1,4 @@
-#include "trie01.h"
+#include "ds/trie01.h"
 #include "../test.h"
 
 TEST(trie01_basic_xor) {

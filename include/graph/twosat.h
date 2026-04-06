@@ -1,5 +1,5 @@
 #pragma once
-#include "tarjan.h"
+#include "graph/tarjan.h"
 
 // 本题给的是析取式，在这里我转化为了蕴含式求解
 // 请打一个SCC下来

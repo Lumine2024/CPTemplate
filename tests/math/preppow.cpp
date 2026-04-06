@@ -1,4 +1,4 @@
-#include "preppow.h"
+#include "math/preppow.h"
 #include "../test.h"
 
 constexpr ll modulo = 998244353;

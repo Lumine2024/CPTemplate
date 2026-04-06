@@ -1,4 +1,4 @@
-#include "binlift.h"
+#include "ds/binlift.h"
 #include "../test.h"
 
 TEST(binlift_lca_simple_chain) {

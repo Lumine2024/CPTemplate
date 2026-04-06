@@ -1,4 +1,4 @@
-#include "sieve.h"
+#include "math/sieve.h"
 #include "../test.h"
 
 TEST(sieve_primes_count) {

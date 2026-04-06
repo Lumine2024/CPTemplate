@@ -1,4 +1,4 @@
-#include "intdiv.h"
+#include "math/intdiv.h"
 #include "../test.h"
 
 constexpr ll mod = 998244353;

@@ -1,5 +1,5 @@
 #pragma once
-#include "edge.h"
+#include "graph/edge.h"
 
 template<WeightedEdgeT Edge>
 vector<ll> dijkstra(const vector<vector<Edge>> &graph, int s) {

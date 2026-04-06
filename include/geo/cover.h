@@ -1,5 +1,5 @@
 #pragma once
-#include "basic.h"
+#include "geo/basic.h"
 
 Circle cover(const Point &a) {
 	return Circle(a, 0);

@@ -1,5 +1,5 @@
 #pragma once
-#include "preppow.h"
+#include "math/preppow.h"
 
 // 要计算\sum floor(n/i)
 template<ll modulo> ll intdiv(ll n) {

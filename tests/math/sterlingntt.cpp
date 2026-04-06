@@ -1,4 +1,4 @@
-#include "sterlingntt.h"
+#include "math/sterlingntt.h"
 #include "../test.h"
 
 TEST(sterling_k0) {

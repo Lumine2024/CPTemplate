@@ -1,5 +1,5 @@
 #pragma once
-#include "dynbitset.h"
+#include "ds/dynbitset.h"
 
 DynamicBitSet ks_bitset(const vector<int> &val, int ma) {
 	int sum = accumulate(val.begin(), val.end(), 0ll);

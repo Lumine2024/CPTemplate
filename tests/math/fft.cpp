@@ -1,4 +1,4 @@
-#include "fft.h"
+#include "math/fft.h"
 #include "../test.h"
 
 static bool approx_eq(ld a, ld b) {

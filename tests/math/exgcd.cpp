@@ -1,4 +1,4 @@
-#include "exgcd.h"
+#include "math/exgcd.h"
 #include "../test.h"
 
 TEST(exgcd_basic) {

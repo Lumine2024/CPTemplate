@@ -1,4 +1,4 @@
-#include "hpint.h"
+#include "others/hpint.h"
 #include "../test.h"
 
 static void ensure_eq_str(const HPINT &x, const string &s) {

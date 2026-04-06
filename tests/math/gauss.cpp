@@ -1,4 +1,4 @@
-#include "gauss.h"
+#include "math/gauss.h"
 #include "../test.h"
 
 constexpr ll mod = 998244353;

@@ -1,5 +1,5 @@
 #pragma once
-#include "preppow.h"
+#include "math/preppow.h"
 
 template<ll modulo, ll maxn = 500005> struct Comb {
 	Comb() = delete;

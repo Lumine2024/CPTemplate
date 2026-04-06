@@ -1,4 +1,4 @@
-#include "sterling.h"
+#include "math/sterling.h"
 #include "../test.h"
 
 constexpr ll mod = 998244353;

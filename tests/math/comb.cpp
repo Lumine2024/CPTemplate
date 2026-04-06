@@ -1,4 +1,4 @@
-#include "comb.h"
+#include "math/comb.h"
 #include "../test.h"
 
 constexpr ll mod = 998244353;

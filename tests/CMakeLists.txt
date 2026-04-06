@@ -1,1 +1,35 @@
-add_subdirectory(expanded)
+if(NOT DEFINED CP_TEMPLATE_USE_EXPANDED_TESTS)
+	set(CP_TEMPLATE_USE_EXPANDED_TESTS OFF)
+endif()
+
+if(CP_TEMPLATE_USE_EXPANDED_TESTS)
+	add_subdirectory(expanded)
+else()
+	file(GLOB_RECURSE test_sources CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
+	set(filtered_test_sources "")
+	foreach(test_source IN LISTS test_sources)
+		if(test_source MATCHES "/build/" OR test_source MATCHES "/CMakeCXXCompilerId\.cpp$")
+			continue()
+		endif()
+
+		string(FIND "${test_source}" "${CMAKE_BINARY_DIR}/" binary_dir_prefix)
+		if(binary_dir_prefix EQUAL 0)
+			continue()
+		endif()
+
+		string(FIND "${test_source}" "/expanded/" expanded_dir_pos)
+		if(NOT expanded_dir_pos EQUAL -1)
+			continue()
+		endif()
+
+		list(APPEND filtered_test_sources "${test_source}")
+	endforeach()
+
+	set(test_sources ${filtered_test_sources})
+
+	foreach(test_source IN LISTS test_sources)
+		get_filename_component(test_name "${test_source}" NAME_WE)
+		add_executable("${test_name}" "${test_source}")
+		add_test(NAME "${test_name}" COMMAND "${test_name}")
+	endforeach()
+endif()

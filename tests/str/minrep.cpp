@@ -1,4 +1,4 @@
-#include "minrep.h"
+#include "str/minrep.h"
 #include "../test.h"
 
 TEST(minrep_already_min) {

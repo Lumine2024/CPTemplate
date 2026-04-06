@@ -1,4 +1,4 @@
-#include "linbasis.h"
+#include "math/linbasis.h"
 #include "../test.h"
 
 TEST(linbasis_single_element) {

@@ -1,4 +1,4 @@
-#include "manacher.h"
+#include "str/manacher.h"
 #include "../test.h"
 
 // Returns length of longest palindrome in s using Manacher output

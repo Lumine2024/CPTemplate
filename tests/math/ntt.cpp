@@ -1,4 +1,4 @@
-#include "ntt.h"
+#include "math/ntt.h"
 #include "../test.h"
 
 TEST(ntt_multiply_basic) {

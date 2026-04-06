@@ -1,4 +1,4 @@
-#include "sparse.h"
+#include "ds/sparse.h"
 #include "../test.h"
 
 TEST(sparse_min_query) {

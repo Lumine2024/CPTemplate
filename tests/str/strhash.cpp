@@ -1,4 +1,4 @@
-#include "strhash.h"
+#include "str/strhash.h"
 #include "../test.h"
 
 TEST(strhash_same_string) {

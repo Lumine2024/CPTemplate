@@ -1,5 +1,5 @@
 #pragma once
-#include "preppow.h"
+#include "math/preppow.h"
 
 // constexpr ll modulo = 998244353, inv2 = 499122177;
 template<ll modulo> void fwt_or(vector<ll> &a, bool invert) {

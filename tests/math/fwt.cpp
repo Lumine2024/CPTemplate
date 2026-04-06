@@ -1,4 +1,4 @@
-#include "fwt.h"
+#include "math/fwt.h"
 #include "../test.h"
 
 constexpr ll mod = 998244353;

@@ -1,4 +1,4 @@
-#include "lucas.h"
+#include "math/lucas.h"
 #include "../test.h"
 
 static int binom_mod_prime_small(int n, int k, int p) {

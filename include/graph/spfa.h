@@ -1,5 +1,5 @@
 #pragma once
-#include "edge.h"
+#include "graph/edge.h"
 
 // 返回空vector说明有负环
 template<WeightedEdgeT Edge>
