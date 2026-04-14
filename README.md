@@ -1,22 +1,120 @@
-# 算法竞赛模板
-我把我学习的算法竞赛模板整理了两个版本：一个[markdown文档](板子.md)（及其[导出的PDF](板子.pdf)），用于打印使用；另一个是整理好的.cpp文件，可以直接粘贴到比赛区域使用
+<h1 align="center"> CPTemplate </h1>
 
-## 特点
-1. 封装性良好，适合开箱即用，对多数底层的实现我采用包装函数（如线段树的`query(l, r)`包装了`_query(l, r, 0, 0, n)`），避免赛时出错
-2. 可读性优秀，符合工程规范，函数名、变量名等均平衡竞赛与可读性需求，便于学习和赛时使用
-3. 0-indexed与左闭右开，免去分类讨论，且与STL容器结合良好
-4. 必要处有注释说明，避免食用时出错
-5. 使用自动化工具（如expand.py摊平头文件引用），减少人工复制的错误
-6. 使用CI进行集成测试，保证模板的可编译性与正确性，同时CI的测试也是使用示例
+<p align="center">
+  面向 ICPC/OI 的 C++ 竞赛模板工程
+</p>
 
-## 使用方法
-直接以zip格式下载到本地解压，拿到PDF或者MD文档打印以供区域赛使用，引用头文件后使用expand.py以提交到线上测试平台（如Codeforces）
+<p align="center">
+  <a href="./README.md">简体中文</a> |
+  <a href="./README_EN.md">English</a>
+</p>
 
-## 贡献
-由于本仓库是个人学习的产出，暂时不接受贡献，因此，如果你需要在我的代码上进行修改，**请将本仓库fork到你自己的账户下进行修改**
+<p align="center">
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-1f6feb?style=flat-square" alt="MIT License"></a>
+  <a href="https://github.com/Lumine2024/CPTemplate/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Lumine2024/CPTemplate/ci.yml?branch=main&label=CI&style=flat-square" alt="CI Status"></a>
+  <img src="https://img.shields.io/badge/C%2B%2B-20-00599C?logo=c%2B%2B&style=flat-square" alt="C++20">
+  <img src="https://img.shields.io/badge/CMake-3.16%2B-064F8C?logo=cmake&style=flat-square" alt="CMake 3.16+">
+  <img src="https://img.shields.io/badge/Platform-Windows%20%7C%20Linux-444?style=flat-square" alt="Platform">
+</p>
 
-不过，如果大家有什么板子需要我写的话，可以[提个Issue](https://github.com/Lumine2024/CPTemplate/issues/new)催我去学（雾）
+面向 ICPC/OI 的 C++ 竞赛模板工程。这个仓库既提供可阅读、可打印的文档版本，也提供可测试、可展开、可直接提交的代码版本。
 
----
+## 快速导航
 
-最后祝各位比赛顺利，贪心不猜错，结论一眼出，WA不存在，TLE变AC
+| 内容 | 入口 |
+| --- | --- |
+| 主模板文档（Markdown） | [docs/板子.md](docs/板子.md) |
+| 主模板文档（PDF） | [docs/板子.pdf](docs/板子.pdf) |
+| 公式文档 | [docs/公式.md](docs/公式.md) |
+| 崩溃与退出码说明 | [docs/退出码与崩溃原因.md](docs/退出码与崩溃原因.md) |
+| 模板头文件 | [include/](include/) |
+| 单文件展开脚本 | [pwsh/expand.ps1](pwsh/expand.ps1) |
+| CI 测试脚本 | [pwsh/ci.ps1](pwsh/ci.ps1) |
+
+## 项目特性
+
+1. 工程化组织
+采用按主题分层的目录结构（如 `graph`、`ds`、`math`），便于查找、复用与维护。
+
+2. 竞赛友好的 API 封装
+常用数据结构和算法接口做了统一封装，减少现场手写细节导致的失误。
+
+3. 一致的索引与区间约定
+默认使用 0-indexed 与左闭右开区间，和 STL 使用习惯一致。
+
+4. 自动化展开与测试
+提供头文件展开脚本与 CI 脚本，支持本地快速验证模板正确性。
+
+5. 文档与代码双轨维护
+文档用于赛前复习和打印，代码用于本地调试与在线评测提交。
+
+## 目录结构
+
+```text
+CPTemplate/
+|- docs/               # 模板与公式文档（md/html/pdf）
+|- image_assets/       # 文档图片资源
+|- include/            # 竞赛模板头文件
+|- pwsh/               # PowerShell 自动化脚本
+|- python/             # Python 工具脚本
+|- tests/              # 单元测试与测试用例
+|- CMakeLists.txt
+|- README.md
+`- README_EN.md
+```
+
+## 环境要求
+
+1. C++20 及以上编译器（gcc/clang/msvc 均可）
+2. CMake 3.20+
+3. Ninja（推荐）
+4. PowerShell 7+
+
+## 快速开始
+
+### 1) 本地构建
+
+```powershell
+cmake -S . -B build -G Ninja -D CMAKE_BUILD_TYPE=Release
+cmake --build build -j
+```
+
+### 2) 运行测试（推荐）
+
+```powershell
+./pwsh/ci.ps1 -Compiler gcc
+```
+
+常用参数：
+1. `-TestWithExpand`：测试前先展开（默认开启）
+2. `-TestWithoutExpand`：跳过展开，直接测原始文件
+3. `-Compiler clang|gcc|msvc|clang-cl`：切换编译器
+
+### 3) 展开单个源文件（用于提交 OJ）
+
+```powershell
+./pwsh/expand.ps1 tests/ds/dsu.cpp -o out.cpp -I include
+```
+
+### 4) 展开模板文档中的引用片段
+
+```powershell
+./pwsh/expand_banzi.ps1
+```
+
+## 设计原则
+
+1. 可读性优先于过度技巧化
+2. 接口稳定优先于局部微优化
+3. 模块独立，避免隐式依赖
+4. 先可验证，再可复用
+
+## 贡献说明
+
+当前仓库以个人学习与整理为主，暂不直接接受代码 PR。
+
+如果你希望基于本模板修改，请先 Fork 后在自己的仓库维护。
+
+若你有希望补充的板子或专题，欢迎提交 Issue：
+
+[https://github.com/Lumine2024/CPTemplate/issues/new](https://github.com/Lumine2024/CPTemplate/issues/new)
