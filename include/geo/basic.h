@@ -6,7 +6,6 @@ int sign(ld a) {
 	return (a < -eps) ? -1 : (a > eps) ? 1 : 0;
 }
 int cmp(ld a, ld b) {
-	if(sign((a - b) / a) == 0) return 0;
 	return sign(a - b);
 }
 auto cmpso(ld a, ld b) {
@@ -20,6 +19,27 @@ struct Point {
 	Point(const complex<ld> &cd) : x(cd.real()), y(cd.imag()) {}
 	operator complex<ld>() const {
 		return complex<ld>(x, y);
+	}
+	ld len2() const {
+		return x * x + y * y;
+	}
+	ld len() const {
+		return sqrt(x * x + y * y);
+	}
+	// [0, 2pi)
+	ld arg() const {
+		ld ret = atan2(y, x);
+		int c = cmp(ret, 0);
+		return c == 1 ? ret : c == 0 ? 0.0l : ret + 2 * pi;
+	}
+	Point rotate(ld a) const {
+		return Point(x * cos(a) - y * sin(a), x * sin(a) + y * cos(a));
+	}
+	ld &operator[](int i) {
+		return i == 0 ? x : y;
+	}
+	ld operator[](int i) const {
+		return i == 0 ? x : y;
 	}
 	Point operator+(const Point &p) const {
 		return Point(x + p.x, y + p.y);
@@ -43,27 +63,6 @@ struct Point {
 		auto cx = cmpso(x, p.x);
 		if(cx != 0) return cx;
 		return cmpso(y, p.y);
-	}
-	ld len2() const {
-		return x * x + y * y;
-	}
-	ld len() const {
-		return sqrt(x * x + y * y);
-	}
-	// [0, 2pi)
-	ld arg() const {
-		ld ret = atan2(y, x);
-		int c = cmp(ret, 0);
-		return c == 1 ? ret : c == 0 ? 0.0l : ret + 2 * pi;
-	}
-	Point rotate(ld a) const {
-		return Point(x * cos(a) - y * sin(a), x * sin(a) + y * cos(a));
-	}
-	ld &operator[](int i) {
-		return i == 0 ? x : y;
-	}
-	ld operator[](int i) const {
-		return i == 0 ? x : y;
 	}
 };
 using Vector = Point;

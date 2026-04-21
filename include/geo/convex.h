@@ -3,14 +3,75 @@
 
 struct Convex : public Polygon {
 	using Polygon::Polygon;
-	// todo
-};
-bool is_in(const Point &pt, const Convex &convex) {
-	if(convex.size() == 1) {
-		return pt == convex.pts[0];
+	array<int, 3> max_triangle() const {
+		int m = size();
+		if(m < 3) return {-1, -1, -1};
+		vector<int> id(m);
+		iota(id.begin(), id.end(), 0);
+		vector<Point> p = pts;
+		if(sign(area()) == -1) {
+			reverse(p.begin(), p.end());
+			reverse(id.begin(), id.end());
+		}
+		vector<Point> pts2 = p;
+		pts2.insert(pts2.end(), p.begin(), p.end());
+		ld _area = -1.0l;
+		array<int, 3> ret = {0, 1, 2};
+		for(int i = 0; i < m; ++i) {
+			int k = i + 2;
+			for(int j = i + 1; j < i + m - 1; ++j) {
+				while(k + 1 < i + m &&
+					  cross(pts2[j] - pts2[i], pts2[k + 1] - pts2[i]) >
+						  cross(pts2[j] - pts2[i], pts2[k] - pts2[i]))
+					++k;
+				ld cur_area =
+					0.5l * cross(pts2[j] - pts2[i], pts2[k] - pts2[i]);
+				if(cur_area > _area + eps) {
+					_area = cur_area;
+					ret = {id[i % m], id[j % m], id[k % m]};
+				}
+			}
+		}
+		return ret;
 	}
-	if(convex.size() == 2) {
-		return is_on(pt, Lineseg(convex.pts[0], convex.pts[1]));
+	pair<int, int> farthest() const {
+		int m = size();
+		if(m == 0) return {-1, -1};
+		if(m == 1) return {0, 0};
+		if(m == 2) return {0, 1};
+		vector<int> id(m);
+		iota(id.begin(), id.end(), 0);
+		vector<Point> p = pts;
+		if(sign(area()) == -1) {
+			reverse(p.begin(), p.end());
+			reverse(id.begin(), id.end());
+		}
+		int j = 1;
+		ld _dist = 0;
+		pair<int, int> ret = {0, 0};
+		for(int i = 0; i < m; ++i) {
+			int u = (i + 1) % m;
+			while(cross(p[i], p[u], p[(j + 1) % m]) > cross(p[i], p[u], p[j]))
+				j = (j + 1) % m;
+			auto chmax = [&](int k) {
+				ld now = (p[k] - p[j]).len2();
+				if(cmp(now, _dist) == 1) {
+					_dist = now;
+					ret = {id[k], id[j]};
+				}
+			};
+			chmax(i);
+			chmax(u);
+		}
+		return ret;
+	}
+};
+bool is_in(const Point &pt, const Convex &cv) {
+	if(cv.size() == 1) {
+		return pt == cv.pts[0];
+	}
+	if(cv.size() == 2) {
+		return is_on(pt, Lineseg(cv.pts[0], cv.pts[1]));
 	}
 	auto check = [](const Point &a, const Point &b, const Point &c,
 					const Point &p) {
@@ -19,86 +80,86 @@ bool is_in(const Point &pt, const Convex &convex) {
 		return (sign(c1) != -1 && sign(c2) != -1 && sign(c3) != -1) ||
 			   (sign(c1) != 1 && sign(c2) != 1 && sign(c3) != 1);
 	};
-	int n = convex.size();
-	Point pivot = convex.pts[0];
-	if((sign(cross(convex.pts[1] - pivot, pt - pivot)) == -1) ||
-	   (sign(cross(convex.pts[n - 1] - pivot, pt - pivot)) == 1)) {
+	int n = cv.size();
+	Point pivot = cv.pts[0];
+	if((sign(cross(cv.pts[1] - pivot, pt - pivot)) == -1) ||
+	   (sign(cross(cv.pts[n - 1] - pivot, pt - pivot)) == 1)) {
 		return false;
 	}
 	int l = 1, r = n - 1;
 	while(l + 1 < r) {
 		int mid = (l + r) >> 1;
-		if(sign(cross(convex.pts[mid] - pivot, pt - pivot)) != -1) {
+		if(sign(cross(cv.pts[mid] - pivot, pt - pivot)) != -1) {
 			l = mid;
 		} else {
 			r = mid;
 		}
 	}
 	int nxt = (l == n - 1) ? 1 : l + 1;
-	return check(pivot, convex.pts[l], convex.pts[nxt], pt);
+	return check(pivot, cv.pts[l], cv.pts[nxt], pt);
 }
-optional<pair<Point, Point>> tangent(const Point &pt, const Convex &convex) {
-	if(is_in(pt, convex)) return nullopt;
-	int n = convex.size();
-	auto peak = [&](int l, int r, bool find_r) {
+optional<pair<Point, Point>> tangent(const Point &pt, const Convex &cv) {
+	if(is_in(pt, cv)) return nullopt;
+	int n = cv.size();
+	auto peak = [&](int l, int r, bool f) {
 		while(l < r - 1) {
 			int mid = (l + r) / 2;
-			if(find_r ^ (to_left(convex.pts[(mid + n - 1) % n] - pt,
-								 convex.pts[mid] - pt) == 1))
+			if(f ^
+			   (to_left(cv.pts[(mid + n - 1) % n] - pt, cv.pts[mid] - pt) == 1))
 				r = mid;
 			else l = mid;
 		}
 		return l;
 	};
-	if(to_left(convex.pts[0] - pt, convex.pts[1] - pt) == 0) {
-		int idx = peak(
-			2, n, cmp(dist(convex.pts[0], pt), dist(convex.pts[1], pt)) == -1);
-		return pair{convex.pts[0], convex.pts[idx]};
+	if(to_left(cv.pts[0] - pt, cv.pts[1] - pt) == 0) {
+		int idx =
+			peak(2, n, cmp(dist(cv.pts[0], pt), dist(cv.pts[1], pt)) == -1);
+		return pair{cv.pts[0], cv.pts[idx]};
 	}
 	bool all_left = true, all_right = true;
 	auto chk = [&](int x) {
 		if(x == 1) all_right = false;
 		if(x == -1) all_left = false;
 	};
-	chk(to_left(convex.pts[0] - pt, convex.pts[1] - pt));
-	chk(to_left(convex.pts[0] - pt, convex.pts[n - 1] - pt));
+	chk(to_left(cv.pts[0] - pt, cv.pts[1] - pt));
+	chk(to_left(cv.pts[0] - pt, cv.pts[n - 1] - pt));
 	if(all_left || all_right) {
 		int idx = peak(1, n, all_left);
-		return pair{convex.pts[0], convex.pts[idx]};
+		return pair{cv.pts[0], cv.pts[idx]};
 	}
 	int l = 1, r = n;
 	while(l < r - 1) {
 		int mid = (l + r) / 2;
-		if(to_left(convex.pts[0] - pt, convex.pts[mid] - pt) == 1) {
+		if(to_left(cv.pts[0] - pt, cv.pts[mid] - pt) == 1) {
 			l = mid;
 		} else {
 			r = mid;
 		}
 	}
 	int split = l;
-	bool flag = (to_left(convex.pts[0] - pt, convex.pts[1] - pt) == 1);
+	bool flag = (to_left(cv.pts[0] - pt, cv.pts[1] - pt) == 1);
 	int i1 = peak(0, split + 1, flag), i2 = peak(split, n, !flag);
-	return pair{convex.pts[i1], convex.pts[i2]};
+	return pair{cv.pts[i1], cv.pts[i2]};
 }
-pair<Point, Point> tangent(const Line &ln, const Convex &convex) {
-	int n = convex.size();
+pair<Point, Point> tangent(const Line &ln, const Convex &cv) {
+	int n = cv.size();
 	Vector dir(-ln.v.y, ln.v.x);
-	auto find = [&](bool flag) {
+	auto find = [&](bool f) {
 		int l = 0, r = n - 1;
 		while(r - l > 2) {
 			int m1 = l + (r - l) / 3, m2 = r - (r - l) / 3;
-			ld dot1 = dot(convex.pts[m1], dir), dot2 = dot(convex.pts[m2], dir);
-			if(flag ^ (cmp(dot1, dot2) == -1)) {
+			ld dot1 = dot(cv.pts[m1], dir), dot2 = dot(cv.pts[m2], dir);
+			if(f ^ (cmp(dot1, dot2) == -1)) {
 				r = m2;
 			} else {
 				l = m1;
 			}
 		}
 		int idx = l;
-		ld ret = dot(convex.pts[l], dir);
+		ld ret = dot(cv.pts[l], dir);
 		for(int i = l; i <= r; ++i) {
-			ld now = dot(convex.pts[i], dir);
-			if(flag ^ (cmp(now, ret) == -1)) {
+			ld now = dot(cv.pts[i], dir);
+			if(f ^ (cmp(now, ret) == -1)) {
 				idx = i;
 				ret = now;
 			}
@@ -106,5 +167,45 @@ pair<Point, Point> tangent(const Line &ln, const Convex &convex) {
 		return idx;
 	};
 	int i1 = find(true), i2 = find(false);
-	return {convex.pts[i1], convex.pts[i2]};
+	return {cv.pts[i1], cv.pts[i2]};
+}
+Convex minkowski_add(const Convex &a, const Convex &b) {
+	int n = a.size(), m = b.size();
+	auto cmp = [](const Lineseg &u, const Lineseg &v) {
+		return argcmp(u.b - u.a, v.b - v.a);
+	};
+	vector<Lineseg> e1(n), e2(m), edge(n + m);
+	for(int i = 0; i < n; ++i) {
+		e1[i] = {a.pts[i], a.pts[(i + 1) % n]};
+	}
+	for(int i = 0; i < m; ++i) {
+		e2[i] = {b.pts[i], b.pts[(i + 1) % m]};
+	}
+	rotate(e1.begin(), min_element(e1.begin(), e1.end(), cmp), e1.end());
+	rotate(e2.begin(), min_element(e2.begin(), e2.end(), cmp), e2.end());
+	merge(e1.begin(), e1.end(), e2.begin(), e2.end(), edge.begin(), cmp);
+	vector<Point> ret;
+	auto bad = [&](const Point &u) {
+		int n = ret.size();
+		Point b1 = ret.back(), b2 = *prev(ret.end(), 2);
+		return to_left(b1 - b2, u - b1) == 0 && sign(dot(b1 - b2, u - b1)) >= 0;
+	};
+	auto u = e1[0].a + e2[0].a;
+	for(const auto &v : edge) {
+		while(ret.size() > 1 && bad(u)) {
+			ret.pop_back();
+		}
+		ret.push_back(u);
+		u = u + v.b - v.a;
+	}
+	if(ret.size() > 1 && bad(ret[0])) ret.pop_back();
+	return Convex(ret);
+}
+Convex minkowski_sub(const Convex &a, const Convex &b) {
+	Convex nb = b;
+	reverse(nb.pts.begin(), nb.pts.end());
+	for(auto &pt : nb.pts) {
+		pt = Point() - pt;
+	}
+	return minkowski_add(a, nb);
 }

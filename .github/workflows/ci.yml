@@ -11,25 +11,26 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
+        optimize-level: [0, 1, 2]
+        target:
           - os: ubuntu-latest
-            kind: gcc
+            compiler: gcc
           - os: ubuntu-latest
-            kind: clang
+            compiler: clang
           - os: windows-latest
-            kind: msvc
+            compiler: msvc
           - os: windows-latest
-            kind: clang
+            compiler: clang
           - os: windows-latest
-            kind: gcc
+            compiler: gcc
           - os: windows-latest
-            kind: clang-cl
-    runs-on: ${{ matrix.os }}
+            compiler: clang-cl
+    runs-on: ${{ matrix.target.os }}
     steps:
       - uses: actions/checkout@v5
       - name: CI with expand
         shell: pwsh
-        run: ./pwsh/ci.ps1 -Compiler '${{ matrix.kind }}' -TestWithExpand
+        run: ./pwsh/ci.ps1 -Compiler '${{ matrix.target.compiler }}' -OptimizeLevel ${{ matrix.optimize-level }} -TestWithExpand
       - name: CI without expand
         shell: pwsh
-        run: ./pwsh/ci.ps1 -Compiler '${{ matrix.kind }}' -TestWithoutExpand
+        run: ./pwsh/ci.ps1 -Compiler '${{ matrix.target.compiler }}' -OptimizeLevel ${{ matrix.optimize-level }} -TestWithoutExpand

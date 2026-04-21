@@ -3,6 +3,8 @@
 param(
     [Parameter(Mandatory = $true)]
     [string]$Compiler,
+    [ValidateRange(0, 2)]
+    [int]$OptimizeLevel = 0,
     [switch]$TestWithExpand,
     [switch]$TestWithoutExpand
 )
@@ -108,9 +110,9 @@ Invoke-Step "Configure" {
                 [System.Environment]::SetEnvironmentVariable($Matches[1], $Matches[2], "Process")
             }
         }
-        cmake -S . -B $buildDir -G Ninja -D CMAKE_BUILD_TYPE=Release -D CP_TEMPLATE_USE_EXPANDED_TESTS=$useExpandedTests
+        cmake -S . -B $buildDir -G Ninja -D CMAKE_BUILD_TYPE=Release -D CP_TEMPLATE_USE_EXPANDED_TESTS=$useExpandedTests -D CP_TEMPLATE_OPTIMIZE_LEVEL=$OptimizeLevel
     } else {
-        cmake -S . -B $buildDir -G Ninja -D CMAKE_BUILD_TYPE=Release -D CP_TEMPLATE_USE_EXPANDED_TESTS=$useExpandedTests -D CMAKE_C_COMPILER=$cc -D CMAKE_CXX_COMPILER=$cxx
+        cmake -S . -B $buildDir -G Ninja -D CMAKE_BUILD_TYPE=Release -D CP_TEMPLATE_USE_EXPANDED_TESTS=$useExpandedTests -D CP_TEMPLATE_OPTIMIZE_LEVEL=$OptimizeLevel -D CMAKE_C_COMPILER=$cc -D CMAKE_CXX_COMPILER=$cxx
     }
     Test-LastExitCode "CMake configure failed, exit code is $LASTEXITCODE"
 }
