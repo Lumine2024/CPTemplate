@@ -12,6 +12,8 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
+$prevLocation = Get-Location
+
 function Invoke-Step([string]$name, [scriptblock]$body) {
     Write-Output "[CI] ==> $name"
     & $body
@@ -124,3 +126,5 @@ Invoke-Step "Test" {
     ctest --test-dir $buildDir -V
     Test-LastExitCode "CTest failed, exit code is $LASTEXITCODE"
 }
+
+Set-Location $prevLocation

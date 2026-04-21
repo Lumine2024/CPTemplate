@@ -2,7 +2,7 @@
 
 param(
     [string]$Source = "docs/板子.pre-expand.md",
-    [string]$Dest = "docs/板子.md"
+    [string]$Dest = "板子.md"
 )
 
 Set-StrictMode -Version Latest
