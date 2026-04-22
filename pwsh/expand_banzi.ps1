@@ -51,7 +51,7 @@ $sourceDir = Split-Path -Parent $sourceFull
 $content = Get-Content -Path $sourceFull -Raw -Encoding utf8
 
 $tagPattern = [regex]'(?is)<file\s+([^>]*)>\s*</file>'
-$expanded = $tagPattern.Replace($content, {
+$expanded = "<-- THIS FILE IS AUTO GENERATED, DO NOT MODIFY IT MANUALLY -->`n`n" + $tagPattern.Replace($content, {
     param($m)
 
     $attrs = Convert-Attributes -Text $m.Groups[1].Value
