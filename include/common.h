@@ -1,3 +1,9 @@
+// -------------------------------------------------------
+// This file is generated using headers and tools from
+// https://github.com/Lumine2024/CPTemplate
+// License: MIT License
+// -------------------------------------------------------
+
 #pragma once
 #include <bits/stdc++.h>
 using namespace std;
