@@ -5,7 +5,7 @@ TEST(scc_single_node) {
 	SCC scc(1);
 	scc.build();
 	ENSURE(scc.sccs.size() == 1);
-	ENSURE(scc.nodes[0].inscc == 0);
+	ENSURE(scc.inscc[0] == 0);
 }
 
 TEST(scc_simple_cycle) {
@@ -16,8 +16,8 @@ TEST(scc_simple_cycle) {
 	scc.addedge(2, 0);
 	scc.build();
 	ENSURE(scc.sccs.size() == 1);
-	ENSURE(scc.nodes[0].inscc == scc.nodes[1].inscc);
-	ENSURE(scc.nodes[1].inscc == scc.nodes[2].inscc);
+	ENSURE(scc.inscc[0] == scc.inscc[1]);
+	ENSURE(scc.inscc[1] == scc.inscc[2]);
 }
 
 TEST(scc_two_separate_components) {
@@ -29,9 +29,9 @@ TEST(scc_two_separate_components) {
 	scc.addedge(3, 2);
 	scc.build();
 	ENSURE(scc.sccs.size() == 2);
-	ENSURE(scc.nodes[0].inscc == scc.nodes[1].inscc);
-	ENSURE(scc.nodes[2].inscc == scc.nodes[3].inscc);
-	ENSURE(scc.nodes[0].inscc != scc.nodes[2].inscc);
+	ENSURE(scc.inscc[0] == scc.inscc[1]);
+	ENSURE(scc.inscc[2] == scc.inscc[3]);
+	ENSURE(scc.inscc[0] != scc.inscc[2]);
 }
 
 TEST(scc_dag) {
@@ -44,7 +44,7 @@ TEST(scc_dag) {
 	ENSURE(scc.sccs.size() == 4);
 	for(int i = 0; i < 4; ++i) {
 		for(int j = i + 1; j < 4; ++j) {
-			ENSURE(scc.nodes[i].inscc != scc.nodes[j].inscc);
+			ENSURE(scc.inscc[i] != scc.inscc[j]);
 		}
 	}
 }
@@ -60,11 +60,11 @@ TEST(scc_condensation_dag) {
 	scc.build();
 	ENSURE(scc.sccs.size() == 3);
 	// nodes 0,1,2 in same SCC
-	ENSURE(scc.nodes[0].inscc == scc.nodes[1].inscc);
-	ENSURE(scc.nodes[1].inscc == scc.nodes[2].inscc);
+	ENSURE(scc.inscc[0] == scc.inscc[1]);
+	ENSURE(scc.inscc[1] == scc.inscc[2]);
 	// nodes 3 and 4 are separate
-	ENSURE(scc.nodes[3].inscc != scc.nodes[4].inscc);
-	ENSURE(scc.nodes[0].inscc != scc.nodes[3].inscc);
+	ENSURE(scc.inscc[3] != scc.inscc[4]);
+	ENSURE(scc.inscc[0] != scc.inscc[3]);
 }
 
 TEST(bridge_simple) {

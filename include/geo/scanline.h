@@ -9,12 +9,14 @@ struct Event {
 	ld y;
 };
 struct SegTree_SL {
-	SegTree_SL(const vector<ld> &_xs) : nodes(4 * _xs.size()), xs(_xs) {
+	SegTree_SL(const vector<ld> &_xs)
+		: l(4 * _xs.size()), r(4 * _xs.size()), cnt(4 * _xs.size()),
+		  len(4 * _xs.size()), xs(_xs) {
 		int n = xs.size();
 		_build(0, 0, n);
 	}
 	ld query() const {
-		return nodes[0].len;
+		return len[0];
 	}
 	// 注意左闭右开
 	void update(int l, int r, int v) {
@@ -22,24 +24,24 @@ struct SegTree_SL {
 	}
 
 private:
-	struct Node {
-		int l, r, cnt;
-		ld len;
-	};
-	vector<Node> nodes;
+	vector<int> l, r, cnt;
+	vector<ld> len;
 	vector<ld> xs;
 	void _pushup(int u) {
-		if(nodes[u].cnt > 0) {
-			nodes[u].len = xs[nodes[u].r] - xs[nodes[u].l];
-		} else if(nodes[u].r - nodes[u].l == 1) {
-			nodes[u].len = 0.0l;
+		if(cnt[u] > 0) {
+			len[u] = xs[r[u]] - xs[l[u]];
+		} else if(r[u] - l[u] == 1) {
+			len[u] = 0.0l;
 		} else {
 			int lson = (u << 1) + 1, rson = (u << 1) + 2;
-			nodes[u].len = nodes[lson].len + nodes[rson].len;
+			len[u] = len[lson] + len[rson];
 		}
 	}
 	void _build(int u, int l, int r) {
-		nodes[u] = {l, r, 0, 0.0l};
+		this->l[u] = l;
+		this->r[u] = r;
+		cnt[u] = 0;
+		len[u] = 0.0l;
 		if(r - l > 1) {
 			int mid = (l + r) >> 1, lson = (u << 1) + 1, rson = (u << 1) + 2;
 			_build(lson, l, mid);
@@ -47,9 +49,9 @@ private:
 		}
 	}
 	void _update(int u, int l, int r, int v) {
-		if(nodes[u].l >= r || nodes[u].r <= l) return;
-		if(nodes[u].l >= l && nodes[u].r <= r) {
-			nodes[u].cnt += v;
+		if(this->l[u] >= r || this->r[u] <= l) return;
+		if(this->l[u] >= l && this->r[u] <= r) {
+			cnt[u] += v;
 			_pushup(u);
 			return;
 		}

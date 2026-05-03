@@ -22,13 +22,15 @@ template<HldInfo Info, class Applier = Info>
 	requires(HldApplier<Applier, Info> && SegInfo<Info, Applier>)
 struct HLD {
 	using Node = HldNode<Info>;
-	explicit HLD(const vector<Node> &g, int r = 0) : nodes(g.size()) {
+	explicit HLD(const vector<Node> &g, int r = 0)
+		: dep(g.size()), fa(g.size()), toc(g.size()), dfn_order(g.size()),
+		  sz(g.size()), hs(g.size(), -1) {
 		dfs1(g, r, -1);
 		int now = 0;
 		dfs2(g, r, -1, now, r);
 		vector<Info> nums(g.size());
 		for(int i = 0; i < static_cast<int>(g.size()); ++i) {
-			nums[nodes[i].dfn] = g[i].w;
+			nums[dfn_order[i]] = g[i].w;
 		}
 		seg.assign(nums);
 	}
@@ -36,50 +38,47 @@ struct HLD {
 				 int r = 0)
 		: HLD(build_nodes(edges, weights), r) {}
 	int lca(int u, int v) const {
-		while(nodes[u].toc != nodes[v].toc) {
-			if(nodes[nodes[u].toc].dep < nodes[nodes[v].toc].dep) {
-				v = nodes[nodes[v].toc].fa;
+		while(toc[u] != toc[v]) {
+			if(dep[toc[u]] < dep[toc[v]]) {
+				v = fa[toc[v]];
 			} else {
-				u = nodes[nodes[u].toc].fa;
+				u = fa[toc[u]];
 			}
 		}
-		return nodes[u].dep < nodes[v].dep ? u : v;
+		return dep[u] < dep[v] ? u : v;
 	}
 	void modify(int x, const Applier &v) {
-		seg.update(nodes[x].dfn, v);
+		seg.update(dfn_order[x], v);
 	}
 	Info query_path(int u, int v) const {
 		Info ans{};
-		while(nodes[u].toc != nodes[v].toc) {
-			if(nodes[nodes[u].toc].dep < nodes[nodes[v].toc].dep) {
+		while(toc[u] != toc[v]) {
+			if(dep[toc[u]] < dep[toc[v]]) {
 				swap(u, v);
 			}
-			int top = nodes[u].toc;
-			ans = ans + seg.query(nodes[top].dfn, nodes[u].dfn + 1);
-			u = nodes[top].fa;
+			int top = toc[u];
+			ans = ans + seg.query(dfn_order[top], dfn_order[u] + 1);
+			u = fa[top];
 		}
-		if(nodes[u].dep < nodes[v].dep) swap(u, v);
-		ans = ans + seg.query(nodes[v].dfn, nodes[u].dfn + 1);
+		if(dep[u] < dep[v]) swap(u, v);
+		ans = ans + seg.query(dfn_order[v], dfn_order[u] + 1);
 		return ans;
 	}
 	Info query_subtree(int x) const {
-		return seg.query(nodes[x].dfn, nodes[x].dfn + nodes[x].sz);
+		return seg.query(dfn_order[x], dfn_order[x] + sz[x]);
 	}
 	Info query_dfn(int l, int r) const {
 		return seg.query(l, r);
 	}
 	int dfn(int x) const {
-		return nodes[x].dfn;
+		return dfn_order[x];
 	}
 	int size(int x) const {
-		return nodes[x].sz;
+		return sz[x];
 	}
 
 private:
-	struct _Node {
-		int dep, fa, toc, dfn, sz, hs;
-	};
-	vector<_Node> nodes;
+	vector<int> dep, fa, toc, dfn_order, sz, hs;
 	SegTree<Info, Applier> seg;
 	static vector<Node> build_nodes(const vector<vector<int>> &edges,
 									const vector<Info> &weights) {
@@ -92,31 +91,31 @@ private:
 	}
 	void dfs1(const vector<Node> &g, int x, int fa) {
 		if(fa == -1) {
-			nodes[x].dep = 0;
+			dep[x] = 0;
 		} else {
-			nodes[x].dep = nodes[fa].dep + 1;
+			dep[x] = dep[fa] + 1;
 		}
-		nodes[x].fa = fa;
-		nodes[x].sz = 1;
-		nodes[x].hs = -1;
+		this->fa[x] = fa;
+		sz[x] = 1;
+		hs[x] = -1;
 		for(int i = 0; i < static_cast<int>(g[x].e.size()); ++i) {
 			int next = g[x].e[i];
 			if(next == fa) continue;
 			dfs1(g, next, x);
-			nodes[x].sz += nodes[next].sz;
-			if(nodes[x].hs == -1 || nodes[nodes[x].hs].sz < nodes[next].sz) {
-				nodes[x].hs = next;
+			sz[x] += sz[next];
+			if(hs[x] == -1 || sz[hs[x]] < sz[next]) {
+				hs[x] = next;
 			}
 		}
 	}
 	void dfs2(const vector<Node> &g, int x, int fa, int &dfn, int toc) {
-		nodes[x].dfn = dfn++;
-		nodes[x].toc = toc;
-		if(nodes[x].hs == -1) return;
-		dfs2(g, nodes[x].hs, x, dfn, toc);
+		dfn_order[x] = dfn++;
+		this->toc[x] = toc;
+		if(hs[x] == -1) return;
+		dfs2(g, hs[x], x, dfn, toc);
 		for(int i = 0; i < static_cast<int>(g[x].e.size()); ++i) {
 			int next = g[x].e[i];
-			if(next != nodes[x].hs && next != fa) {
+			if(next != hs[x] && next != fa) {
 				dfs2(g, next, x, dfn, next);
 			}
 		}

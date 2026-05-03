@@ -3,41 +3,47 @@
 
 struct PAM {
 	PAM() : s("#"), last(1) {
-		nodes.emplace_back(-1, 0);
-		nodes.emplace_back(0, 0);
+		nxt.emplace_back();
+		nxt.back().fill(-1);
+		len.push_back(-1);
+		fail.push_back(0);
+		cnt.push_back(0);
+		nxt.emplace_back();
+		nxt.back().fill(-1);
+		len.push_back(0);
+		fail.push_back(0);
+		cnt.push_back(0);
 	}
 	int insert(char ch) {
 		s += ch;
 		int pos = s.size() - 1;
 		int p = last, id = ch - 'a';
-		while(s[pos - nodes[p].len - 1] != ch) p = nodes[p].fail;
-		if(nodes[p].nxt[id] == -1) {
-			int cur = nodes.size();
-			nodes[p].nxt[id] = cur;
-			nodes.emplace_back(nodes[p].len + 2, 0);
-			if(nodes[cur].len == 1) {
-				nodes[cur].fail = 1;
+		while(s[pos - len[p] - 1] != ch) p = fail[p];
+		if(nxt[p][id] == -1) {
+			int cur = size();
+			nxt[p][id] = cur;
+			nxt.emplace_back();
+			nxt.back().fill(-1);
+			len.push_back(len[p] + 2);
+			fail.push_back(0);
+			cnt.push_back(0);
+			if(len[cur] == 1) {
+				fail[cur] = 1;
 			} else {
-				int f = nodes[p].fail;
-				while(s[pos - nodes[f].len - 1] != ch) f = nodes[f].fail;
-				nodes[cur].fail = nodes[f].nxt[id];
+				int f = fail[p];
+				while(s[pos - len[f] - 1] != ch) f = fail[f];
+				fail[cur] = nxt[f][id];
 			}
-			nodes[cur].cnt =
-				nodes[cur].len == 1 ? 1 : nodes[nodes[cur].fail].cnt + 1;
+			cnt[cur] = len[cur] == 1 ? 1 : cnt[fail[cur]] + 1;
 		}
-		last = nodes[p].nxt[id];
-		return nodes[last].cnt;
+		last = nxt[p][id];
+		return cnt[last];
 	}
-
-private:
-	struct Node {
-		int len, fail, cnt;
-		array<int, 26> nxt;
-		Node(int l, int f) : len(l), fail(f), cnt(0) {
-			nxt.fill(-1);
-		}
-	};
-	vector<Node> nodes;
+	vector<int> len, fail, cnt;
+	vector<array<int, 26>> nxt;
 	string s;
 	int last;
+	int size() const {
+		return len.size();
+	}
 };

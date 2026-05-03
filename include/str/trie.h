@@ -1,55 +1,57 @@
 #pragma once
 #include "common.h"
 
+template<int N, class F>
 struct Trie {
-	Trie() : nodes(1) {}
+	Trie() : nxt(1), end(1), cnt(1) {
+		nxt[0].fill(-1);
+	}
 	void insert(const string &str) {
 		int rt = 0;
 		for(int i = 0; i < str.size(); ++i) {
-			if((nodes[rt].nxt[getnum(str[i])]) == -1) {
-				nodes[rt].nxt[getnum(str[i])] = nodes.size();
-				nodes.emplace_back();
+			int id = mapper(str[i]);
+			if(nxt[rt][id] == -1) {
+				nxt[rt][id] = size();
+				nxt.emplace_back();
+				nxt.back().fill(-1);
+				end.push_back(false);
+				cnt.push_back(0);
 			}
-			nodes[rt].cnt++;
-			rt = nodes[rt].nxt[getnum(str[i])];
+			cnt[rt]++;
+			rt = nxt[rt][id];
 		}
-		nodes[rt].cnt++;
-		nodes[rt].end = true;
+		cnt[rt]++;
+		end[rt] = true;
 	}
 	bool find(const string &str) const {
 		int rt = 0;
 		for(int i = 0; i < str.size(); ++i) {
-			if((nodes[rt].nxt[getnum(str[i])]) == -1) {
+			int id = mapper(str[i]);
+			if(nxt[rt][id] == -1) {
 				return false;
 			}
-			rt = nodes[rt].nxt[getnum(str[i])];
+			rt = nxt[rt][id];
 		}
-		return nodes[rt].end;
+		return end[rt];
 	}
 	int prefix_count(const string &str) const {
 		int rt = 0;
 		for(int i = 0; i < str.size(); ++i) {
-			if((nodes[rt].nxt[getnum(str[i])]) == -1) {
+			int id = mapper(str[i]);
+			if(nxt[rt][id] == -1) {
 				return 0;
 			}
-			rt = nodes[rt].nxt[getnum(str[i])];
+			rt = nxt[rt][id];
 		}
-		return nodes[rt].cnt;
+		return cnt[rt];
 	}
 
 private:
-	struct Node {
-		array<int, 65> nxt;
-		bool end;
-		int cnt;
-		Node() : end(false), cnt(0) {
-			nxt.fill(-1);
-		}
-	};
-	vector<Node> nodes;
-	static int getnum(char x) {
-		if(x >= 'A' && x <= 'Z') return x - 'A';
-		else if(x >= 'a' && x <= 'z') return x - 'a' + 26;
-		else return x - '0' + 52;
+	vector<array<int, N>> nxt;
+	vector<bool> end;
+	vector<int> cnt;
+	F mapper;
+	int size() const {
+		return nxt.size();
 	}
 };

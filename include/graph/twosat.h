@@ -12,7 +12,7 @@ vector<int> twosat(int n, const vector<tuple<int, int, int, int>> &conds) {
 	}
 	scc.build();
 	for(int i = 0; i < n; ++i) {
-		if(scc.nodes[2 * i].inscc == scc.nodes[2 * i + 1].inscc) return {};
+		if(scc.inscc[2 * i] == scc.inscc[2 * i + 1]) return {};
 	}
 	vector<int> ans(n, -1);
 	for(int i = 0; i < scc.sccs.size(); ++i) {

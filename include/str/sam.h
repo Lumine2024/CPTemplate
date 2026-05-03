@@ -2,43 +2,49 @@
 #include "common.h"
 
 struct SAM {
-	SAM() : nodes(1, Node(-1, 0)), last(0) {}
+	SAM() : nxt(1), link(1, -1), len(1, 0), last(0) {
+		nxt[0].fill(-1);
+	}
 	void insert(char ch) {
 		const int id = ch - 'a';
-		const int cur = nodes.size();
-		nodes.emplace_back(-1, nodes[last].len + 1);
+		const int cur = size();
+		nxt.emplace_back();
+		nxt.back().fill(-1);
+		link.push_back(-1);
+		len.push_back(len[last] + 1);
 		int p = last;
-		while(p != -1 && nodes[p].nxt[id] == -1) {
-			nodes[p].nxt[id] = cur;
-			p = nodes[p].link;
+		while(p != -1 && nxt[p][id] == -1) {
+			nxt[p][id] = cur;
+			p = link[p];
 		}
 		if(p == -1) {
-			nodes[cur].link = 0;
+			link[cur] = 0;
 		} else {
-			int q = nodes[p].nxt[id];
-			if(nodes[p].len + 1 == nodes[q].len) {
-				nodes[cur].link = q;
+			int q = nxt[p][id];
+			if(len[p] + 1 == len[q]) {
+				link[cur] = q;
 			} else {
-				int clone = nodes.size();
-				nodes.emplace_back(nodes[q].link, nodes[p].len + 1);
-				nodes[clone].nxt = nodes[q].nxt;
-				while(p != -1 && nodes[p].nxt[id] == q) {
-					nodes[p].nxt[id] = clone;
-					p = nodes[p].link;
+				int clone = size();
+				nxt.push_back(nxt[q]);
+				link.push_back(link[q]);
+				len.push_back(len[p] + 1);
+				while(p != -1 && nxt[p][id] == q) {
+					nxt[p][id] = clone;
+					p = link[p];
 				}
-				nodes[q].link = nodes[cur].link = clone;
+				link[q] = link[cur] = clone;
 			}
 		}
 		last = cur;
 		ends.push_back(cur);
 	}
 	ll solve() const {
-		int n = nodes.size();
+		int n = size();
 		vector<int> indeg(n, 0), topoorder;
 		topoorder.reserve(n);
 		for(int i = 0; i < n; ++i) {
-			if(nodes[i].link != -1) {
-				indeg[nodes[i].link]++;
+			if(link[i] != -1) {
+				indeg[link[i]]++;
 			}
 		}
 		queue<int> q;
@@ -51,10 +57,10 @@ struct SAM {
 			int u = q.front();
 			q.pop();
 			topoorder.push_back(u);
-			if(nodes[u].link != -1) {
-				indeg[nodes[u].link]--;
-				if(indeg[nodes[u].link] == 0) {
-					q.push(nodes[u].link);
+			if(link[u] != -1) {
+				indeg[link[u]]--;
+				if(indeg[link[u]] == 0) {
+					q.push(link[u]);
 				}
 			}
 		}
@@ -64,26 +70,20 @@ struct SAM {
 			occur[e] = 1;
 		}
 		for(int i : topoorder) {
-			if(nodes[i].link != -1) {
-				occur[nodes[i].link] += occur[i];
+			if(link[i] != -1) {
+				occur[link[i]] += occur[i];
 			}
 			if(occur[i] != 1) {
-				ans = max(ans, occur[i] * nodes[i].len);
+				ans = max(ans, occur[i] * len[i]);
 			}
 		}
 		return ans;
 	}
-
-private:
-	struct Node {
-		array<int, 26> nxt;
-		int link;
-		int len;
-		Node(int lk, int ln) : link(lk), len(ln) {
-			nxt.fill(-1);
-		}
-	};
-	vector<Node> nodes;
+	vector<array<int, 26>> nxt;
+	vector<int> link, len;
 	vector<int> ends;
 	int last;
+	int size() const {
+		return nxt.size();
+	}
 };

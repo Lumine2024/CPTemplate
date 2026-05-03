@@ -20,6 +20,9 @@ struct SeqAM {
 		}
 		return now != (n + 1);
 	}
+	int next(int s, char c) const {
+		return nxt[s][c - 'a'];
+	}
 
 private:
 	int n;
