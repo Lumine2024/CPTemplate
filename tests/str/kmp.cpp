@@ -35,7 +35,7 @@ TEST(kmp_find_with_offset) {
 
 TEST(kmp_count_occurrences) {
 	ENSURE(kmp_count("abababab", "ab") == 4);
-	ENSURE(kmp_count("aaaa", "aa") == 3);  // overlapping
+	ENSURE(kmp_count("aaaa", "aa") == 3); // overlapping
 	ENSURE(kmp_count("abc", "xyz") == 0);
 	ENSURE(kmp_count("abc", "abc") == 1);
 }

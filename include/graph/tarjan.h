@@ -6,7 +6,7 @@ concept EdgeT = requires(T t) {
 	{ t.v } -> convertible_to<int>;
 };
 
-// 强连通分量
+// Strongly connected components
 struct SCC {
 	explicit SCC(int n)
 		: dfn(n, -1), low(n, -1), inscc(n, -1), ins(n), graph(n) {}
@@ -78,7 +78,7 @@ private:
 		}
 	}
 };
-// 边双
+// Edge-biconnected components
 struct EBCC {
 	explicit EBCC(int n)
 		: dfn(n, -1), low(n, -1), ins(n), graph(n), in_ebcc(n) {}
@@ -89,8 +89,8 @@ struct EBCC {
 	}
 	template<EdgeT T>
 	explicit EBCC(const vector<vector<T>> &g)
-		: dfn(g.size(), -1), low(g.size(), -1), ins(g.size()),
-		  graph(g.size()), in_ebcc(g.size()) {
+		: dfn(g.size(), -1), low(g.size(), -1), ins(g.size()), graph(g.size()),
+		  in_ebcc(g.size()) {
 		int n = g.size();
 		for(int u = 0; u < n; ++u) {
 			for(const T &edge : g[u]) addedge(u, edge.v);
@@ -145,7 +145,7 @@ private:
 		}
 	}
 };
-// 点双
+// Vertex-biconnected components
 struct DCC {
 	explicit DCC(int n) : dfn(n, -1), low(n, -1), graph(n) {}
 	explicit DCC(const vector<vector<int>> &g)
@@ -210,14 +210,15 @@ private:
 		}
 	}
 };
-// 割点
+// Articulation points
 struct AP {
 	explicit AP(int n) : dfn(n, -1), low(n, -1), graph(n) {}
 	explicit AP(const vector<vector<int>> &g)
 		: dfn(g.size(), -1), low(g.size(), -1), graph(g) {
 		build();
 	}
-	template<EdgeT T> explicit AP(const vector<vector<T>> &g)
+	template<EdgeT T>
+	explicit AP(const vector<vector<T>> &g)
 		: dfn(g.size(), -1), low(g.size(), -1), graph(g.size()) {
 		int n = g.size();
 		for(int u = 0; u < n; ++u) {
@@ -265,7 +266,7 @@ private:
 		if(flag) cutpoints.push_back(u);
 	}
 };
-// 桥
+// Bridges
 struct Bridge {
 	explicit Bridge(int n) : dfn(n, -1), low(n, -1), graph(n) {}
 	explicit Bridge(const vector<vector<int>> &g)

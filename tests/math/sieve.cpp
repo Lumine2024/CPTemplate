@@ -39,9 +39,9 @@ TEST(sieve_mobius) {
 	EularSieve s(30, mobius_f);
 	// mu(1)=1, mu(p)=-1, mu(p^2)=0, mu(p*q)=1
 	ENSURE(s.fv[1] == 1);
-	ENSURE(s.fv[2] == -1);  // mu(2) = -1
-	ENSURE(s.fv[4] == 0);   // mu(4) = 0 (4=2^2)
-	ENSURE(s.fv[6] == 1);   // mu(6) = mu(2*3) = 1
+	ENSURE(s.fv[2] == -1);	// mu(2) = -1
+	ENSURE(s.fv[4] == 0);	// mu(4) = 0 (4=2^2)
+	ENSURE(s.fv[6] == 1);	// mu(6) = mu(2*3) = 1
 	ENSURE(s.fv[30] == -1); // mu(30) = mu(2*3*5) = -1
 }
 

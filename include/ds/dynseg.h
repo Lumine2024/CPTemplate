@@ -7,7 +7,7 @@ concept DynSegInfo = requires(Info a, Info b, const Applier src) {
 	Info(a);
 	{ a + b } -> same_as<Info>;
 	{ src.apply(a) } -> same_as<void>;
-} && is_same_v<Info, typename vector<Info>::value_type>;
+};
 
 template<class Info, class Applier>
 	requires(DynSegInfo<Info, Applier>)

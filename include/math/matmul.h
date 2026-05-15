@@ -15,7 +15,8 @@ vector<vector<T>> matmul(const vector<vector<T>> &a,
 	}
 	return ret;
 }
-template<class T> vector<vector<T>> matpow(vector<vector<T>> mat, ll n) {
+template<class T>
+vector<vector<T>> matpow(vector<vector<T>> mat, ll n) {
 	int M = mat.size();
 	vector<vector<T>> ret(M, vector<T>(M, 0));
 	for(int i = 0; i < M; ++i) {

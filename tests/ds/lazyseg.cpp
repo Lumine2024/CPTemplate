@@ -15,10 +15,18 @@ struct AddTag {
 	ll add = 0;
 	AddTag() = default;
 	explicit AddTag(ll v) : add(v) {}
-	bool empty() const { return add == 0; }
-	void clear() { add = 0; }
-	void apply(RangeSumInfo &x, int /*l*/, int /*r*/) const { x.sum += add * x.cnt; }
-	void apply(AddTag &t, int /*l*/, int /*r*/) const { t.add += add; }
+	bool empty() const {
+		return add == 0;
+	}
+	void clear() {
+		add = 0;
+	}
+	void apply(RangeSumInfo &x, int /*l*/, int /*r*/) const {
+		x.sum += add * x.cnt;
+	}
+	void apply(AddTag &t, int /*l*/, int /*r*/) const {
+		t.add += add;
+	}
 };
 
 TEST(lazyseg_build_and_query) {
@@ -73,7 +81,9 @@ struct AssignTag {
 	bool assigned = false;
 	AssignTag() = default;
 	explicit AssignTag(ll v) : val(v), assigned(true) {}
-	bool empty() const { return !assigned; }
+	bool empty() const {
+		return !assigned;
+	}
 	void clear() {
 		val = (ll)2e18;
 		assigned = false;

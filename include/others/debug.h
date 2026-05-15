@@ -32,7 +32,8 @@ template<class Tup, class F, size_t... I>
 void tupf(Tup &&tp, F &&f, index_sequence<I...>) {
 	(f(I, get<I>(tp)), ...);
 }
-template<class... Args> void dbgh(string s, Args &&...args) {
+template<class... Args>
+void dbgh(string s, Args &&...args) {
 	auto names = split(s);
 	auto tp = forward_as_tuple(forward<Args>(args)...);
 	bool first = true;

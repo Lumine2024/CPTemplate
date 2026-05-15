@@ -131,24 +131,24 @@ vector<int> run_val_monitor_operations(Monitor &monitor,
 	vector<int> ret;
 	for(const auto &op : ops) {
 		switch(op.type) {
-			case kInsert:
-				monitor.insert(op.val);
-				break;
-			case kErase:
-				monitor.erase(op.val);
-				break;
-			case kRankByValue:
-				ret.push_back(monitor.rank_by_value(op.val));
-				break;
-			case kValueByRank:
-				ret.push_back(monitor.value_by_rank(op.val));
-				break;
-			case kMaxLess:
-				ret.push_back(monitor.max_less(op.val));
-				break;
-			case kMinGreater:
-				ret.push_back(monitor.min_greater(op.val));
-				break;
+		case kInsert:
+			monitor.insert(op.val);
+			break;
+		case kErase:
+			monitor.erase(op.val);
+			break;
+		case kRankByValue:
+			ret.push_back(monitor.rank_by_value(op.val));
+			break;
+		case kValueByRank:
+			ret.push_back(monitor.value_by_rank(op.val));
+			break;
+		case kMaxLess:
+			ret.push_back(monitor.max_less(op.val));
+			break;
+		case kMinGreater:
+			ret.push_back(monitor.min_greater(op.val));
+			break;
 		}
 	}
 	return ret;

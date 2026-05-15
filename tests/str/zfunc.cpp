@@ -5,7 +5,7 @@ TEST(zfunc_basic) {
 	// "aabxaa": z = [0, 1, 0, 0, 2, 1]
 	auto z = zfn("aabxaa");
 	ENSURE(z.size() == 6);
-	ENSURE(z[0] == 0);  // by convention z[0] is 0 or n
+	ENSURE(z[0] == 0); // by convention z[0] is 0 or n
 	ENSURE(z[1] == 1);
 	ENSURE(z[2] == 0);
 	ENSURE(z[3] == 0);

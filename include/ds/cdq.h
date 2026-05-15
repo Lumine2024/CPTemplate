@@ -1,7 +1,8 @@
 #pragma once
 #include "common.h"
 
-template<class Info> struct CdqBase {
+template<class Info>
+struct CdqBase {
 	vector<Info> infos;
 	explicit CdqBase(const vector<Info> &v) : infos(v) {}
 	void run() {

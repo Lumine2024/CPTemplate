@@ -42,6 +42,7 @@ TEST(dinic_grid) {
 	d.addedge(1, 3, 8);
 	d.addedge(2, 3, 6);
 	// max flow: min cut analysis
-	// Path 0->1->3: 5, Path 0->2->3: 4, Path 0->1->2->3: 1 more via 1->2 after 5 used
+	// Path 0->1->3: 5, Path 0->2->3: 4, Path 0->1->2->3: 1 more via 1->2 after
+	// 5 used
 	ENSURE(d.maxflow() == 9);
 }

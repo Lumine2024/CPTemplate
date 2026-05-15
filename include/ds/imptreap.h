@@ -2,19 +2,19 @@
 #include "common.h"
 
 template<class Info, class Tag>
-concept TreapInfoTag =
-	requires(Info a, Info b, Tag c, Tag d, vector<Info> vi, vector<Tag> vt) {
-		Info{};
-		Tag{};
-		{ a + b } -> same_as<Info>;
-		{ c.apply(a, 0) } -> same_as<void>;
-		{ c.apply(d, 0) } -> same_as<void>;
-		{ c.empty() } -> same_as<bool>;
-		{ c.clear() } -> same_as<void>;
-		{ c.need_swap() } -> same_as<bool>;
-		{ vi[0] } -> same_as<Info &>;
-		{ vt[0] } -> same_as<Tag &>;
-	};
+concept TreapInfoTag = requires(Info a, Info b, Tag c, Tag d, vector<Info> vi,
+								vector<Tag> vt, int u) {
+	Info{};
+	Tag{};
+	{ a + b } -> same_as<Info>;
+	{ c.apply(a, u) } -> same_as<void>;
+	{ c.apply(d, u) } -> same_as<void>;
+	{ c.empty() } -> same_as<bool>;
+	{ c.clear() } -> same_as<void>;
+	{ c.need_swap() } -> same_as<bool>;
+	{ vi[u] } -> same_as<Info &>;
+	{ vt[u] } -> same_as<Tag &>;
+};
 
 template<class Info, class Tag>
 	requires(TreapInfoTag<Info, Tag>)

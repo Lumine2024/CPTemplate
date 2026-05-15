@@ -1,5 +1,5 @@
 #pragma once
-#include "math/preppow.h"
+#include "common.h"
 #include "ds/vst.h"
 #include "ds/fenwick.h"
 

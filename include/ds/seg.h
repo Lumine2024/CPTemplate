@@ -2,13 +2,14 @@
 #include "common.h"
 
 template<class Info, class Applier>
-concept SegInfo = requires(Info a, Info b, const Applier src, vector<Info> vi) {
-	Info{};
-	Info(a);
-	{ a + b } -> same_as<Info>;
-	{ src.apply(a) } -> same_as<void>;
-	{ vi[0] } -> same_as<Info &>;
-};
+concept SegInfo =
+	requires(Info a, Info b, const Applier src, vector<Info> vi, int u) {
+		Info{};
+		Info(a);
+		{ a + b } -> same_as<Info>;
+		{ src.apply(a) } -> same_as<void>;
+		{ vi[u] } -> same_as<Info &>;
+	};
 
 template<class Info, class Applier>
 	requires(SegInfo<Info, Applier>)

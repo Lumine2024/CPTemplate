@@ -1,5 +1,5 @@
 #pragma once
-#include "math/preppow.h"
+#include "math/basic.h"
 #include "math/comb.h"
 
 template<ll modulo>
@@ -11,7 +11,7 @@ ll lagrange(const vector<ll> &x, const vector<ll> &y, ll x0) {
 		for(int j = 0; j < n; ++j) {
 			if(i != j) den = den * (x[i] - x[j] + modulo) % modulo;
 		}
-		iden[i] = qpow(den, modulo - 2);
+		iden[i] = qpow<modulo>(den, modulo - 2);
 	}
 	ll ret = 0;
 	for(int i = 0; i < n; ++i) {
@@ -25,7 +25,8 @@ ll lagrange(const vector<ll> &x, const vector<ll> &y, ll x0) {
 }
 
 // if x[i] = i for i = 0 to x.size() - 1, then call this to solve in O(n)
-template<ll modulo> ll lagrange(const vector<ll> &y, ll x0) {
+template<ll modulo>
+ll lagrange(const vector<ll> &y, ll x0) {
 	int n = y.size();
 	vector<ll> pre(n), suf(n);
 	pre[0] = (x0 - 0 + modulo) % modulo;

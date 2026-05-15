@@ -26,9 +26,10 @@ TEST(linbasis_xor_span) {
 
 TEST(linbasis_dependent) {
 	// {3, 5, 6}: 3^5=6, so 6 is dependent.
-	// Basis: insert 3 → base[1]=3. insert 5 → 5^3=6? No: bit1 of 5 is 0, bit2 is 1.
-	// Actually 5=101: bit2=1, base[2]=5. 3=011: bit1=1, base[1]=3. 6=110: bit2=1, 6^5=3=011, bit1=1, 3^3=0. Dependent.
-	// Max: ans=0. 5>0 → ans=5. 5^3=6>5 → ans=6. Max=6.
+	// Basis: insert 3 → base[1]=3. insert 5 → 5^3=6? No: bit1 of 5 is 0, bit2
+	// is 1. Actually 5=101: bit2=1, base[2]=5. 3=011: bit1=1, base[1]=3. 6=110:
+	// bit2=1, 6^5=3=011, bit1=1, 3^3=0. Dependent. Max: ans=0. 5>0 → ans=5.
+	// 5^3=6>5 → ans=6. Max=6.
 	LinearBasis_XOR basis;
 	basis.insert(3);
 	basis.insert(5);
@@ -52,4 +53,3 @@ TEST(linbasis_zero_inserted) {
 	basis.insert(0);
 	ENSURE(basis.query_max() == 7);
 }
-

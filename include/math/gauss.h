@@ -1,5 +1,5 @@
 #pragma once
-#include "math/preppow.h"
+#include "math/basic.h"
 
 template<ll modulo>
 optional<vector<vector<ll>>> gauss(const vector<vector<ll>> &a,

@@ -5,7 +5,8 @@ struct Qread {
 	Qread() : state(true) {
 		cin.rdbuf()->pubsetbuf(buffer, maxn);
 	}
-	template<integral T> Qread &operator>>(T &val) {
+	template<integral T>
+	Qread &operator>>(T &val) {
 		if(!state) {
 			val = 0;
 			return *this;

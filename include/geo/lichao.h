@@ -60,8 +60,8 @@ private:
 		int ret = id[u];
 		if(rl == rr) return ret;
 		int mid = (rl + rr) / 2, ls = u * 2 + 1, rs = u * 2 + 2;
-		int child = (k <= mid) ? _query(k, ls, rl, mid)
-							   : _query(k, rs, mid + 1, rr);
+		int child =
+			(k <= mid) ? _query(k, ls, rl, mid) : _query(k, rs, mid + 1, rr);
 		if(_better(child, ret, k)) ret = child;
 		return ret;
 	}

@@ -1,7 +1,8 @@
 #pragma once
 #include "math/comb.h"
 
-template<ll modulo, ll maxn = 500005> struct Catalan {
+template<ll modulo, ll maxn = 500005>
+struct Catalan {
 	Catalan() = delete;
 	static int get(int n) {
 		ensure_init();

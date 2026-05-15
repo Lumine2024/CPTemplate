@@ -1,8 +1,9 @@
 #pragma once
-#include "math/preppow.h"
+#include "math/basic.h"
 
 // constexpr ll modulo = 998244353, inv2 = 499122177;
-template<ll modulo> void fwt_or(vector<ll> &a, bool invert) {
+template<ll modulo>
+void fwt_or(vector<ll> &a, bool invert) {
 	ll n = a.size(), type = invert ? -1 : 1;
 	for(ll x = 2; x <= n; x <<= 1) {
 		ll k = x >> 1;
@@ -11,7 +12,8 @@ template<ll modulo> void fwt_or(vector<ll> &a, bool invert) {
 				a[i + j + k] = (a[i + j + k] + a[i + j] * type) % modulo;
 	}
 }
-template<ll modulo> void fwt_and(vector<ll> &a, bool invert) {
+template<ll modulo>
+void fwt_and(vector<ll> &a, bool invert) {
 	ll n = a.size(), type = invert ? -1 : 1;
 	for(ll x = 2; x <= n; x <<= 1) {
 		ll k = x >> 1;
@@ -20,7 +22,8 @@ template<ll modulo> void fwt_and(vector<ll> &a, bool invert) {
 				a[i + j] = (a[i + j] + a[i + j + k] * type) % modulo;
 	}
 }
-template<ll modulo> void fwt_xor(vector<ll> &a, bool invert) {
+template<ll modulo>
+void fwt_xor(vector<ll> &a, bool invert) {
 	constexpr ll inv2 = qpow<modulo>(2, modulo - 2);
 	ll n = a.size(), type = invert ? inv2 : 1;
 	for(ll x = 2; x <= n; x <<= 1) {
@@ -36,7 +39,8 @@ template<ll modulo> void fwt_xor(vector<ll> &a, bool invert) {
 		}
 	}
 }
-template<ll modulo> void fwt_xnor(vector<ll> &a, bool invert) {
+template<ll modulo>
+void fwt_xnor(vector<ll> &a, bool invert) {
 	reverse(a.begin(), a.end());
 	fwt_xor<modulo>(a, invert);
 	reverse(a.begin(), a.end());

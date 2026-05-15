@@ -1,8 +1,9 @@
 #pragma once
-#include "math/preppow.h"
+#include "math/basic.h"
 
 // 要计算\sum floor(n/i)
-template<ll modulo> ll intdiv(ll n) {
+template<ll modulo>
+ll intdiv(ll n) {
 	ll ans = 0;
 	for(ll b = 1; b <= n;) {
 		ll val = n / b;

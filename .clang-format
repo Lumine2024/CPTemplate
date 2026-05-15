@@ -10,6 +10,7 @@ AllowShortIfStatementsOnASingleLine: AllIfsAndElse
 AllowShortLoopsOnASingleLine: true
 AllowShortFunctionsOnASingleLine: Empty
 AllowShortEnumsOnASingleLine: false
+AlwaysBreakTemplateDeclarations: true
 ConstructorInitializerIndentWidth: 4
 ColumnLimit: 80
 AccessModifierOffset: -4

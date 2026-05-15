@@ -1,13 +1,5 @@
 #pragma once
-#include "common.h"
-
-ll __qpow(ll x, ll n) {
-	ll ret = 1;
-	for(; n != 0; n >>= 1, x = x * x) {
-		if(n & 1) ret = ret * x;
-	}
-	return ret;
-}
+#include "math/basic.h"
 
 template<class F>
 concept eularsieve_func = requires(F &&f, int p, int k) {
@@ -53,7 +45,7 @@ struct EularSieve {
 				lpf[j] = p;
 				if(i % p == 0) {
 					lpow[j] = lpow[i] + 1;
-					ll jp = __qpow(lpf[j], lpow[j]);
+					ll jp = ipow(lpf[j], lpow[j]);
 					ll rem = j / jp;
 					if(rem == 1) {
 						fv[j] = f(p, lpow[j]);
@@ -71,7 +63,7 @@ struct EularSieve {
 };
 
 int eular_f(int p, int k) {
-	return __qpow(p, k) - __qpow(p, k - 1);
+	return ipow(p, k) - ipow(p, k - 1);
 }
 int mobius_f(int p, int k) {
 	return k == 0 ? 1 : k == 1 ? -1 : 0;
@@ -80,5 +72,5 @@ int factor_cnt_f(int p, int k) {
 	return k + 1;
 }
 int factor_sum_f(int p, int k) {
-	return (__qpow(p, k + 1) - 1ll) / ll(p - 1);
+	return (ipow(p, k + 1) - 1ll) / ll(p - 1);
 }

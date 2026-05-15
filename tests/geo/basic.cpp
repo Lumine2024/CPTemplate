@@ -2,8 +2,7 @@
 #include "../test.h"
 
 static void ensure_point_eq(const Point &a, const Point &b) {
-	ENSURE(cmp(a.x, b.x) == 0);
-	ENSURE(cmp(a.y, b.y) == 0);
+	ENSURE(a == b);
 }
 
 TEST(ld_cmp) {

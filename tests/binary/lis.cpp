@@ -4,7 +4,7 @@
 TEST(lis_basic) {
 	vector<int> a = {3, 1, 4, 1, 5, 9, 2, 6};
 	auto result = lis(a);
-	ENSURE(result.size() == 4);  // LIS length is 4 (e.g., 1,4,5,9 or 1,4,5,6)
+	ENSURE(result.size() == 4); // LIS length is 4 (e.g., 1,4,5,9 or 1,4,5,6)
 	// Verify it's non-decreasing and is a subsequence
 	for(int i = 1; i < (int)result.size(); ++i) {
 		ENSURE(result[i] > result[i - 1]);

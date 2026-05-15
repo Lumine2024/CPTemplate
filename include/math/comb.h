@@ -1,7 +1,8 @@
 #pragma once
-#include "math/preppow.h"
+#include "math/basic.h"
 
-template<ll modulo, ll maxn = 500005> struct Comb {
+template<ll modulo, ll maxn = 500005>
+struct Comb {
 	Comb() = delete;
 	static ll fact(ll n) {
 		ensure_init();

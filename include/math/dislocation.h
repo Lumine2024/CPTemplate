@@ -1,7 +1,8 @@
 #pragma once
 #include "common.h"
 
-template<ll modulo, ll maxn = 500005> struct Dislocation {
+template<ll modulo, ll maxn = 500005>
+struct Dislocation {
 	Dislocation() = delete;
 	static ll get(int i) {
 		ensure_init();

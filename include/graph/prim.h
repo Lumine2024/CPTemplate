@@ -1,7 +1,8 @@
 #pragma once
 #include "graph/edge.h"
 
-template<WeightedEdgeT Edge> ll prim(const vector<vector<Edge>> &graph) {
+template<WeightedEdgeT Edge>
+ll prim(const vector<vector<Edge>> &graph) {
 	int n = graph.size();
 	vector<bool> vis(n, false);
 	vector<ll> dist(n, inf);

@@ -5,8 +5,9 @@ template<class T>
 concept FenwickInfo = requires(T a, T b) {
 	T{};
 	{ a + b } -> convertible_to<T>;
-} && is_same_v<T, typename vector<T>::value_type>;
-template<FenwickInfo T> struct Fenwick {
+};
+template<FenwickInfo T>
+struct Fenwick {
 	explicit Fenwick(int n) : _nums(n + 1, 0), _n(n) {}
 	T query(int x) const {
 		T ans{};
@@ -27,7 +28,8 @@ concept RangeFenwickInfo = requires(T a, T b, int c) {
 	{ a * c } -> convertible_to<T>;
 	{ -a } -> convertible_to<T>;
 } && FenwickInfo<T>;
-template<RangeFenwickInfo T> struct RangeFenwick {
+template<RangeFenwickInfo T>
+struct RangeFenwick {
 	explicit RangeFenwick(int n) : _f1(n), _f2(n), _n(n) {}
 	void update(int l, int r, const T &v) {
 		_update(l, v);

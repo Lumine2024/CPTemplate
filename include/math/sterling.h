@@ -1,7 +1,8 @@
 #pragma once
 #include "common.h"
 
-template<ll maxn, ll modulo> struct Sterling {
+template<ll maxn, ll modulo>
+struct Sterling {
 	Sterling() = delete;
 	static int get(ll n, ll k) {
 		ensure_init();

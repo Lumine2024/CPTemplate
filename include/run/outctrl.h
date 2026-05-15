@@ -7,7 +7,8 @@ concept CanOutput = requires(ostream os, T t) { os << t; };
 class OutputController {
 public:
 	OutputController() {}
-	template<CanOutput T> OutputController &operator<<(const T &t) {
+	template<CanOutput T>
+	OutputController &operator<<(const T &t) {
 		ss << t;
 		return *this;
 	}
@@ -18,7 +19,8 @@ public:
 	~OutputController() {
 		flush();
 	}
-	template<CanOutput T> OutputController &force_output(const T &t) {
+	template<CanOutput T>
+	OutputController &force_output(const T &t) {
 		cout << t;
 		return *this;
 	}

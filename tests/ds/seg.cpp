@@ -5,13 +5,17 @@ struct SumInfo {
 	ll val = 0;
 	SumInfo() = default;
 	explicit SumInfo(ll v) : val(v) {}
-	SumInfo operator+(const SumInfo &o) const { return SumInfo{val + o.val}; }
+	SumInfo operator+(const SumInfo &o) const {
+		return SumInfo{val + o.val};
+	}
 };
 
 struct SetApplier {
 	ll val;
 	explicit SetApplier(ll v) : val(v) {}
-	void apply(SumInfo &x) const { x.val = val; }
+	void apply(SumInfo &x) const {
+		x.val = val;
+	}
 };
 
 TEST(seg_build_and_query) {
@@ -54,18 +58,23 @@ struct MaxInfo {
 	ll val = 0;
 	MaxInfo() = default;
 	explicit MaxInfo(ll v) : val(v) {}
-	MaxInfo operator+(const MaxInfo &o) const { return MaxInfo{max(val, o.val)}; }
+	MaxInfo operator+(const MaxInfo &o) const {
+		return MaxInfo{max(val, o.val)};
+	}
 };
 
 struct MaxSetApplier {
 	ll val;
 	explicit MaxSetApplier(ll v) : val(v) {}
-	void apply(MaxInfo &x) const { x.val = val; }
+	void apply(MaxInfo &x) const {
+		x.val = val;
+	}
 };
 
 TEST(seg_max_query) {
 	vector<MaxInfo> v;
-	for(ll x : {3LL, 1LL, 4LL, 1LL, 5LL, 9LL, 2LL, 6LL}) v.push_back(MaxInfo{x});
+	for(ll x : {3LL, 1LL, 4LL, 1LL, 5LL, 9LL, 2LL, 6LL})
+		v.push_back(MaxInfo{x});
 	SegTree<MaxInfo, MaxSetApplier> seg(v);
 	ENSURE(seg.query(0, 8).val == 9);
 	ENSURE(seg.query(0, 5).val == 5);

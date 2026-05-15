@@ -8,8 +8,8 @@ struct BinaryLift {
 		tree[u].push_back(v);
 		tree[v].push_back(u);
 	}
-	void build(int root = 0) {
-		dfs(root, -1);
+	void build(int u = 0) {
+		dfs(u, -1);
 	}
 	int lca(int u, int v) const {
 		if(depth[u] < depth[v]) swap(u, v);
@@ -44,19 +44,19 @@ private:
 	static constexpr int LOG = 20;
 	vector<vector<int>> anc;
 	vector<int> depth;
-	void dfs(int root, int fa) {
-		depth[root] = fa != -1 ? depth[fa] + 1 : 0;
-		anc[root][0] = fa;
+	void dfs(int u, int fa) {
+		depth[u] = fa != -1 ? depth[fa] + 1 : 0;
+		anc[u][0] = fa;
 		for(int k = 1; k < LOG; ++k) {
-			if(anc[root][k - 1] == -1) {
-				anc[root][k] = -1;
+			if(anc[u][k - 1] == -1) {
+				anc[u][k] = -1;
 			} else {
-				anc[root][k] = anc[anc[root][k - 1]][k - 1];
+				anc[u][k] = anc[anc[u][k - 1]][k - 1];
 			}
 		}
-		for(int v : tree[root]) {
+		for(int v : tree[u]) {
 			if(v != fa) {
-				dfs(v, root);
+				dfs(v, u);
 			}
 		}
 	}

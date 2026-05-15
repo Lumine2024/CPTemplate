@@ -30,7 +30,8 @@ TEST(minrep_descending) {
 }
 
 TEST(minrep_banana) {
-	// "banana": rotations include "ababna"? Let me compute: "banana","ananab","nanaba","anaban","nabana","abanan"
-	// Sorted min: "abanan"
+	// "banana": rotations include "ababna"? Let me compute:
+	// "banana","ananab","nanaba","anaban","nabana","abanan" Sorted min:
+	// "abanan"
 	ENSURE(minrep("banana") == "abanan");
 }

@@ -35,7 +35,8 @@ struct TwoDTree {
 		};
 		root = build(build, 0, n, 0);
 	}
-	template<class Comp> ld kth_cmp(int k) {
+	template<class Comp>
+	ld kth_cmp(int k) {
 		k *= 2;
 		priority_queue<ld, vector<ld>, Comp> pq;
 		for(int i = 0; i < nodes.size(); ++i) {
@@ -49,7 +50,8 @@ struct TwoDTree {
 	ld kth_farthest(int k) {
 		return kth_cmp<greater<>>(k);
 	}
-	template<class Comp> ld kth_cmp(const Point &p, int k) {
+	template<class Comp>
+	ld kth_cmp(const Point &p, int k) {
 		k *= 2;
 		priority_queue<ld, vector<ld>, Comp> pq;
 		kth(root, p, pq, k, 0);
@@ -70,7 +72,8 @@ private:
 	};
 	vector<Node> nodes;
 	int root;
-	template<class Comp> ld cmpdist(const Point &p, const Node &node);
+	template<class Comp>
+	ld cmpdist(const Point &p, const Node &node);
 	template<class Comp>
 	void kth(int p, const Point &q, priority_queue<ld, vector<ld>, Comp> &pq,
 			 int k, int dep) {
@@ -108,7 +111,8 @@ private:
 
 template<class Comp>
 ld TwoDTree::cmpdist(const Point &p, const Node &node) = delete;
-template<> ld TwoDTree::cmpdist<less<>>(const Point &p, const Node &node) {
+template<>
+ld TwoDTree::cmpdist<less<>>(const Point &p, const Node &node) {
 	ld d = 0;
 	for(int i = 0; i < 2; ++i) {
 		if(p[i] < node.L[i]) {
@@ -121,7 +125,8 @@ template<> ld TwoDTree::cmpdist<less<>>(const Point &p, const Node &node) {
 	}
 	return d;
 }
-template<> ld TwoDTree::cmpdist<greater<>>(const Point &p, const Node &node) {
+template<>
+ld TwoDTree::cmpdist<greater<>>(const Point &p, const Node &node) {
 	ld dx = max(abs(p.x - node.L[0]), abs(p.x - node.U[0]));
 	ld dy = max(abs(p.y - node.L[1]), abs(p.y - node.U[1]));
 	return dx * dx + dy * dy;
