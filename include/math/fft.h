@@ -16,31 +16,35 @@ vector<ld> multiply(const vector<ld> &a, const vector<ld> &b) {
 	for(int i = 0; i < b.size(); ++i) {
 		fb[i] = b[i];
 	}
-	auto fft = [](auto &&fft, vector<cd> &f, bool invert) -> void {
+	auto fft = [](vector<cd> &f, bool inv) -> void {
 		int n = f.size();
-		if(n == 1) return;
-		vector<cd> f0(n / 2), f1(n / 2);
-		for(int i = 0; i < n / 2; ++i) {
-			f0[i] = f[2 * i];
-			f1[i] = f[2 * i + 1];
+		for(int i = 1, j = 0; i < n; ++i) {
+			int bit = n >> 1;
+			for(; (j & bit) != 0; bit >>= 1) j ^= bit;
+			j ^= bit;
+			if(i < j) swap(f[i], f[j]);
 		}
-		fft(fft, f0, invert);
-		fft(fft, f1, invert);
-		ld theta = 2.l * pi / n * (invert ? -1.l : 1.l);
-		cd wt = 1, w(cos(theta), sin(theta));
-		for(int t = 0; t < n / 2; ++t) {
-			cd u = f0[t], v = wt * f1[t];
-			f[t] = u + v;
-			f[t + n / 2] = u - v;
-			wt *= w;
+		for(int len = 2; len <= n; len *= 2) {
+			ld alp = 2 * pi / len;
+			cd wn(cos(alp), sin(alp));
+			if(inv) wn.imag(-wn.imag());
+			for(int i = 0; i < n; i += len) {
+				cd w = 1.0l;
+				for(int j = 0; j < len / 2; ++j) {
+					cd u = f[i + j], v = f[i + j + len / 2] * w;
+					f[i + j] = u + v;
+					f[i + j + len / 2] = u - v;
+					w *= wn;
+				}
+			}
 		}
 	};
-	fft(fft, fa, false);
-	fft(fft, fb, false);
+	fft(fa, false);
+	fft(fb, false);
 	for(int i = 0; i < n; ++i) {
 		fa[i] *= fb[i];
 	}
-	fft(fft, fa, true);
+	fft(fa, true);
 	for(int i = 0; i < n; ++i) {
 		fa[i] /= n;
 	}

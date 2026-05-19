@@ -30,6 +30,7 @@ private:
 	static inline bool inited = false;
 	static void ensure_init() {
 		if(inited) return;
+		inited = true;
 		fac[0] = 1;
 		for(ll i = 1; i < maxn; ++i) {
 			fac[i] = (ll(fac[i - 1]) * i) % modulo;
