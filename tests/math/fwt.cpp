@@ -1,5 +1,5 @@
 #include "math/fwt.h"
-#include "../test.h"
+#include "doctest.h"
 
 constexpr ll mod = 998244353;
 
@@ -59,30 +59,30 @@ static vector<ll> brute_xnor_conv(const vector<ll> &a, const vector<ll> &b) {
 	return c;
 }
 
-TEST(fwt_or_transform_matches_bruteforce) {
+TEST_CASE("fwt_or_transform_matches_bruteforce") {
 	vector<ll> a = {1, 2, 3, 4};
 	vector<ll> b = {5, 6, 7, 8};
 	auto c = fwt_transform<mod>(a, b, fwt_or<mod>);
-	ENSURE(c == brute_or_conv(a, b));
+	REQUIRE(c == brute_or_conv(a, b));
 }
 
-TEST(fwt_and_transform_matches_bruteforce) {
+TEST_CASE("fwt_and_transform_matches_bruteforce") {
 	vector<ll> a = {9, 0, 2, 1};
 	vector<ll> b = {3, 4, 5, 6};
 	auto c = fwt_transform<mod>(a, b, fwt_and<mod>);
-	ENSURE(c == brute_and_conv(a, b));
+	REQUIRE(c == brute_and_conv(a, b));
 }
 
-TEST(fwt_xor_transform_matches_bruteforce) {
+TEST_CASE("fwt_xor_transform_matches_bruteforce") {
 	vector<ll> a = {3, 1, 4, 1, 5, 9, 2, 6};
 	vector<ll> b = {5, 3, 5, 8, 9, 7, 9, 3};
 	auto c = fwt_transform<mod>(a, b, fwt_xor<mod>);
-	ENSURE(c == brute_xor_conv(a, b));
+	REQUIRE(c == brute_xor_conv(a, b));
 }
 
-TEST(fwt_xnor_transform_matches_bruteforce) {
+TEST_CASE("fwt_xnor_transform_matches_bruteforce") {
 	vector<ll> a = {10, 20, 30, 40};
 	vector<ll> b = {1, 3, 5, 7};
 	auto c = fwt_transform<mod>(a, b, fwt_xnor<mod>);
-	ENSURE(c == brute_xnor_conv(a, b));
+	REQUIRE(c == brute_xnor_conv(a, b));
 }

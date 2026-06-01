@@ -5,21 +5,21 @@ template<ll modulo, ll maxn = 500005>
 struct Comb {
 	Comb() = delete;
 	static ll fact(ll n) {
-		ensure_init();
+		init();
 		return fac[n];
 	}
 	static ll invfact(ll n) {
-		ensure_init();
+		init();
 		return ifac[n];
 	}
 	static ll perm(ll n, ll m) {
-		ensure_init();
+		init();
 		if(m < 0 || m > n || n < 0) return 0;
 		ll fn = fac[n], inm = ifac[n - m];
 		return fn * inm % modulo;
 	}
 	static ll binom(ll n, ll m) {
-		ensure_init();
+		init();
 		if(m < 0 || m > n || n < 0) return 0;
 		ll fn = fac[n], im = ifac[m], inm = ifac[n - m];
 		return fn * im % modulo * inm % modulo;
@@ -28,7 +28,7 @@ struct Comb {
 private:
 	static inline int fac[maxn], ifac[maxn];
 	static inline bool inited = false;
-	static void ensure_init() {
+	static void init() {
 		if(inited) return;
 		inited = true;
 		fac[0] = 1;

@@ -1,5 +1,5 @@
 #include "ds/lazyseg.h"
-#include "../test.h"
+#include "doctest.h"
 
 struct RangeSumInfo {
 	ll sum = 0;
@@ -29,42 +29,42 @@ struct AddTag {
 	}
 };
 
-TEST(lazyseg_build_and_query) {
+TEST_CASE("lazyseg_build_and_query") {
 	// Build [1, 2, 3, 4, 5] with count
 	vector<RangeSumInfo> v;
 	for(int i = 1; i <= 5; ++i) v.push_back({i, 1});
 	LazySegTree<RangeSumInfo, AddTag> seg(v);
-	ENSURE(seg.query(0, 5).sum == 15);
-	ENSURE(seg.query(1, 4).sum == 9);
-	ENSURE(seg.query(0, 1).sum == 1);
+	REQUIRE(seg.query(0, 5).sum == 15);
+	REQUIRE(seg.query(1, 4).sum == 9);
+	REQUIRE(seg.query(0, 1).sum == 1);
 }
 
-TEST(lazyseg_range_update) {
+TEST_CASE("lazyseg_range_update") {
 	vector<RangeSumInfo> v;
 	for(int i = 1; i <= 5; ++i) v.push_back({i, 1});
 	LazySegTree<RangeSumInfo, AddTag> seg(v);
 	// Add 10 to range [1, 3)
 	seg.update(1, 3, AddTag{10});
-	ENSURE(seg.query(0, 5).sum == 35);
-	ENSURE(seg.query(1, 3).sum == 25);
-	ENSURE(seg.query(0, 1).sum == 1);
-	ENSURE(seg.query(3, 5).sum == 9);
+	REQUIRE(seg.query(0, 5).sum == 35);
+	REQUIRE(seg.query(1, 3).sum == 25);
+	REQUIRE(seg.query(0, 1).sum == 1);
+	REQUIRE(seg.query(3, 5).sum == 9);
 }
 
-TEST(lazyseg_multiple_updates) {
+TEST_CASE("lazyseg_multiple_updates") {
 	vector<RangeSumInfo> v(8, {0, 1});
 	LazySegTree<RangeSumInfo, AddTag> seg(v);
 	seg.update(0, 8, AddTag{1});
-	ENSURE(seg.query(0, 8).sum == 8);
+	REQUIRE(seg.query(0, 8).sum == 8);
 	seg.update(2, 5, AddTag{3});
 	// positions 2,3,4 each get +3: become 4, 4, 4
-	ENSURE(seg.query(2, 5).sum == 12);
-	ENSURE(seg.query(0, 8).sum == 17);
+	REQUIRE(seg.query(2, 5).sum == 12);
+	REQUIRE(seg.query(0, 8).sum == 17);
 }
 
-TEST(lazyseg_assign_constructor) {
+TEST_CASE("lazyseg_assign_constructor") {
 	LazySegTree<RangeSumInfo, AddTag> seg(4);
-	ENSURE(seg.query(0, 4).sum == 0);
+	REQUIRE(seg.query(0, 4).sum == 0);
 }
 
 struct RangeMinInfo {
@@ -99,14 +99,14 @@ struct AssignTag {
 	}
 };
 
-TEST(lazyseg_range_assign_min) {
+TEST_CASE("lazyseg_range_assign_min") {
 	vector<RangeMinInfo> v;
 	for(ll x : {5LL, 3LL, 8LL, 1LL, 7LL}) v.push_back(RangeMinInfo{x});
 	LazySegTree<RangeMinInfo, AssignTag> seg(v);
-	ENSURE(seg.query(0, 5).val == 1);
+	REQUIRE(seg.query(0, 5).val == 1);
 	seg.update(0, 3, AssignTag{2});
-	ENSURE(seg.query(0, 3).val == 2);
-	ENSURE(seg.query(0, 5).val == 1);
+	REQUIRE(seg.query(0, 3).val == 2);
+	REQUIRE(seg.query(0, 5).val == 1);
 	seg.update(3, 5, AssignTag{4});
-	ENSURE(seg.query(0, 5).val == 2);
+	REQUIRE(seg.query(0, 5).val == 2);
 }

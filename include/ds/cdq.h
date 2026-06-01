@@ -1,12 +1,13 @@
 #pragma once
 #include "common.h"
 
-template<class Info>
 struct CdqBase {
-	vector<Info> infos;
-	explicit CdqBase(const vector<Info> &v) : infos(v) {}
+	int n;
+	void run(int _n) {
+		cdq(0, _n);
+	}
 	void run() {
-		cdq(0, static_cast<int>(infos.size()));
+		cdq(0, n);
 	}
 	virtual void solve_cross(int l, int m, int r) = 0;
 	virtual void merge(int l, int m, int r) = 0;

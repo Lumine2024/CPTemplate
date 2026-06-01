@@ -1,5 +1,5 @@
 #include "str/trie.h"
-#include "../test.h"
+#include "doctest.h"
 
 struct TrieCharTo62 {
 	int operator()(char x) const {
@@ -9,19 +9,19 @@ struct TrieCharTo62 {
 	}
 };
 
-TEST(trie_find_and_prefix_count) {
+TEST_CASE("trie_find_and_prefix_count") {
 	Trie<62, TrieCharTo62> trie;
 	trie.insert("Ab9");
 	trie.insert("Abc");
 	trie.insert("Ab9");
 
-	ENSURE(trie.find("Ab9"));
-	ENSURE(trie.find("Abc"));
-	ENSURE(!trie.find("Ab"));
-	ENSURE(!trie.find("Ac9"));
-	ENSURE(trie.prefix_count("A") == 3);
-	ENSURE(trie.prefix_count("Ab") == 3);
-	ENSURE(trie.prefix_count("Ab9") == 2);
-	ENSURE(trie.prefix_count("Abc") == 1);
-	ENSURE(trie.prefix_count("Z") == 0);
+	REQUIRE(trie.find("Ab9"));
+	REQUIRE(trie.find("Abc"));
+	REQUIRE(!trie.find("Ab"));
+	REQUIRE(!trie.find("Ac9"));
+	REQUIRE(trie.prefix_count("A") == 3);
+	REQUIRE(trie.prefix_count("Ab") == 3);
+	REQUIRE(trie.prefix_count("Ab9") == 2);
+	REQUIRE(trie.prefix_count("Abc") == 1);
+	REQUIRE(trie.prefix_count("Z") == 0);
 }

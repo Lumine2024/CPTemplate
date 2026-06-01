@@ -2,7 +2,7 @@
 #include "geo/basic.h"
 
 struct LiChao {
-	vector<Lineseg> lines;
+	vector<LineSeg> lines;
 	vector<array<ll, 4>> raw;
 	explicit LiChao(int ma) : id(ma * 4, -1), n(ma) {}
 	void addline(int x1, int x2, int y1, int y2) {
@@ -10,7 +10,7 @@ struct LiChao {
 			swap(x1, x2);
 			swap(y1, y2);
 		}
-		Lineseg ls({ld(x1), ld(y1)}, {ld(x2), ld(y2)});
+		LineSeg ls({ld(x1), ld(y1)}, {ld(x2), ld(y2)});
 		int i = lines.size();
 		lines.push_back(ls);
 		raw.push_back({x1, x2, y1, y2});

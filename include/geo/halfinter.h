@@ -1,12 +1,12 @@
 #pragma once
 #include "geo/basic.h"
 
-vector<Line> half_inter(vector<Line> lines) {
-	lines.push_back({{-inf, 0.0l}, {0.0l, -1.0l}});
-	lines.push_back({{inf, 0.0l}, {0.0l, 1.0l}});
-	lines.push_back({{0.0l, inf}, {-1.0l, 0.0l}});
-	lines.push_back({{0.0l, -inf}, {1.0l, 0.0l}});
-	sort(lines.begin(), lines.end(), [](const Line &a, const Line &b) {
+vector<Line> half_inter(vector<Line> ls) {
+	ls.push_back({{-inf, 0.0l}, {0.0l, -1.0l}});
+	ls.push_back({{inf, 0.0l}, {0.0l, 1.0l}});
+	ls.push_back({{0.0l, inf}, {-1.0l, 0.0l}});
+	ls.push_back({{0.0l, -inf}, {1.0l, 0.0l}});
+	sort(ls.begin(), ls.end(), [](const Line &a, const Line &b) {
 		int c = cmp(a.v.arg(), b.v.arg());
 		if(c != 0) return c == -1;
 		return sign(cross(a.v, b.p - a.p)) < 0;
@@ -17,7 +17,7 @@ vector<Line> half_inter(vector<Line> lines) {
 		auto p = *inter(b, c);
 		return to_left(l, p) < 0;
 	};
-	for(auto &l : lines) {
+	for(auto &l : ls) {
 		if(!dq.empty() && cmp(l.v.arg(), dq.back().v.arg()) == 0) {
 			if(to_left(l, dq.back().p + dq.back().v) < 0) dq.back() = l;
 			continue;

@@ -1,13 +1,12 @@
 #pragma once
 #include "common.h"
 
-// value segment tree
-struct VST {
-	VST(int maxn) : sum((maxn + 1) * 4), n(maxn + 1) {}
-	VST() : n(0) {}
-	void assign(int maxn) {
-		sum.assign((maxn + 1) * 4, 0);
-		n = maxn + 1;
+struct ValSeg {
+	ValSeg(int ma) : s((ma + 1) * 4), n(ma + 1) {}
+	ValSeg() : n(0) {}
+	void assign(int ma) {
+		s.assign((ma + 1) * 4, 0);
+		n = ma + 1;
 	}
 	void insert(int x) {
 		_update(x, 1, 0, 0, n);
@@ -30,7 +29,7 @@ struct VST {
 		return _qvr(k, 0, 0, n);
 	}
 	int size() const {
-		return sum[0];
+		return s[0];
 	}
 	int qcnt(int x) const {
 		return _query(x, x + 1, 0, 0, n);
@@ -40,40 +39,40 @@ struct VST {
 	}
 
 private:
-	vector<int> sum;
+	vector<int> s;
 	int n;
 	void _update(int x, int dv, int rt, int rl, int rr) {
 		if(rr - rl == 1) {
-			sum[rt] += dv;
+			s[rt] += dv;
 			return;
 		}
-		int mid = (rl + rr) >> 1, lson = rt * 2 + 1, rson = rt * 2 + 2;
-		if(x < mid) {
-			_update(x, dv, lson, rl, mid);
+		int m = (rl + rr) >> 1, ls = rt * 2 + 1, rs = rt * 2 + 2;
+		if(x < m) {
+			_update(x, dv, ls, rl, m);
 		} else {
-			_update(x, dv, rson, mid, rr);
+			_update(x, dv, rs, m, rr);
 		}
-		sum[rt] = sum[lson] + sum[rson];
+		s[rt] = s[ls] + s[rs];
 	}
 	ll _query(int ql, int qr, int rt, int rl, int rr) const {
-		if(ql <= rl && qr >= rr) return sum[rt];
-		int mid = (rl + rr) >> 1, lson = rt * 2 + 1, rson = rt * 2 + 2;
+		if(ql <= rl && qr >= rr) return s[rt];
+		int m = (rl + rr) >> 1, ls = rt * 2 + 1, rs = rt * 2 + 2;
 		ll ans = 0;
-		if(ql < mid) {
-			ans += _query(ql, qr, lson, rl, mid);
+		if(ql < m) {
+			ans += _query(ql, qr, ls, rl, m);
 		}
-		if(qr > mid) {
-			ans += _query(ql, qr, rson, mid, rr);
+		if(qr > m) {
+			ans += _query(ql, qr, rs, m, rr);
 		}
 		return ans;
 	}
 	int _qvr(int k, int rt, int rl, int rr) const {
 		if(rr - rl == 1) return rl;
-		int mid = (rl + rr) >> 1, lson = rt * 2 + 1, rson = rt * 2 + 2;
-		if(k < sum[lson]) {
-			return _qvr(k, lson, rl, mid);
+		int m = (rl + rr) >> 1, ls = rt * 2 + 1, rs = rt * 2 + 2;
+		if(k < s[ls]) {
+			return _qvr(k, ls, rl, m);
 		} else {
-			return _qvr(k - sum[lson], rson, mid, rr);
+			return _qvr(k - s[ls], rs, m, rr);
 		}
 	}
 };

@@ -1,14 +1,14 @@
 #include "graph/boruvka.h"
 #include "mst_test_cases.h"
-#include "../test.h"
+#include "doctest.h"
 
-TEST(boruvka_shared_mst_cases) {
+TEST_CASE("boruvka_shared_mst_cases") {
 	for(const auto &tc : mst_cases()) {
 		vector<Edge> edges;
 		edges.reserve(tc.edges.size());
 		for(const auto &e : tc.edges) {
 			edges.push_back({e.u, e.v, e.w});
 		}
-		ENSURE(boruvka(edges, tc.n) == tc.expected);
+		REQUIRE(boruvka(edges, tc.n) == tc.expected);
 	}
 }

@@ -9,12 +9,12 @@ Circle cover(const Point &a, const Point &b) {
 }
 Circle cover(const Point &a, const Point &b, const Point &c) {
 	Line u = midperp(a, b), v = midperp(a, c);
-	auto center = inter(u, v);
-	if(!center) {
+	auto ct = inter(u, v);
+	if(!ct) {
 		Point d = min({a, b, c}), e = max({a, b, c});
 		return Circle((d + e) / 2, (e - d).len() / 2);
 	}
-	return Circle(*center, dist(*center, a));
+	return Circle(*ct, dist(*ct, a));
 }
 Circle cover(vector<Point> pts) {
 	static mt19937 rng(
@@ -25,20 +25,16 @@ Circle cover(vector<Point> pts) {
 	if(pts.size() == 3) return cover(pts[0], pts[1], pts[2]);
 	int n = pts.size();
 	Circle ret = cover(pts[0]);
-	for(int i = 1; i < n; ++i) {
+	for(int i = 1; i < n; ++i)
 		if(ret.r < dist(ret.c, pts[i])) {
 			ret = cover(pts[i]);
-			for(int j = 0; j < i; ++j) {
+			for(int j = 0; j < i; ++j)
 				if(ret.r < dist(ret.c, pts[j])) {
 					ret = cover(pts[i], pts[j]);
-					for(int k = 0; k < j; ++k) {
-						if(ret.r < dist(ret.c, pts[k])) {
+					for(int k = 0; k < j; ++k)
+						if(ret.r < dist(ret.c, pts[k]))
 							ret = cover(pts[i], pts[j], pts[k]);
-						}
-					}
 				}
-			}
 		}
-	}
 	return ret;
 }

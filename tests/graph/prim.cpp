@@ -1,6 +1,6 @@
 #include "graph/prim.h"
 #include "mst_test_cases.h"
-#include "../test.h"
+#include "doctest.h"
 
 static vector<vector<WeightedEdge>> to_graph(const MstCase &tc) {
 	vector<vector<WeightedEdge>> g(tc.n);
@@ -11,9 +11,9 @@ static vector<vector<WeightedEdge>> to_graph(const MstCase &tc) {
 	return g;
 }
 
-TEST(prim_shared_mst_cases) {
+TEST_CASE("prim_shared_mst_cases") {
 	for(const auto &tc : mst_cases()) {
 		auto g = to_graph(tc);
-		ENSURE(prim(g) == tc.expected);
+		REQUIRE(prim(g) == tc.expected);
 	}
 }

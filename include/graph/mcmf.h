@@ -5,20 +5,20 @@ constexpr ll inf = 0x3f3f3f3f3f3f3f3f;
 
 struct EK {
 	struct Edge {
-		int dst, rev;
-		ll weight, flow;
+		int v, r;
+		ll w, c;
 		bool neg;
 	};
-	vector<vector<Edge>> graph;
+	vector<vector<Edge>> g;
 	int n;
-	explicit EK(int _n) : n(_n), graph(_n) {}
-	void addedge(int u, int v, ll flow, ll weight) {
-		int iu = graph[u].size(), iv = graph[v].size();
-		graph[u].push_back({v, iv, weight, flow, false});
-		graph[v].push_back({u, iu, -weight, 0, true});
+	explicit EK(int _n) : n(_n), g(_n) {}
+	void addedge(int u, int v, ll f, ll w) {
+		int iu = g[u].size(), iv = g[v].size();
+		g[u].push_back({v, iv, w, f, false});
+		g[v].push_back({u, iu, -w, 0, true});
 	}
 	pair<ll, ll> mcmf(int s, int t) {
-		ll cost = 0, flow = 0;
+		ll sw = 0, sf = 0;
 		while(true) {
 			vector<int> pv(n, -1), pe(n, -1);
 			vector<ll> d(n, inf), mf(n, 0);
@@ -32,10 +32,10 @@ struct EK {
 				int u = q.front();
 				q.pop();
 				inq[u] = false;
-				for(int i = 0; i < graph[u].size(); ++i) {
-					auto &e = graph[u][i];
-					int v = e.dst;
-					ll f = e.flow, w = e.weight;
+				for(int i = 0; i < g[u].size(); ++i) {
+					auto &e = g[u][i];
+					int v = e.v;
+					ll f = e.c, w = e.w;
 					if(f > 0 && d[u] + w < d[v]) {
 						d[v] = d[u] + w;
 						pv[v] = u;
@@ -52,12 +52,12 @@ struct EK {
 			ll add = mf[t];
 			for(int v = t; v != s; v = pv[v]) {
 				int u = pv[v], e = pe[v];
-				graph[u][e].flow -= add;
-				graph[v][graph[u][e].rev].flow += add;
+				g[u][e].c -= add;
+				g[v][g[u][e].r].c += add;
 			}
-			flow += add;
-			cost += add * d[t];
+			sf += add;
+			sw += add * d[t];
 		}
-		return {cost, flow};
+		return {sw, sf};
 	}
 };

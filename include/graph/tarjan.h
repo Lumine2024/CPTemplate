@@ -8,17 +8,16 @@ concept EdgeT = requires(T t) {
 
 // Strongly connected components
 struct SCC {
-	explicit SCC(int n)
-		: dfn(n, -1), low(n, -1), inscc(n, -1), ins(n), graph(n) {}
+	explicit SCC(int n) : dfn(n, -1), low(n, -1), inscc(n, -1), ins(n), g(n) {}
 	explicit SCC(const vector<vector<int>> &g)
 		: dfn(g.size(), -1), low(g.size(), -1), inscc(g.size(), -1),
-		  ins(g.size()), graph(g) {
+		  ins(g.size()), g(g) {
 		build();
 	}
 	template<EdgeT T>
 	explicit SCC(const vector<vector<T>> &g)
 		: dfn(g.size(), -1), low(g.size(), -1), inscc(g.size(), -1),
-		  ins(g.size()), graph(g.size()) {
+		  ins(g.size()), g(g.size()) {
 		int n = g.size();
 		for(int u = 0; u < n; ++u) {
 			for(const T &edge : g[u]) addedge(u, edge.v);
@@ -26,17 +25,17 @@ struct SCC {
 		build();
 	}
 	void addedge(int u, int v) {
-		if(u != v) graph[u].push_back(v);
+		if(u != v) g[u].push_back(v);
 	}
 	void build() {
-		int dfn = 0, cnt = 0;
-		for(int i = 0; i < graph.size(); i++) {
-			if(this->dfn[i] == -1) dfs(dfn, cnt, i);
+		int ndfn = 0, cnt = 0;
+		for(int i = 0; i < g.size(); i++) {
+			if(dfn[i] == -1) dfs(ndfn, cnt, i);
 		}
 		dag.assign(cnt, {});
 		set<pair<int, int>> edges;
-		for(int u = 0; u < graph.size(); ++u) {
-			for(int v : graph[u]) {
+		for(int u = 0; u < g.size(); ++u) {
+			for(int v : g[u]) {
 				int bu = inscc[u], bv = inscc[v];
 				if(bu != bv && !edges.contains({bu, bv})) {
 					dag[bu].push_back(bv);
@@ -46,24 +45,24 @@ struct SCC {
 		}
 	}
 	vector<int> dfn, low, inscc;
-	vector<bool> ins;
-	vector<vector<int>> graph, sccs, dag;
+	vector<vector<int>> g, sccs, dag;
 
 private:
+	vector<bool> ins;
 	stack<int> stk;
-	void dfs(int &dfn, int &cnt, int u) {
-		this->dfn[u] = low[u] = dfn++;
+	void dfs(int &ndfn, int &cnt, int u) {
+		dfn[u] = low[u] = ndfn++;
 		stk.push(u);
 		ins[u] = true;
-		for(int v : graph[u]) {
-			if(this->dfn[v] == -1) {
-				dfs(dfn, cnt, v);
+		for(int v : g[u]) {
+			if(dfn[v] == -1) {
+				dfs(ndfn, cnt, v);
 				low[u] = min(low[u], low[v]);
 			} else if(ins[v]) {
 				low[u] = min(low[u], low[v]);
 			}
 		}
-		if(this->dfn[u] == low[u]) {
+		if(dfn[u] == low[u]) {
 			vector<int> scc;
 			int v = -1;
 			while(v != u) {
@@ -78,18 +77,18 @@ private:
 		}
 	}
 };
+
 // Edge-biconnected components
 struct EBCC {
-	explicit EBCC(int n)
-		: dfn(n, -1), low(n, -1), ins(n), graph(n), in_ebcc(n) {}
+	explicit EBCC(int n) : dfn(n, -1), low(n, -1), ins(n), g(n), in_ebcc(n) {}
 	explicit EBCC(const vector<vector<int>> &g)
-		: dfn(g.size(), -1), low(g.size(), -1), ins(g.size()), graph(g),
+		: dfn(g.size(), -1), low(g.size(), -1), ins(g.size()), g(g),
 		  in_ebcc(g.size()) {
 		build();
 	}
 	template<EdgeT T>
 	explicit EBCC(const vector<vector<T>> &g)
-		: dfn(g.size(), -1), low(g.size(), -1), ins(g.size()), graph(g.size()),
+		: dfn(g.size(), -1), low(g.size(), -1), ins(g.size()), g(g.size()),
 		  in_ebcc(g.size()) {
 		int n = g.size();
 		for(int u = 0; u < n; ++u) {
@@ -99,40 +98,38 @@ struct EBCC {
 	}
 	void addedge(int u, int v) {
 		if(u == v) return;
-		graph[u].push_back(v);
-		graph[v].push_back(u);
+		g[u].push_back(v);
+		g[v].push_back(u);
 	}
 	void build() {
-		int dfn = 0;
-		for(int i = 0; i < graph.size(); ++i) {
-			if(this->dfn[i] == -1) dfs(i, -1, dfn);
+		int ndfn = 0;
+		for(int i = 0; i < g.size(); ++i) {
+			if(dfn[i] == -1) dfs(i, -1, ndfn);
 		}
 		for(int i = 0; i < ebcc.size(); ++i) {
 			for(int u : ebcc[i]) in_ebcc[u] = i;
 		}
 	}
-	vector<vector<int>> graph;
-	vector<vector<int>> ebcc;
-	vector<int> in_ebcc;
-	vector<int> dfn, low;
-	vector<bool> ins;
+	vector<vector<int>> g, ebcc;
+	vector<int> in_ebcc, dfn, low;
 
 private:
+	vector<bool> ins;
 	stack<int> stk;
-	void dfs(int u, int fa, int &dfn) {
-		this->dfn[u] = low[u] = dfn++;
+	void dfs(int u, int fa, int &ndfn) {
+		dfn[u] = low[u] = ndfn++;
 		ins[u] = true;
 		stk.push(u);
-		for(int v : graph[u]) {
+		for(int v : g[u]) {
 			if(v == fa) continue;
-			if(this->dfn[v] == -1) {
-				dfs(v, u, dfn);
+			if(dfn[v] == -1) {
+				dfs(v, u, ndfn);
 				low[u] = min(low[u], low[v]);
 			} else if(ins[v]) {
-				low[u] = min(low[u], this->dfn[v]);
+				low[u] = min(low[u], dfn[v]);
 			}
 		}
-		if(this->dfn[u] == low[u]) {
+		if(dfn[u] == low[u]) {
 			vector<int> t;
 			int n = -1;
 			while(n != u) {
@@ -145,16 +142,17 @@ private:
 		}
 	}
 };
+
 // Vertex-biconnected components
 struct DCC {
-	explicit DCC(int n) : dfn(n, -1), low(n, -1), graph(n) {}
+	explicit DCC(int n) : dfn(n, -1), low(n, -1), g(n) {}
 	explicit DCC(const vector<vector<int>> &g)
-		: dfn(g.size(), -1), low(g.size(), -1), graph(g) {
+		: dfn(g.size(), -1), low(g.size(), -1), g(g) {
 		build();
 	}
 	template<EdgeT T>
 	explicit DCC(const vector<vector<T>> &g)
-		: dfn(g.size(), -1), low(g.size(), -1), graph(g.size()) {
+		: dfn(g.size(), -1), low(g.size(), -1), g(g.size()) {
 		int n = g.size();
 		for(int u = 0; u < n; ++u) {
 			for(const T &edge : g[u]) addedge(u, edge.v);
@@ -163,33 +161,32 @@ struct DCC {
 	}
 	void addedge(int u, int v) {
 		if(u == v) return;
-		graph[u].push_back(v);
-		graph[v].push_back(u);
+		g[u].push_back(v);
+		g[v].push_back(u);
 	}
 	void build() {
-		int dfn_now = 0;
-		for(int i = 0; i < graph.size(); ++i) {
+		int ndfn = 0;
+		for(int i = 0; i < g.size(); ++i) {
 			if(dfn[i] == -1) {
-				dfs(i, -1, i, dfn_now);
+				dfs(i, -1, i, ndfn);
 			}
 		}
 	}
 	vector<int> dfn, low;
-	vector<vector<int>> graph;
-	vector<vector<int>> dcc;
+	vector<vector<int>> g, dcc;
 
 private:
 	stack<int> stk;
-	void dfs(int u, int parent, int root, int &dfn) {
-		this->dfn[u] = low[u] = dfn++;
+	void dfs(int u, int fa, int rt, int &ndfn) {
+		dfn[u] = low[u] = ndfn++;
 		stk.push(u);
 		int child = 0;
-		for(int v : graph[u]) {
-			if(v == parent) continue;
-			if(this->dfn[v] == -1) {
-				dfs(v, u, root, dfn);
+		for(int v : g[u]) {
+			if(v == fa) continue;
+			if(dfn[v] == -1) {
+				dfs(v, u, rt, ndfn);
 				low[u] = min(low[u], low[v]);
-				if(low[v] >= this->dfn[u]) {
+				if(low[v] >= dfn[u]) {
 					++child;
 					vector<int> f = {u};
 					while(!stk.empty()) {
@@ -201,25 +198,26 @@ private:
 					dcc.emplace_back(move(f));
 				}
 			} else {
-				low[u] = min(low[u], this->dfn[v]);
+				low[u] = min(low[u], dfn[v]);
 			}
 		}
-		if(u == root && graph[u].empty()) {
+		if(u == rt && g[u].empty()) {
 			dcc.push_back(vector<int>{u});
 			return;
 		}
 	}
 };
+
 // Articulation points
 struct AP {
-	explicit AP(int n) : dfn(n, -1), low(n, -1), graph(n) {}
+	explicit AP(int n) : dfn(n, -1), low(n, -1), g(n) {}
 	explicit AP(const vector<vector<int>> &g)
-		: dfn(g.size(), -1), low(g.size(), -1), graph(g) {
+		: dfn(g.size(), -1), low(g.size(), -1), g(g) {
 		build();
 	}
 	template<EdgeT T>
 	explicit AP(const vector<vector<T>> &g)
-		: dfn(g.size(), -1), low(g.size(), -1), graph(g.size()) {
+		: dfn(g.size(), -1), low(g.size(), -1), g(g.size()) {
 		int n = g.size();
 		for(int u = 0; u < n; ++u) {
 			for(const T &edge : g[u]) addedge(u, edge.v);
@@ -227,55 +225,55 @@ struct AP {
 		build();
 	}
 	void addedge(int u, int v) {
-		graph[u].push_back(v);
-		graph[v].push_back(u);
+		g[u].push_back(v);
+		g[v].push_back(u);
 	}
 	void build() {
-		int dfn = 0;
-		for(int i = 0; i < graph.size(); ++i) {
-			if(this->dfn[i] == -1) {
-				dfs(i, -1, dfn);
+		int ndfn = 0;
+		for(int i = 0; i < g.size(); ++i) {
+			if(dfn[i] == -1) {
+				dfs(i, -1, ndfn);
 			}
 		}
-		sort(cutpoints.begin(), cutpoints.end());
-		cutpoints.erase(unique(cutpoints.begin(), cutpoints.end()),
-						cutpoints.end());
+		sort(ap.begin(), ap.end());
+		ap.erase(unique(ap.begin(), ap.end()), ap.end());
 	}
 	vector<int> dfn, low;
-	vector<vector<int>> graph;
-	vector<int> cutpoints;
+	vector<vector<int>> g;
+	vector<int> ap;
 
 private:
-	void dfs(int u, int fa, int &dfn) {
-		this->dfn[u] = low[u] = dfn++;
+	void dfs(int u, int fa, int &ndfn) {
+		dfn[u] = low[u] = ndfn++;
 		int child = 0;
 		bool flag = false;
-		for(int v : graph[u]) {
-			if(this->dfn[v] == -1) {
+		for(int v : g[u]) {
+			if(dfn[v] == -1) {
 				++child;
-				dfs(v, u, dfn);
+				dfs(v, u, ndfn);
 				low[u] = min(low[u], low[v]);
 				if(fa != -1) {
-					flag |= (low[v] >= this->dfn[u]);
+					flag |= (low[v] >= dfn[u]);
 				}
 			} else if(v != fa) {
-				low[u] = min(low[u], this->dfn[v]);
+				low[u] = min(low[u], dfn[v]);
 			}
 		}
 		if(fa == -1) flag = (child > 1);
-		if(flag) cutpoints.push_back(u);
+		if(flag) ap.push_back(u);
 	}
 };
+
 // Bridges
 struct Bridge {
-	explicit Bridge(int n) : dfn(n, -1), low(n, -1), graph(n) {}
+	explicit Bridge(int n) : dfn(n, -1), low(n, -1), g(n) {}
 	explicit Bridge(const vector<vector<int>> &g)
-		: dfn(g.size(), -1), low(g.size(), -1), graph(g) {
+		: dfn(g.size(), -1), low(g.size(), -1), g(g) {
 		build();
 	}
 	template<EdgeT T>
 	explicit Bridge(const vector<vector<T>> &g)
-		: dfn(g.size(), -1), low(g.size(), -1), graph(g.size()) {
+		: dfn(g.size(), -1), low(g.size(), -1), g(g.size()) {
 		int n = g.size();
 		for(int u = 0; u < n; ++u) {
 			for(const T &edge : g[u]) addedge(u, edge.v);
@@ -283,31 +281,31 @@ struct Bridge {
 		build();
 	}
 	void addedge(int u, int v) {
-		graph[u].push_back(v);
-		graph[v].push_back(u);
+		g[u].push_back(v);
+		g[v].push_back(u);
 	}
 	void build() {
-		int dfn = 0;
-		for(int i = 0; i < graph.size(); ++i) {
-			if(this->dfn[i] == -1) dfs(i, -1, dfn);
+		int ndfn = 0;
+		for(int i = 0; i < g.size(); ++i) {
+			if(dfn[i] == -1) dfs(i, -1, ndfn);
 		}
 	}
 	vector<int> dfn, low;
-	vector<vector<int>> graph;
+	vector<vector<int>> g;
 	vector<pair<int, int>> bridges;
 
 private:
-	void dfs(int u, int fa, int &dfn) {
-		this->dfn[u] = low[u] = dfn++;
-		for(int v : graph[u]) {
-			if(this->dfn[v] == -1) {
-				dfs(v, u, dfn);
+	void dfs(int u, int fa, int &ndfn) {
+		dfn[u] = low[u] = ndfn++;
+		for(int v : g[u]) {
+			if(dfn[v] == -1) {
+				dfs(v, u, ndfn);
 				low[u] = min(low[u], low[v]);
-				if(low[v] > this->dfn[u]) {
+				if(low[v] > dfn[u]) {
 					bridges.emplace_back(min(u, v), max(u, v));
 				}
 			} else if(v != fa) {
-				low[u] = min(low[u], this->dfn[v]);
+				low[u] = min(low[u], dfn[v]);
 			}
 		}
 	}

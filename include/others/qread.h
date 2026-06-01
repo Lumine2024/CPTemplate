@@ -5,6 +5,9 @@ struct Qread {
 	Qread() : state(true) {
 		cin.rdbuf()->pubsetbuf(buffer, maxn);
 	}
+	int getc() {
+		return cin.rdbuf()->sbumpc();
+	}
 	template<integral T>
 	Qread &operator>>(T &val) {
 		if(!state) {
@@ -12,7 +15,7 @@ struct Qread {
 			return *this;
 		}
 		T x = 0, f = 1;
-		char ch = cin.rdbuf()->sbumpc();
+		char ch = getc();
 		while(ch < '0' || ch > '9') {
 			if(ch == char_traits<char>::eof()) {
 				state = false;
@@ -23,11 +26,11 @@ struct Qread {
 			if(ch == '-') {
 				f = -1;
 			}
-			ch = cin.rdbuf()->sbumpc();
+			ch = getc();
 		}
 		while(ch >= '0' && ch <= '9') {
 			x = x * 10 + ch - '0';
-			ch = cin.rdbuf()->sbumpc();
+			ch = getc();
 		}
 		val = x * f;
 		return *this;

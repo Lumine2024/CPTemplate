@@ -5,7 +5,7 @@ template<ll maxn, ll modulo>
 struct Sterling {
 	Sterling() = delete;
 	static int get(ll n, ll k) {
-		ensure_init();
+		init();
 		if(n < 0 || k < 0 || k > n || n >= maxn) return 0;
 		return ster[n][k];
 	}
@@ -13,7 +13,7 @@ struct Sterling {
 private:
 	// static constexpr int maxn = 5005;
 	static inline int ster[maxn][maxn];
-	static void ensure_init() {
+	static void init() {
 		static bool inited = false;
 		if(inited) return;
 		ster[0][0] = 1;

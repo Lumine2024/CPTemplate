@@ -1,6 +1,6 @@
-#include "ds/vst.h"
+#include "ds/valseg.h"
 #include "valmonitor.h"
-#include "../test.h"
+#include "doctest.h"
 
 struct VSTMonitor {
 	explicit VSTMonitor(int max_value) : ds(max_value) {}
@@ -32,15 +32,15 @@ struct VSTMonitor {
 	}
 
 private:
-	VST ds;
+	ValSeg ds;
 	int cnt = 0;
 };
 
-TEST(vst_val_monitor_cases) {
+TEST_CASE("vst_val_monitor_cases") {
 	const int max_value = get_val_monitor_max_value();
 	for(const auto &test_case : get_val_monitor_test_cases()) {
 		VSTMonitor monitor(max_value);
-		ENSURE(run_val_monitor_operations(monitor, test_case.ops) ==
-			   test_case.anss);
+		REQUIRE(run_val_monitor_operations(monitor, test_case.ops) ==
+				test_case.anss);
 	}
 }

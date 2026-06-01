@@ -62,20 +62,26 @@ switch($Compiler) {
 
 if($TestWithExpand) {
     Invoke-Step "Expand" {
-        Set-Location (Join-Path $repoRoot "tests")
-        if(Test-Path "expanded") {
-            Remove-Item -Recurse -Force "expanded"
+        $testsRoot = Join-Path $repoRoot "tests"
+        $expandedDir = Join-Path $testsRoot "expanded"
+        Set-Location $testsRoot
+        if(Test-Path $expandedDir) {
+            Remove-Item -LiteralPath $expandedDir -Recurse -Force
         }
-        New-Item -ItemType Directory -Path "expanded" -Force
-        Copy-Item -Path "expanded_cmakelists.txt" -Destination "expanded\CMakeLists.txt"
+        New-Item -ItemType Directory -Path $expandedDir -Force | Out-Null
+        Copy-Item -Path "expanded_cmakelists.txt" -Destination (Join-Path $expandedDir "CMakeLists.txt")
         $includeRoot = Join-Path $repoRoot "include"
-        [string[]]$includeDirs = @((Resolve-Path $includeRoot).Path)
+        [string[]]$includeDirs = @((Resolve-Path $includeRoot).Path, (Resolve-Path (Join-Path $testsRoot "doctest")).Path)
         [string[]]$cppFiles = @(
             Get-ChildItem -Recurse -File -Filter "*.cpp" -Path . | ForEach-Object {
-                [System.IO.Path]::GetRelativePath((Resolve-Path ".").Path, $_.FullName)
+                $relativePath = [System.IO.Path]::GetRelativePath((Resolve-Path ".").Path, $_.FullName)
+                if(($relativePath -split '[\\/]') -contains 'expanded') {
+                    return
+                }
+                $relativePath
             }
         )
-        $expandOperationScript = Join-Path $repoRoot "pwsh\expand.operation.ps1"
+        $expandOperationScript = Join-Path $repoRoot "pwsh/expand.operation.ps1"
         . $expandOperationScript
         foreach($cppFile in $cppFiles) {
             if(($cppFile -split '[\\/]') -contains 'build') {

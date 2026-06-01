@@ -5,7 +5,7 @@ struct Rectangle {
 	Point p1, p2;
 };
 struct Event {
-	int delta, l, r;
+	int d, l, r;
 	ld y;
 };
 struct SegTree_SL {
@@ -25,8 +25,7 @@ struct SegTree_SL {
 
 private:
 	vector<int> l, r, cnt;
-	vector<ld> len;
-	vector<ld> xs;
+	vector<ld> len, xs;
 	void _pushup(int u) {
 		if(cnt[u] > 0) {
 			len[u] = xs[r[u]] - xs[l[u]];
@@ -61,13 +60,13 @@ private:
 		_pushup(u);
 	}
 };
-ld scanline(const vector<Rectangle> &rects) {
-	int n = rects.size();
+ld scanline(const vector<Rectangle> &rs) {
+	int n = rs.size();
 	vector<ld> xs(2 * n);
-	vector<Event> events(2 * n);
+	vector<Event> evs(2 * n);
 	for(int i = 0; i < n; ++i) {
-		xs[2 * i] = rects[i].p1.x;
-		xs[2 * i + 1] = rects[i].p2.x;
+		xs[2 * i] = rs[i].p1.x;
+		xs[2 * i + 1] = rs[i].p2.x;
 	}
 	sort(xs.begin(), xs.end());
 	xs.erase(unique(xs.begin(), xs.end()), xs.end());
@@ -75,20 +74,18 @@ ld scanline(const vector<Rectangle> &rects) {
 		return lower_bound(xs.begin(), xs.end(), x) - xs.begin();
 	};
 	for(int i = 0; i < n; ++i) {
-		events[2 * i] = {1, getid(rects[i].p1.x), getid(rects[i].p2.x),
-						 rects[i].p1.y};
-		events[2 * i + 1] = {-1, getid(rects[i].p1.x), getid(rects[i].p2.x),
-							 rects[i].p2.y};
+		evs[2 * i] = {1, getid(rs[i].p1.x), getid(rs[i].p2.x), rs[i].p1.y};
+		evs[2 * i + 1] = {-1, getid(rs[i].p1.x), getid(rs[i].p2.x), rs[i].p2.y};
 	}
-	sort(events.begin(), events.end(),
+	sort(evs.begin(), evs.end(),
 		 [](const Event &a, const Event &b) { return cmp(a.y, b.y) == -1; });
 	SegTree_SL seg(xs);
-	ld lasty = events[0].y;
+	ld ly = evs[0].y;
 	ld ans = 0.0l;
-	for(auto &e : events) {
-		ans += seg.query() * (e.y - lasty);
-		seg.update(e.l, e.r, e.delta);
-		lasty = e.y;
+	for(auto &e : evs) {
+		ans += seg.query() * (e.y - ly);
+		seg.update(e.l, e.r, e.d);
+		ly = e.y;
 	}
 	return ans;
 }

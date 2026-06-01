@@ -1,10 +1,10 @@
 #include "math/bsgs.h"
-#include "../test.h"
+#include "doctest.h"
 
-TEST(bsgs_finds_small_discrete_log) {
-	ENSURE(mlog<17>(3, 13) == 4);
+TEST_CASE("bsgs_finds_small_discrete_log") {
+	REQUIRE(mlog<17>(3, 13) == 4);
 }
 
-TEST(bsgs_handles_no_solution) {
-	ENSURE(mlog<7>(2, 3) == -1);
+TEST_CASE("bsgs_handles_no_solution") {
+	REQUIRE(mlog<7>(2, 3) == -1);
 }

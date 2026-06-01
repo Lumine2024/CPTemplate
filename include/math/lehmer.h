@@ -20,7 +20,7 @@ vector<int> lehmer(const vector<int> &a) {
 }
 vector<int> rev_lehmer(const vector<int> &l) {
 	int n = l.size();
-	VST vst(n); // 使用权值线段树实现会快一点
+	ValSeg vst(n); // 使用权值线段树实现会快一点
 	for(int i = 0; i < n; ++i) {
 		vst.insert(i);
 	}

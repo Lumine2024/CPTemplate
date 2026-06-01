@@ -1,12 +1,12 @@
 #pragma once
 #include "common.h"
 
-int hungarian(const vector<vector<int>> &graph, int vsz) {
-	int usz = graph.size();
-	vector<int> mu(usz, -1);
-	vector<int> mv(vsz, -1);
+int hungarian(const vector<vector<int>> &g, int vs) {
+	int us = g.size();
+	vector<int> mu(us, -1);
+	vector<int> mv(vs, -1);
 	auto dfs = [&](auto &&dfs, int u, vector<bool> &vis) -> bool {
-		for(int v : graph[u]) {
+		for(int v : g[u]) {
 			if(vis[v]) continue;
 			vis[v] = true;
 			if(mv[v] == -1 || dfs(dfs, mv[v], vis)) {
@@ -18,9 +18,9 @@ int hungarian(const vector<vector<int>> &graph, int vsz) {
 		return false;
 	};
 	int ret = 0;
-	for(int u = 0; u < usz; ++u) {
+	for(int u = 0; u < us; ++u) {
 		if(mu[u] == -1) {
-			vector<bool> vis(vsz, false);
+			vector<bool> vis(vs, false);
 			if(dfs(dfs, u, vis)) ret++;
 		}
 	}

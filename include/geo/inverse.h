@@ -9,25 +9,25 @@ bool inv_shape(const Circle &c, const Line &l) {
 	return sign(cross(c.c - l.p, l.v)) != 0;
 }
 Point inverse(const Circle &c, const Point &a) {
-	Vector v = a - c.c;
+	Point v = a - c.c;
 	return c.c + v * (c.r * c.r / v.len());
 }
-optional<Circle> invcircle(const Circle &c, const Circle &a) {
-	if(!inv_shape(c, a)) return nullopt;
-	Vector v = a.c - c.c;
+opt<Circle> invcircle(const Circle &c, const Circle &a) {
+	if(!inv_shape(c, a)) return nul;
+	Point v = a.c - c.c;
 	Point p1 = a.c - v / v.len() * a.r, p2 = a.c + v / v.len() * a.r;
 	Point p3 = inverse(c, p1), p4 = inverse(c, p2);
 	return Circle((p3 + p4) / 2, dist(p3, p4) / 2);
 }
-optional<Line> invline(const Circle &c, const Circle &a) {
-	if(inv_shape(c, a)) return nullopt;
-	Vector v = a.c - c.c;
+opt<Line> invline(const Circle &c, const Circle &a) {
+	if(inv_shape(c, a)) return nul;
+	Point v = a.c - c.c;
 	Point pt = c.c + v * 2;
 	Point ip = inverse(c, pt);
-	return Line(ip, Vector(-v.y, v.x));
+	return Line(ip, Point(-v.y, v.x));
 }
-optional<Circle> invcircle(const Circle &c, const Line &l) {
-	if(!inv_shape(c, l)) return nullopt;
+opt<Circle> invcircle(const Circle &c, const Line &l) {
+	if(!inv_shape(c, l)) return nul;
 	Point p1 = l.p, p2 = l.p + l.v, p3 = l.p - l.v;
 	Point q1 = inverse(c, p1), q2 = inverse(c, p2), q3 = inverse(c, p3);
 	ld x1 = q1.x, y1 = q1.y;
@@ -41,7 +41,7 @@ optional<Circle> invcircle(const Circle &c, const Line &l) {
 	ld r = dist(o, q1);
 	return Circle(o, r);
 }
-optional<Line> invline(const Circle &c, const Line &l) {
-	if(inv_shape(c, l)) return nullopt;
+opt<Line> invline(const Circle &c, const Line &l) {
+	if(inv_shape(c, l)) return nul;
 	return l;
 }

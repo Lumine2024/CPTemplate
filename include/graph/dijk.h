@@ -2,8 +2,8 @@
 #include "graph/edge.h"
 
 template<WeightedEdgeT Edge>
-vector<ll> dijkstra(const vector<vector<Edge>> &graph, int s) {
-	int n = graph.size();
+vector<ll> dijkstra(const vector<vector<Edge>> &g, int s) {
+	int n = g.size();
 	vector<ll> di(n, inf);
 	di[s] = 0;
 	vector<bool> vis(n, false);
@@ -14,7 +14,7 @@ vector<ll> dijkstra(const vector<vector<Edge>> &graph, int s) {
 		pq.pop();
 		if(vis[u]) continue;
 		vis[u] = true;
-		for(auto &e : graph[u]) {
+		for(auto &e : g[u]) {
 			if(!vis[e.v] && di[e.v] > di[u] + e.w) {
 				di[e.v] = di[u] + e.w;
 				pq.emplace(di[e.v], e.v);

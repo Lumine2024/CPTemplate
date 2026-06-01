@@ -41,18 +41,18 @@ struct Point {
 		return cmp(x, p.x) == 0 && cmp(y, p.y) == 0 && cmp(z, p.z) == 0;
 	}
 };
-using Vector = Point;
-ld dot(const Vector &a, const Vector &b) {
+using Point = Point;
+ld dot(const Point &a, const Point &b) {
 	return a.x * b.x + a.y * b.y + a.z * b.z;
 }
-Vector cross(const Vector &a, const Vector &b) {
-	return Vector(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z,
-				  a.x * b.y - a.y * b.x);
+Point cross(const Point &a, const Point &b) {
+	return Point(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z,
+				 a.x * b.y - a.y * b.x);
 }
-Vector cross(const Point &o, const Point &a, const Point &b) {
+Point cross(const Point &o, const Point &a, const Point &b) {
 	return cross(a - o, b - o);
 }
-ld mix_prod(const Vector &a, const Vector &b, const Vector &c) {
+ld mix_prod(const Point &a, const Point &b, const Point &c) {
 	return dot(cross(a, b), c);
 }
 ld dist(const Point &a, const Point &b) {
@@ -62,18 +62,18 @@ bool same_plane(const Point &a, const Point &b, const Point &c,
 				const Point &d) {
 	return sign(mix_prod(b - a, c - a, d - a)) == 0;
 }
-bool parallel(const Vector &a, const Vector &b) {
-	Vector v = cross(a, b);
+bool parallel(const Point &a, const Point &b) {
+	Point v = cross(a, b);
 	return sign(v.len()) == 0;
 }
 bool same_line(const Point &a, const Point &b, const Point &c) {
 	return parallel(b - a, c - a);
 }
-ld operator/(const Vector &a, const Vector &b) {
+ld operator/(const Point &a, const Point &b) {
 	if(!parallel(a, b)) return -1.0l;
 	return sign(b.x) == 0 ? a.y / b.y : a.x / b.x;
 }
-Point proj(const Point &p, const Vector &base) {
+Point proj(const Point &p, const Point &base) {
 	if(sign(base.len2()) == 0) return Point(0, 0, 0);
 	ld t = dot(p, base) / base.len2();
 	return base * t;
@@ -82,7 +82,7 @@ Point proj(const Point &p, const Vector &base) {
 struct Line {
 	Point p, v;
 	Line() {}
-	Line(const Point &_p, const Vector &_v) : p(_p), v(_v) {}
+	Line(const Point &_p, const Point &_v) : p(_p), v(_v) {}
 };
 bool parallel(const Line &a, const Line &b) {
 	return parallel(a.v, b.v);
@@ -94,9 +94,9 @@ bool is_inter(const Line &a, const Line &b) {
 	return same_plane(a, b) && !parallel(a, b);
 }
 optional<Point> inter(const Line &a, const Line &b) {
-	if(!is_inter(a, b)) return nullopt;
-	Vector w = b.p - a.p, v1v2 = cross(a.v, b.v);
-	Vector wv2 = cross(w, b.v);
+	if(!is_inter(a, b)) return nul;
+	Point w = b.p - a.p, v1v2 = cross(a.v, b.v);
+	Point wv2 = cross(w, b.v);
 	ld den = v1v2.len2();
 	ld t = dot(wv2, v1v2) / den;
 	return a.p + a.v * t;
@@ -105,7 +105,7 @@ optional<Point> inter(const Line &a, const Line &b) {
 struct Plane {
 	Point p, norm;
 	Plane() {}
-	Plane(const Point &_p, const Vector &_n) : p(_p), norm(_n) {}
+	Plane(const Point &_p, const Point &_n) : p(_p), norm(_n) {}
 	Plane(const Point &a, const Point &b, const Point &c)
 		: p(a), norm(cross(b - a, c - a)) {}
 };

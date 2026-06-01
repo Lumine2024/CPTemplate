@@ -2,8 +2,9 @@
 #include "common.h"
 
 struct BinaryLift {
-	explicit BinaryLift(int n)
-		: tree(n), anc(n, vector<int>(LOG, -1)), depth(n) {}
+	explicit BinaryLift(int n) : tree(n), anc(n), dep(n) {
+		for(auto &a : anc) a.fill(-1);
+	}
 	void addedge(int u, int v) {
 		tree[u].push_back(v);
 		tree[v].push_back(u);
@@ -12,10 +13,10 @@ struct BinaryLift {
 		dfs(u, -1);
 	}
 	int lca(int u, int v) const {
-		if(depth[u] < depth[v]) swap(u, v);
+		if(dep[u] < dep[v]) swap(u, v);
 		for(int k = LOG - 1; k >= 0; --k) {
 			if(anc[u][k] != -1) {
-				if(depth[anc[u][k]] >= depth[v]) {
+				if(dep[anc[u][k]] >= dep[v]) {
 					u = anc[u][k];
 				}
 			}
@@ -42,10 +43,10 @@ struct BinaryLift {
 
 private:
 	static constexpr int LOG = 20;
-	vector<vector<int>> anc;
-	vector<int> depth;
+	vector<array<int, LOG>> anc;
+	vector<int> dep;
 	void dfs(int u, int fa) {
-		depth[u] = fa != -1 ? depth[fa] + 1 : 0;
+		dep[u] = fa != -1 ? dep[fa] + 1 : 0;
 		anc[u][0] = fa;
 		for(int k = 1; k < LOG; ++k) {
 			if(anc[u][k - 1] == -1) {

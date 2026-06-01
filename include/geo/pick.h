@@ -30,11 +30,11 @@ struct Point {
 		return i == 0 ? x : y;
 	}
 };
-using Vector = Point;
-ll dot(const Vector &x, const Vector &y) {
+using Point = Point;
+ll dot(const Point &x, const Point &y) {
 	return x.x * y.x + x.y * y.y;
 }
-ll cross(const Vector &x, const Vector &y) {
+ll cross(const Point &x, const Point &y) {
 	return x.x * y.y - x.y * y.x;
 }
 ll cross(const Point &o, const Point &a, const Point &b) {
@@ -49,7 +49,7 @@ bool argcmp(const Point &x, const Point &y) {
 ll dist2(const Point &a, const Point &b) {
 	return (a - b).len2();
 }
-int to_left(const Vector &a, const Vector &b) {
+int to_left(const Point &a, const Point &b) {
 	ll c = cross(a, b);
 	return c > 0 ? 1 : c < 0 ? -1 : 0;
 }
@@ -61,7 +61,7 @@ int to_left(const Point &a, const Point &b, const Point &c) {
 struct Line {
 	Point p, v;
 	Line() {}
-	Line(const Point &_p, const Vector &_v) : p(_p), v(_v) {}
+	Line(const Point &_p, const Point &_v) : p(_p), v(_v) {}
 };
 int to_left(const Line &ln, const Point &p) {
 	return to_left(ln.v, p - ln.p);
@@ -97,7 +97,7 @@ ll points_inside(const Polygon &poly) {
 	ll border = 0;
 	for(int i = 0; i < poly.size(); ++i) {
 		int j = (i + 1) % poly.size();
-		Vector v = poly.pts[j] - poly.pts[i];
+		Point v = poly.pts[j] - poly.pts[i];
 		border += gcd(abs(v.x), abs(v.y));
 	}
 	return (twos - border + 2) / 2;

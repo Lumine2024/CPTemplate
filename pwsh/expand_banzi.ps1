@@ -8,6 +8,178 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
+function Remove-ManualTableOfContents {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Text
+    )
+
+    $lines = $Text -split "\r?\n"
+    $cleaned = [System.Collections.Generic.List[string]]::new()
+    $inFence = $false
+    $skipToc = $false
+
+    foreach($line in $lines) {
+        if($line -match '^```') {
+            $inFence = -not $inFence
+        }
+
+        if(-not $inFence -and -not $skipToc -and $line -match '^##\s+目录\s*$') {
+            $skipToc = $true
+            continue
+        }
+
+        if($skipToc) {
+            if(-not $inFence -and $line -match '^##\s+') {
+                while($cleaned.Count -gt 0 -and [string]::IsNullOrWhiteSpace($cleaned[$cleaned.Count - 1])) {
+                    $cleaned.RemoveAt($cleaned.Count - 1)
+                }
+                $skipToc = $false
+            }
+            else {
+                continue
+            }
+        }
+
+        $cleaned.Add($line)
+    }
+
+    while($cleaned.Count -gt 0 -and [string]::IsNullOrWhiteSpace($cleaned[$cleaned.Count - 1])) {
+        $cleaned.RemoveAt($cleaned.Count - 1)
+    }
+
+    return ($cleaned -join [Environment]::NewLine)
+}
+
+function Get-MarkdownAnchor {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Heading,
+        [Parameter(Mandatory = $true)]
+        [hashtable]$SlugCounts
+    )
+
+    $builder = [System.Text.StringBuilder]::new()
+    $lastWasDash = $false
+    foreach($ch in $Heading.ToLowerInvariant().ToCharArray()) {
+        if([char]::IsWhiteSpace($ch)) {
+            if(-not $lastWasDash -and $builder.Length -gt 0) {
+                [void]$builder.Append('-')
+                $lastWasDash = $true
+            }
+            continue
+        }
+        if([char]::IsLetterOrDigit($ch)) {
+            [void]$builder.Append($ch)
+            $lastWasDash = $false
+            continue
+        }
+        if($ch -eq '-') {
+            if(-not $lastWasDash -and $builder.Length -gt 0) {
+                [void]$builder.Append($ch)
+                $lastWasDash = $true
+            }
+        }
+    }
+
+    $slug = $builder.ToString().Trim('-')
+    if([string]::IsNullOrEmpty($slug)) {
+        $slug = 'section'
+    }
+
+    if($SlugCounts.ContainsKey($slug)) {
+        $SlugCounts[$slug]++
+        return "$slug-$($SlugCounts[$slug])"
+    }
+
+    $SlugCounts[$slug] = 0
+    return $slug
+}
+
+function New-TableOfContents {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Text
+    )
+
+    $lines = $Text -split "\r?\n"
+    $toc = [System.Collections.Generic.List[string]]::new()
+    $toc.Add('## 目录')
+    $toc.Add('')
+
+    $slugCounts = @{}
+    $inFence = $false
+    $seenSection = $false
+
+    foreach($line in $lines) {
+        if($line -match '^```') {
+            $inFence = -not $inFence
+            continue
+        }
+        if($inFence) {
+            continue
+        }
+        if($line -notmatch '^(##|###)\s+(.+?)\s*$') {
+            continue
+        }
+
+        $marks = $Matches[1]
+        $title = $Matches[2].Trim()
+        if($title -eq '目录') {
+            continue
+        }
+
+        $anchor = Get-MarkdownAnchor -Heading $title -SlugCounts $slugCounts
+        if($marks.Length -eq 2) {
+            if($seenSection) {
+                $toc.Add('')
+            }
+            $toc.Add("[$title](#$anchor)")
+            $seenSection = $true
+        }
+        else {
+            $toc.Add("- [$title](#$anchor)")
+        }
+    }
+
+    return ($toc -join [Environment]::NewLine)
+}
+
+function Add-TableOfContents {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Text,
+        [Parameter(Mandatory = $true)]
+        [string]$TableOfContents
+    )
+
+    $lines = $Text -split "\r?\n"
+    $titleIndex = -1
+    for($i = 0; $i -lt $lines.Count; $i++) {
+        if($lines[$i] -match '^#\s+') {
+            $titleIndex = $i
+            break
+        }
+    }
+
+    if($titleIndex -eq -1) {
+        return "$TableOfContents$([Environment]::NewLine)$([Environment]::NewLine)$Text"
+    }
+
+    $before = $lines[0..$titleIndex] -join [Environment]::NewLine
+    $afterStart = $titleIndex + 1
+    while($afterStart -lt $lines.Count -and [string]::IsNullOrWhiteSpace($lines[$afterStart])) {
+        $afterStart++
+    }
+
+    if($afterStart -ge $lines.Count) {
+        return "$before$([Environment]::NewLine)$([Environment]::NewLine)$TableOfContents"
+    }
+
+    $after = $lines[$afterStart..($lines.Count - 1)] -join [Environment]::NewLine
+    return "$before$([Environment]::NewLine)$([Environment]::NewLine)$TableOfContents$([Environment]::NewLine)$([Environment]::NewLine)$after"
+}
+
 function Convert-Attributes {
     param(
         [Parameter(Mandatory = $true)]
@@ -49,6 +221,9 @@ function Resolve-TargetPath {
 $sourceFull = (Resolve-Path -Path $Source).Path
 $sourceDir = Split-Path -Parent $sourceFull
 $content = Get-Content -Path $sourceFull -Raw -Encoding utf8
+$content = Remove-ManualTableOfContents -Text $content
+$tableOfContents = New-TableOfContents -Text $content
+$content = Add-TableOfContents -Text $content -TableOfContents $tableOfContents
 
 $tagPattern = [regex]'(?is)<file\s+([^>]*)>\s*</file>'
 $expanded = "<!-- THIS FILE IS AUTO GENERATED, DO NOT MODIFY IT MANUALLY -->`n`n" + $tagPattern.Replace($content, {

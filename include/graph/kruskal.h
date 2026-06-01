@@ -8,19 +8,19 @@ struct Edge {
 	ll w;
 };
 
-ll kruskal(vector<Edge> &edges, int n) {
-	DSU dsu(n);
+ll kruskal(vector<Edge> &es, int n) {
+	DSU d(n);
 	ll ans = 0;
-	sort(edges.begin(), edges.end(),
+	sort(es.begin(), es.end(),
 		 [](const Edge &a, const Edge &b) { return a.w < b.w; });
-	for(auto &e : edges) {
-		if(!dsu.is_connected(e.u, e.v)) {
-			dsu.connect(e.u, e.v);
+	for(auto &e : es) {
+		if(!d.is_connected(e.u, e.v)) {
+			d.connect(e.u, e.v);
 			ans += e.w;
 		}
 	}
 	for(int i = 1; i < n; ++i) {
-		if(!dsu.is_connected(i, 0)) return inf;
+		if(!d.is_connected(i, 0)) return inf;
 	}
 	return ans;
 }

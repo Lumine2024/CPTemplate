@@ -11,6 +11,10 @@ template<>
 constexpr unsigned g<167772161> = 3;
 template<>
 constexpr unsigned g<104857601> = 3;
+template<>
+constexpr unsigned g<1004535809> = 3;
+template<>
+constexpr unsigned g<754974721> = 11;
 
 template<unsigned X>
 	requires(g<X> != 0)

@@ -8,8 +8,8 @@ struct Edge {
 	ll w;
 };
 
-ll boruvka(const vector<Edge> &edges, int n) {
-	int m = edges.size();
+ll boruvka(const vector<Edge> &es, int n) {
+	int m = es.size();
 	DSU dsu(n);
 	ll ans = 0;
 	int c = n;
@@ -19,16 +19,16 @@ ll boruvka(const vector<Edge> &edges, int n) {
 			if(dsu.find(i) == i) mst[i] = -1;
 		}
 		for(int i = 0; i < m; ++i) {
-			auto [u, v, w] = edges[i];
+			auto [u, v, w] = es[i];
 			int fu = dsu.find(u), fv = dsu.find(v);
 			if(fu == fv) continue;
-			if(mst[fu] == -1 || edges[mst[fu]].w > w) mst[fu] = i;
-			if(mst[fv] == -1 || edges[mst[fv]].w > w) mst[fv] = i;
+			if(mst[fu] == -1 || es[mst[fu]].w > w) mst[fu] = i;
+			if(mst[fv] == -1 || es[mst[fv]].w > w) mst[fv] = i;
 		}
 		bool flag = false;
 		for(int i = 0; i < n; ++i) {
 			if(dsu.find(i) != i || mst[i] == -1) continue;
-			auto [u, v, w] = edges[mst[i]];
+			auto [u, v, w] = es[mst[i]];
 			if(!dsu.is_connected(u, v)) {
 				dsu.connect(u, v);
 				ans += w;
