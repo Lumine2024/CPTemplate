@@ -18,9 +18,9 @@ vector<vector<T>> matmul(const vector<vector<T>> &a,
 template<class T>
 vector<vector<T>> matpow(vector<vector<T>> mat, ll n) {
 	int M = mat.size();
-	vector<vector<T>> ret(M, vector<T>(M, 0));
+	vector<vector<T>> ret(M, vector<T>(M, T(0)));
 	for(int i = 0; i < M; ++i) {
-		ret[i][i] = static_cast<T>(1);
+		ret[i][i] = T(1);
 	}
 	for(; n != 0; n >>= 1, mat = matmul(mat, mat)) {
 		if(n & 1ll) ret = matmul(ret, mat);

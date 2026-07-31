@@ -2,21 +2,15 @@
 #include "common.h"
 
 struct MyHash {
-	size_t operator()(ll _x) const noexcept {
-		ull x = _x;
-		x ^= c;
-		x ^= (x >> 21);
-		x ^= (x << 37);
-		x ^= (x >> 4);
-		x *= 0x27d4eb2f165667c5;
-		x *= c;
-		x ^= (x >> 28);
-		x *= 0x165667b19e3779f9;
-		x ^= (x >> 31);
-		return x ^ c;
-	}
+    ull operator()(ll x) const noexcept {
+        ull v = ull(x) + c;
+        v += 0x9e3779b97f4a7c15;
+        v = (v ^ (v >> 30)) * 0xbf58476d1ce4e5b9;
+        v = (v ^ (v >> 27)) * 0x94d049bb133111eb;
+        return v ^ (v >> 31);
+    }
 
 private:
-	static inline const size_t c =
-		(size_t)chrono::steady_clock::now().time_since_epoch().count();
+    static inline const ull c =
+        chrono::steady_clock::now().time_since_epoch().count();
 };

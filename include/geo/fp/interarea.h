@@ -1,7 +1,7 @@
 #pragma once
-#include "geo/basic.h"
+#include "geo/fp/basic.h"
 
-ld inter_area(const Polygon &poly, const Circle &c) {
+ld inter_area(const vector<Point> &poly, const Circle &c) {
 	auto sec = [](Circle c, Point u, Point v) {
 		u = u - c.c, v = v - c.c, c.c = {};
 		ld alp = angle(u, v);
@@ -25,9 +25,9 @@ ld inter_area(const Polygon &poly, const Circle &c) {
 		else return cross(ia, ib) / 2 + sec(c, a, ia) + sec(c, ib, b);
 	};
 	ld ret = 0.0l;
-	for(int i = 0; i < poly.size(); ++i) {
+	for(int i = 0; i < (int)poly.size(); ++i) {
 		int j = (i + 1) % poly.size();
-		ret += hlp(c, poly.pts[i], poly.pts[j]);
+		ret += hlp(c, poly[i], poly[j]);
 	}
 	return abs(ret);
 }

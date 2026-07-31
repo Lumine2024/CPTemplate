@@ -5,7 +5,10 @@ template<class T>
 using opt = optional<T>;
 constexpr auto nul = nullopt;
 
-constexpr ld eps = 1e-9l, pi = numbers::pi_v<ld>, inf = 1e12l;
+#ifndef eps
+constexpr ld eps = 1e-9l;
+#endif
+constexpr ld pi = numbers::pi_v<ld>, inf = 1e12l;
 int sign(ld a) {
 	return (a < -eps) ? -1 : (a > eps) ? 1 : 0;
 }
@@ -42,6 +45,20 @@ struct Point {
 	}
 	Point rotate(ld a) const {
 		return Point(x * cos(a) - y * sin(a), x * sin(a) + y * cos(a));
+	}
+	Point rotate90x(int n = 1) const {
+		n %= 4;
+		if(n < 0) n += 4;
+		switch(n) {
+		case 0:
+			return *this;
+		case 1:
+			return Point(-y, x);
+		case 2:
+			return Point(-x, -y);
+		default:
+			return Point(y, -x);
+		}
 	}
 	ld &operator[](int i) {
 		return i == 0 ? x : y;
@@ -204,31 +221,25 @@ ld dist(const Point &p, const LineSeg &ls) {
 	return dist(p, l);
 }
 
-struct Polygon {
-	vector<Point> pts;
-	Polygon() {}
-	Polygon(const vector<Point> &p) : pts(p) {}
-	Polygon(const vector<Line> &l) {
-		pts.reserve(l.size());
-		for(int i = 0; i < (int)l.size(); ++i)
-			pts.emplace_back(*inter(l[i], l[(i + 1) % l.size()]));
-	}
-	ld area() const {
-		ld ret = 0.0l;
-		for(int i = 0; i < (int)pts.size(); ++i)
-			ret += cross(pts[i], pts[(i + 1) % pts.size()]);
-		return ret / 2.0l;
-	}
-	ld circ() const {
-		ld ret = 0.0l;
-		for(int i = 0; i < (int)pts.size(); ++i)
-			ret += dist(pts[i], pts[(i + 1) % pts.size()]);
-		return ret;
-	}
-	int size() const {
-		return pts.size();
-	}
-};
+vector<Point> poly_from_lines(const vector<Line> &ls) {
+	vector<Point> poly;
+	poly.reserve(ls.size());
+	for(int i = 0; i < (int)ls.size(); ++i)
+		poly.emplace_back(*inter(ls[i], ls[(i + 1) % ls.size()]));
+	return poly;
+}
+ld poly_area(const vector<Point> &poly) {
+	ld ret = 0.0l;
+	for(int i = 0; i < (int)poly.size(); ++i)
+		ret += cross(poly[i], poly[(i + 1) % poly.size()]);
+	return ret / 2.0l;
+}
+ld poly_circ(const vector<Point> &poly) {
+	ld ret = 0.0l;
+	for(int i = 0; i < (int)poly.size(); ++i)
+		ret += dist(poly[i], poly[(i + 1) % poly.size()]);
+	return ret;
+}
 
 struct Circle {
 	Point c;
@@ -273,4 +284,19 @@ opt<pair<Point, Point>> inter(const Circle &c, const Line &l) {
 	Point p1 = h + dir * t;
 	Point p2 = h - dir * t;
 	return pair{p1, p2};
+}
+opt<pair<Point, Point>> tangent(const Circle &c, const Point &p) {
+	Point v = p - c.c;
+	ld d2 = v.len2();
+	switch(cmp(d2, c.r * c.r)) {
+	case -1:
+		return nul;
+	case 0:
+		return pair{p, p};
+	default: {
+		Point base = c.c + v * c.r * c.r / d2;
+		Point delt = v.rotate90x() * c.r * sqrt(d2 - c.r * c.r) / d2;
+		return pair{base + delt, base - delt};
+	}
+	}
 }

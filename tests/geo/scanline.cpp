@@ -1,4 +1,4 @@
-#include "geo/scanline.h"
+#include "geo/fp/scanline.h"
 #include "doctest.h"
 
 TEST_CASE("scanline_single_rectangle") {

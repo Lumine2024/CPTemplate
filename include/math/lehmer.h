@@ -1,6 +1,6 @@
 #pragma once
 #include "common.h"
-#include "ds/vst.h"
+#include "ds/valseg.h"
 #include "ds/fenwick.h"
 
 // 均为0-based排列

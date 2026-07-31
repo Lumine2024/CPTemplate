@@ -49,7 +49,7 @@ struct Polynomial {
 	Polynomial &to_integ() {
 		a.push_back(Z(0));
 		for(int i = a.size() - 1; i > 0; --i) {
-			a[i] = a[i - 1] / Z(i);
+			a[i] = a[i - 1] * Z(i).inv();
 		}
 		a[0] = 0;
 		return *this;
@@ -59,7 +59,7 @@ struct Polynomial {
 		return b.to_integ();
 	}
 	Polynomial inv(int m) const {
-		Polynomial x{Z(1) / a[0]};
+		Polynomial x{a[0].inv()};
 		int k = 1;
 		while(k < m) {
 			k *= 2;

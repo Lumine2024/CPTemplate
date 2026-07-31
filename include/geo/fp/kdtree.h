@@ -1,5 +1,5 @@
 #pragma once
-#include "geo/basic.h"
+#include "geo/fp/basic.h"
 
 struct TwoDTree {
 	explicit TwoDTree(const vector<Point> &pts) : val(pts.size()) {
@@ -73,7 +73,7 @@ private:
 	vector<Node> val;
 	int rt;
 	template<class Comp>
-	ld cmpdist(const Point &p, const Node &node);
+	ld cmpdist(const Point &p, const Node &node) = delete;
 	template<class Comp>
 	void kth(int p, const Point &q, priority_queue<ld, vector<ld>, Comp> &pq,
 			 int k, int dep) {
@@ -109,8 +109,6 @@ private:
 	}
 };
 
-template<class Comp>
-ld TwoDTree::cmpdist(const Point &p, const Node &node) = delete;
 template<>
 ld TwoDTree::cmpdist<less<>>(const Point &p, const Node &node) {
 	ld d = 0;

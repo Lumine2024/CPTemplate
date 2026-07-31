@@ -1,8 +1,8 @@
 #pragma once
 #include "common.h"
 
-struct LinearBasis_XOR {
-	LinearBasis_XOR() : base(61) {}
+struct LinearBasis {
+	LinearBasis() : base{} {}
 	void insert(ll val) {
 		for(int i = 60; i >= 0; --i) {
 			if(((val >> i) & 1) == 0) continue;
@@ -13,7 +13,7 @@ struct LinearBasis_XOR {
 			val ^= base[i];
 		}
 	}
-	ll query_max() const {
+	ll max_xor() const {
 		ll ans = 0;
 		for(int i = 60; i >= 0; --i) {
 			if((ans ^ base[i]) > ans) {
@@ -22,7 +22,24 @@ struct LinearBasis_XOR {
 		}
 		return ans;
 	}
+	ll min_xor() const {
+		for(int i = 0; i <= 60; ++i) {
+			if(base[i] != 0) {
+				return base[i];
+			}
+		}
+		return 0;
+	}
+	ll kth_xor(ll k) const {}
+	bool can_repr(ll dest) const {
+		for(int i = 60; i >= 0; --i) {
+			if((dest >> i) & 1) {
+				dest ^= base[i];
+			}
+		}
+		return dest == 0;
+	}
 
 private:
-	vector<ll> base;
+	array<ll, 64> base;
 };

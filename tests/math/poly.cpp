@@ -5,6 +5,10 @@ constexpr unsigned modulo = 998244353;
 using Poly = Polynomial<modulo>;
 using Z = Poly::Z;
 
+Z inv_z(ll x) {
+	return Z(x).inv();
+}
+
 void ensure_poly_eq(const Poly &poly, const vector<Z> &expect) {
 	REQUIRE(poly.size() == expect.size());
 	for(int i = 0; i < expect.size(); ++i) {
@@ -81,22 +85,21 @@ TEST_CASE("poly_ln_one_plus_x") {
 	Poly a = {1, 1};
 	Poly res = a.ln(5);
 	vector<Z> expect = {
-		0, 1, Z(0) - Z(1) / Z(2), Z(1) / Z(3), Z(0) - Z(1) / Z(4)
+		0, 1, Z(0) - inv_z(2), inv_z(3), Z(0) - inv_z(4)
 	};
 	ensure_poly_eq(res, expect);
 }
 TEST_CASE("poly_exp_x") {
 	Poly a = {0, 1};
 	Poly res = a.exp(5);
-	vector<Z> expect = {1, 1, Z(1) / Z(2), Z(1) / Z(6), Z(1) / Z(24)};
+	vector<Z> expect = {1, 1, inv_z(2), inv_z(6), inv_z(24)};
 	ensure_poly_eq(res, expect);
 }
 TEST_CASE("poly_sqrt_one_plus_x") {
 	Poly a = {1, 1};
 	Poly res = a.sqrt(5);
 	vector<Z> expect = {
-		1, Z(1) / Z(2), Z(0) - Z(1) / Z(8), Z(1) / Z(16),
-		Z(0) - Z(5) / Z(128)
+		1, inv_z(2), Z(0) - inv_z(8), inv_z(16), Z(0) - Z(5) * inv_z(128)
 	};
 	ensure_poly_eq(res, expect);
 }

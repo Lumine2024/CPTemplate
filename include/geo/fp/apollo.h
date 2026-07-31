@@ -1,5 +1,5 @@
 #pragma once
-#include "geo/basic.h"
+#include "geo/fp/basic.h"
 
 // PA / PB = lam
 opt<Circle> apollonius(const Point &a, const Point &b, ld lam) {

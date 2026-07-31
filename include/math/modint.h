@@ -20,9 +20,13 @@ struct ModInt {
 		val = (ll)val * z.val % modulo;
 		return *this;
 	}
-	ModInt &operator/=(const ModInt &z) {
-		val = (ll)val * qpow<modulo>(z.val, modulo - 2) % modulo;
+	ModInt &to_inv() {
+		val = qpow<modulo>(val, modulo - 2);
 		return *this;
+	}
+	ModInt inv() const {
+		ModInt z = *this;
+		return z.to_inv();
 	}
 	friend ModInt operator+(const ModInt &a, const ModInt &b) {
 		ModInt c = a;
@@ -35,10 +39,6 @@ struct ModInt {
 	friend ModInt operator*(const ModInt &a, const ModInt &b) {
 		ModInt c = a;
 		return c *= b;
-	}
-	friend ModInt operator/(const ModInt &a, const ModInt &b) {
-		ModInt c = a;
-		return c /= b;
 	}
 	friend bool operator==(const ModInt &a, const ModInt &b) = default;
 	operator unsigned() const {

@@ -1,4 +1,4 @@
-#include "geo/halfinter.h"
+#include "geo/fp/halfinter.h"
 #include "doctest.h"
 
 static void ensure_point_eq(const Point &a, const Point &b) {
@@ -20,8 +20,8 @@ TEST_CASE("halfinter_unit_square") {
 	};
 	auto result = half_inter(lines);
 	REQUIRE(result.size() >= 3);
-	Polygon poly(result);
-	REQUIRE(cmp(abs(poly.area()), 1.0l) == 0);
+	auto polygon = poly_from_lines(result);
+	REQUIRE(cmp(abs(poly_area(polygon)), 1.0l) == 0);
 }
 
 TEST_CASE("halfinter_right_triangle") {
@@ -39,8 +39,8 @@ TEST_CASE("halfinter_right_triangle") {
 	};
 	auto result = half_inter(lines);
 	REQUIRE(result.size() >= 3);
-	Polygon poly(result);
-	REQUIRE(cmp(abs(poly.area()), 2.0l) == 0);
+	auto polygon = poly_from_lines(result);
+	REQUIRE(cmp(abs(poly_area(polygon)), 2.0l) == 0);
 }
 
 TEST_CASE("halfinter_empty") {

@@ -35,7 +35,7 @@ vector<ModInt<X>> multiply(const vector<ModInt<X>> &a,
 		}
 		for(int len = 2; len <= n; len *= 2) {
 			Z wn = Z(qpow<X>(g<X>, (X - 1) / len));
-			if(inv) wn = Z(1) / wn;
+			if(inv) wn.to_inv();
 			for(int i = 0; i < n; i += len) {
 				Z w = 1;
 				for(int j = 0; j < len / 2; ++j) {
@@ -51,7 +51,7 @@ vector<ModInt<X>> multiply(const vector<ModInt<X>> &a,
 	ntt(cb, false);
 	for(int i = 0; i < n; ++i) ca[i] *= cb[i];
 	ntt(ca, true);
-	Z in = Z(1) / Z(n);
+	Z in = Z(n).inv();
 	for(int i = 0; i < n; ++i) ca[i] *= in;
 	while(ca.size() > (a.size() + b.size() - 1)) ca.pop_back();
 	return ca;

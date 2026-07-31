@@ -1,5 +1,5 @@
 #pragma once
-#include "geo/basic.h"
+#include "geo/fp/basic.h"
 
 vector<Line> half_inter(vector<Line> ls) {
 	ls.push_back({{-inf, 0.0l}, {0.0l, -1.0l}});

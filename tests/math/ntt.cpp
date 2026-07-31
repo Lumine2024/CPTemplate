@@ -4,6 +4,20 @@
 constexpr ll modulo = 998244353;
 using Z = ModInt<modulo>;
 
+TEST_CASE("modint_inv") {
+	REQUIRE(Z(3).inv() == Z(qpow<modulo>(3, modulo - 2)));
+	REQUIRE(Z(3) * Z(3).inv() == Z(1));
+	REQUIRE(Z(modulo - 1).inv() == Z(modulo - 1));
+}
+
+TEST_CASE("modint_to_inv") {
+	Z x = 5;
+	Z &ref = x.to_inv();
+	REQUIRE(&ref == &x);
+	REQUIRE(x == Z(5).inv());
+	REQUIRE(x * Z(5) == Z(1));
+}
+
 TEST_CASE("ntt_multiply_basic") {
 	// (1 + x) * (1 + x) = 1 + 2x + x^2
 	vector<Z> a = {1, 1};

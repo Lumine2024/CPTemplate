@@ -1,5 +1,5 @@
 #pragma once
-#include "geo/basic.h"
+#include "geo/fp/basic.h"
 
 struct Rectangle {
 	Point p1, p2;

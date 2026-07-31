@@ -1,4 +1,4 @@
-#include "geo/andrew.h"
+#include "geo/fp/andrew.h"
 #include "doctest.h"
 
 static void ensure_point_eq(const Point &a, const Point &b) {

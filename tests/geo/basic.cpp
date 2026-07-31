@@ -1,4 +1,4 @@
-#include "geo/basic.h"
+#include "geo/fp/basic.h"
 #include "doctest.h"
 
 static void ensure_point_eq(const Point &a, const Point &b) {
@@ -99,9 +99,10 @@ TEST_CASE("lineseg_basic") {
 }
 
 TEST_CASE("polygon_circle_basic") {
-	Polygon tri({Point(0.0l, 0.0l), Point(4.0l, 0.0l), Point(0.0l, 3.0l)});
-	REQUIRE(cmp(tri.area(), 6.0l) == 0);
-	REQUIRE(cmp(tri.circ(), 12.0l) == 0);
+	vector<Point> tri = {Point(0.0l, 0.0l), Point(4.0l, 0.0l),
+						 Point(0.0l, 3.0l)};
+	REQUIRE(cmp(poly_area(tri), 6.0l) == 0);
+	REQUIRE(cmp(poly_circ(tri), 12.0l) == 0);
 
 	Circle c(Point(0.0l, 0.0l), 2.0l);
 	REQUIRE(cmp(c.area(), 4.0l * pi) == 0);
