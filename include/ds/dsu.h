@@ -26,6 +26,14 @@ struct DSU {
 			fs[y] = x;
 		}
 	}
+	// make fa[find(y)] = find(x)
+	void directed_connect(int x, int y) {
+		x = find(x);
+		y = find(y);
+		if(x == y) return;
+		fs[x] -= fs[y];
+		fs[y] = x;
+	}
 
 private:
 	vector<int> fs; // fa or size

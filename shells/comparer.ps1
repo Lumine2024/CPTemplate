@@ -1,7 +1,7 @@
 sal p Write-Host
-g++ gen.cpp -o gen -std=c++23 -O2
-g++ sol.cpp -o sol -std=c++23 -O2
-g++ sol2.cpp -o sol2 -std=c++23 -O2
+g++ gen.cpp -o gen -std=c++20 -O2 "-Wl,--stack,100000000"
+g++ sol.cpp -o sol -std=c++20 -O2 "-Wl,--stack,100000000"
+g++ sol2.cpp -o sol2 -std=c++20 -O2 "-Wl,--stack,100000000"
 mkdir -p tc -f
 $cnt = 1
 while($cnt -le 100000) {

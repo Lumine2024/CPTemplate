@@ -1,5 +1,6 @@
 #include "geo/fp/andrew.h"
 #include "geo/fp/apollo.h"
+#include "geo/fp/ccinter.h"
 #include "geo/fp/convex.h"
 #include "geo/fp/cover.h"
 #include "geo/fp/halfinter.h"
@@ -8,8 +9,11 @@
 #include "geo/fp/kdtree.h"
 #include "geo/fp/nearest.h"
 #include "geo/fp/scanline.h"
+#include "geo/int/andrew.h"
+#include "geo/int/convex.h"
 #include "geo/int/lichao.h"
 #include "geo/int/pick.h"
+#include "geo/int/scanline.h"
 #include "doctest.h"
 
 TEST_CASE("integer_and_floating_geometry_can_coexist") {
@@ -22,4 +26,9 @@ TEST_CASE("integer_and_floating_geometry_can_coexist") {
 	LineInt integer_line(PointInt(), integer);
 	REQUIRE(is_on(Point(), fp_line));
 	REQUIRE(is_on(PointInt(), integer_line));
+
+	vector<Point> fp_points = {Point(), fp};
+	vector<PointInt> integer_points = {PointInt(), integer};
+	REQUIRE(andrew(fp_points).size() == 2);
+	REQUIRE(andrew(integer_points).size() == 2);
 }

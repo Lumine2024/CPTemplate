@@ -21,7 +21,12 @@ template<class Info, class Tag>
 struct ImpTreap {
 	ImpTreap() = default;
 	~ImpTreap() {
-		_dt(root);
+		[&](auto &&dfs) { dfs(dfs, root); }([&](auto &&dfs, Node *cur) -> void {
+			if(!cur) return;
+			dfs(dfs, cur->l);
+			dfs(dfs, cur->r);
+			delete cur;
+		});
 	}
 	int size() const {
 		return siz(root);
@@ -110,11 +115,5 @@ private:
 		p->r = a;
 		pull(p);
 		return {p, b};
-	}
-	static void _dt(Node *p) {
-		if(!p) return;
-		_dt(p->l);
-		_dt(p->r);
-		delete p;
 	}
 };

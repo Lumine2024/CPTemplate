@@ -28,19 +28,16 @@ struct ModInt {
 		ModInt z = *this;
 		return z.to_inv();
 	}
-	friend ModInt operator+(const ModInt &a, const ModInt &b) {
-		ModInt c = a;
-		return c += b;
+	ModInt operator+(const ModInt &b) const {
+		return ModInt(val) += b;
 	}
-	friend ModInt operator-(const ModInt &a, const ModInt &b) {
-		ModInt c = a;
-		return c -= b;
+	ModInt operator-(const ModInt &b) const {
+		return ModInt(val) -= b;
 	}
-	friend ModInt operator*(const ModInt &a, const ModInt &b) {
-		ModInt c = a;
-		return c *= b;
+	ModInt operator*(const ModInt &b) const {
+		return ModInt(val) *= b;
 	}
-	friend bool operator==(const ModInt &a, const ModInt &b) = default;
+	bool operator==(const ModInt &) const = default;
 	operator unsigned() const {
 		return val;
 	}

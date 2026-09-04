@@ -46,6 +46,11 @@ struct Point {
 	Point rotate(ld a) const {
 		return Point(x * cos(a) - y * sin(a), x * sin(a) + y * cos(a));
 	}
+	Point rotate(Point dir, bool slen = false) const {
+		Point ret(x * dir.x - y * dir.y, x * dir.y + y * dir.x);
+		if(slen) ret = ret / dir.len();
+		return ret;
+	}
 	Point rotate90x(int n = 1) const {
 		n %= 4;
 		if(n < 0) n += 4;
@@ -100,6 +105,8 @@ ld cross(const Point &o, const Point &a, const Point &b) {
 	return cross(a - o, b - o);
 }
 bool argcmp(const Point &x, const Point &y) {
+	if(sign(x.x) == 0 && sign(x.y) == 0) return false;
+	if(sign(y.x) == 0 && sign(y.y) == 0) return true;
 	bool bx = sign(x.y) == 1 || (sign(x.y) == 0 && sign(x.x) == 1),
 		 by = sign(y.y) == 1 || (sign(y.y) == 0 && sign(y.x) == 1);
 	if(bx != by) return bx;
@@ -169,7 +176,7 @@ bool is_on(const Point &p, const Line &ln) {
 }
 Line midperp(const Point &a, const Point &b) {
 	Point mid = (a + b) / 2;
-	Point to(-(b - a).y, (b - a).x);
+	Point to = (b - a).rotate90x();
 	return Line(mid, to);
 }
 
@@ -253,6 +260,12 @@ struct Circle {
 		return 2.0l * pi * r;
 	}
 };
+bool is_in(const Circle &a, const Circle &b) {
+	return sign(b.r - a.r - dist(a.c, b.c)) != -1;
+}
+bool is_in(const Point &p, const Circle &c) {
+	return cmp(dist(p, c.c), c.r) <= 0;
+}
 bool is_inter(const Circle &c1, const Circle &c2) {
 	ld d = (c2.c - c1.c).len();
 	ld r1 = c1.r, r2 = c2.r;
@@ -265,10 +278,11 @@ opt<pair<Point, Point>> inter(const Circle &c1, const Circle &c2) {
 	ld d = dist(c2.c, c1.c);
 	ld r1 = c1.r, r2 = c2.r;
 	ld ca = clamp((r1 * r1 + d * d - r2 * r2) / (2 * r1 * d), -1.0l, 1.0l);
-	ld a = acos(ca);
 	Point v = c2.c - c1.c;
 	v = v / v.len() * c1.r;
-	return pair{c1.c + v.rotate(a), c1.c + v.rotate(-a)};
+	ld sa = sqrt(1 - ca * ca);
+	Point rot1(ca, sa), rot2(ca, -sa);
+	return pair{c1.c + v.rotate(rot1), c1.c + v.rotate(rot2)};
 }
 bool is_inter(const Circle &c, const Line &l) {
 	ld d = dist(c.c, l);

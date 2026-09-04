@@ -21,40 +21,55 @@ struct LazySegTree {
 	explicit LazySegTree(int n_) : n(n_), info(4 * n_), tag(4 * n_) {}
 	explicit LazySegTree(const vector<Info> &v)
 		: n(v.size()), info(4 * v.size()), tag(4 * v.size()) {
-		_build(v, 0, 0, n);
-	}
-	void assign(int n_) {
-		n = n_;
-		info.assign(4 * n_, Info{});
-		tag.assign(4 * n_, Tag{});
-	}
-	void assign(const vector<Info> &v) {
-		n = v.size();
-		info.assign(4 * v.size(), Info{});
-		tag.assign(4 * v.size(), Tag{});
-		_build(v, 0, 0, n);
+		[&](auto &&bld) {
+			bld(bld, v, 0, 0, n);
+		}([&](auto &&bld, const vector<Info> &v, int u, int rl,
+			  int rr) -> void {
+			if(rr - rl == 1) {
+				info[u] = v[rl];
+				return;
+			}
+			int mid = (rl + rr) / 2, ls = u * 2 + 1, rs = u * 2 + 2;
+			bld(bld, v, ls, rl, mid);
+			bld(bld, v, rs, mid, rr);
+			info[u] = info[ls] + info[rs];
+		});
 	}
 	Info query(int l, int r) {
-		return _query(l, r, 0, 0, n);
+		return [&](auto &&qry) {
+			return qry(qry, l, r, 0, 0, n);
+		}([&](auto &&qry, int ql, int qr, int u, int rl, int rr) -> Info {
+			if(ql <= rl && qr >= rr) return info[u];
+			_pushdown(u, rl, rr);
+			Info ret{};
+			int mid = (rl + rr) / 2, ls = u * 2 + 1, rs = u * 2 + 2;
+			if(ql < mid) ret = ret + qry(qry, ql, qr, ls, rl, mid);
+			if(qr > mid) ret = ret + qry(qry, ql, qr, rs, mid, rr);
+			return ret;
+		});
 	}
 	void update(int l, int r, const Tag &t) {
-		_update(l, r, t, 0, 0, n);
+		[&](auto &&upd) {
+			upd(upd, l, r, t, 0, 0, n);
+		}([&](auto &&upd, int ul, int ur, const Tag &t, int u, int rl,
+			  int rr) -> void {
+			if(ul <= rl && ur >= rr) {
+				t.apply(info[u], rl, rr);
+				t.apply(tag[u], rl, rr);
+				return;
+			}
+			_pushdown(u, rl, rr);
+			int mid = (rl + rr) / 2, ls = u * 2 + 1, rs = u * 2 + 2;
+			if(ul < mid) upd(upd, ul, ur, t, ls, rl, mid);
+			if(ur > mid) upd(upd, ul, ur, t, rs, mid, rr);
+			info[u] = info[ls] + info[rs];
+		});
 	}
 
 private:
 	int n;
 	vector<Info> info;
 	vector<Tag> tag;
-	void _build(const vector<Info> &v, int u, int rl, int rr) {
-		if(rr - rl == 1) {
-			info[u] = v[rl];
-			return;
-		}
-		int mid = (rl + rr) / 2, ls = u * 2 + 1, rs = u * 2 + 2;
-		_build(v, ls, rl, mid);
-		_build(v, rs, mid, rr);
-		info[u] = info[ls] + info[rs];
-	}
 	void _pushdown(int u, int rl, int rr) {
 		if(tag[u].empty()) return;
 		int mid = (rl + rr) / 2, ls = u * 2 + 1, rs = u * 2 + 2;
@@ -63,26 +78,5 @@ private:
 		tag[u].apply(tag[ls], rl, mid);
 		tag[u].apply(tag[rs], mid, rr);
 		tag[u].clear();
-	}
-	Info _query(int ql, int qr, int u, int rl, int rr) {
-		if(ql <= rl && qr >= rr) return info[u];
-		_pushdown(u, rl, rr);
-		Info ret{};
-		int mid = (rl + rr) / 2, ls = u * 2 + 1, rs = u * 2 + 2;
-		if(ql < mid) ret = ret + _query(ql, qr, ls, rl, mid);
-		if(qr > mid) ret = ret + _query(ql, qr, rs, mid, rr);
-		return ret;
-	}
-	void _update(int ul, int ur, const Tag &t, int u, int rl, int rr) {
-		if(ul <= rl && ur >= rr) {
-			t.apply(info[u], rl, rr);
-			t.apply(tag[u], rl, rr);
-			return;
-		}
-		_pushdown(u, rl, rr);
-		int mid = (rl + rr) / 2, ls = u * 2 + 1, rs = u * 2 + 2;
-		if(ul < mid) _update(ul, ur, t, ls, rl, mid);
-		if(ur > mid) _update(ul, ur, t, rs, mid, rr);
-		info[u] = info[ls] + info[rs];
 	}
 };

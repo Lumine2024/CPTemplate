@@ -1,15 +1,15 @@
 #pragma once
-#include "geo/fp/basic.h"
+#include "geo/int/basic.h"
 
-struct Rectangle {
-	Point p1, p2;
+struct RectangleInt {
+	PointInt p1, p2;
 };
-struct Event {
+struct EventInt {
 	int d, l, r;
-	ld y;
+	ll y;
 };
-struct SegTree_SL {
-	SegTree_SL(const vector<ld> &_xs)
+struct SegTree_SLInt {
+	SegTree_SLInt(const vector<ll> &_xs)
 		: l(4 * _xs.size()), r(4 * _xs.size()), cnt(4 * _xs.size()),
 		  len(4 * _xs.size()), xs(_xs) {
 		int n = xs.size();
@@ -19,7 +19,7 @@ struct SegTree_SL {
 			this->l[u] = l;
 			this->r[u] = r;
 			cnt[u] = 0;
-			len[u] = 0.0l;
+			len[u] = 0;
 			if(r - l > 1) {
 				int mid = (l + r) >> 1, lson = (u << 1) + 1,
 					rson = (u << 1) + 2;
@@ -28,7 +28,7 @@ struct SegTree_SL {
 			}
 		});
 	}
-	ld query() const {
+	ll query() const {
 		return len[0];
 	}
 	// 注意左闭右开
@@ -51,29 +51,29 @@ struct SegTree_SL {
 
 private:
 	vector<int> l, r, cnt;
-	vector<ld> len, xs;
+	vector<ll> len, xs;
 	void _pushup(int u) {
 		if(cnt[u] > 0) {
 			len[u] = xs[r[u]] - xs[l[u]];
 		} else if(r[u] - l[u] == 1) {
-			len[u] = 0.0l;
+			len[u] = 0;
 		} else {
 			int lson = (u << 1) + 1, rson = (u << 1) + 2;
 			len[u] = len[lson] + len[rson];
 		}
 	}
 };
-ld scanline(const vector<Rectangle> &rs) {
+ll scanline(const vector<RectangleInt> &rs) {
 	int n = rs.size();
-	vector<ld> xs(2 * n);
-	vector<Event> evs(2 * n);
+	vector<ll> xs(2 * n);
+	vector<EventInt> evs(2 * n);
 	for(int i = 0; i < n; ++i) {
 		xs[2 * i] = rs[i].p1.x;
 		xs[2 * i + 1] = rs[i].p2.x;
 	}
 	sort(xs.begin(), xs.end());
 	xs.erase(unique(xs.begin(), xs.end()), xs.end());
-	auto getid = [&](ld x) -> int {
+	auto getid = [&](ll x) -> int {
 		return lower_bound(xs.begin(), xs.end(), x) - xs.begin();
 	};
 	for(int i = 0; i < n; ++i) {
@@ -81,10 +81,10 @@ ld scanline(const vector<Rectangle> &rs) {
 		evs[2 * i + 1] = {-1, getid(rs[i].p1.x), getid(rs[i].p2.x), rs[i].p2.y};
 	}
 	sort(evs.begin(), evs.end(),
-		 [](const Event &a, const Event &b) { return cmp(a.y, b.y) == -1; });
-	SegTree_SL seg(xs);
-	ld ly = evs[0].y;
-	ld ans = 0.0l;
+		 [](const EventInt &a, const EventInt &b) { return a.y < b.y; });
+	SegTree_SLInt seg(xs);
+	ll ly = evs[0].y;
+	ll ans = 0;
 	for(auto &e : evs) {
 		ans += seg.query() * (e.y - ly);
 		seg.update(e.l, e.r, e.d);

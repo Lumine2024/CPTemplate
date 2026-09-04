@@ -88,7 +88,7 @@ struct Polynomial {
 			k *= 2;
 			x = (x + mod_xk(k) * x.inv(k));
 			x.to_mod_xk(k);
-			x *= (Z::modulo + 1) / 2;
+			x *= (X + 1) / 2;
 		}
 		return x.to_mod_xk(m);
 	}

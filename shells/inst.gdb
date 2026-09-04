@@ -29,3 +29,9 @@ p nums.size()
 call nums.push_back(2)
 # 设置变量
 set var x = 5 # 给x赋值为5
+# 查看调用栈
+bt
+bt full # 打印调用栈的同时查看局部变量
+f 2 # 进入第 2 层（切换栈帧）
+info args # 查看参数
+info locals # 查看局部变量

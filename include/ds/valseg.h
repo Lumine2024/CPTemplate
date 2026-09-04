@@ -9,10 +9,10 @@ struct ValSeg {
 		n = ma + 1;
 	}
 	void insert(int x) {
-		_update(x, 1, 0, 0, n);
+		update(x, 1);
 	}
 	void erase(int x) {
-		_update(x, -1, 0, 0, n);
+		update(x, -1);
 	}
 	int qpre(int x) const {
 		int rk = qrv(x);
@@ -23,56 +23,52 @@ struct ValSeg {
 		return qvr(rk);
 	}
 	int qrv(int x) const {
-		return _query(0, x, 0, 0, n);
+		return qrange_cnt(0, x);
 	}
 	int qvr(int k) const {
-		return _qvr(k, 0, 0, n);
+		return [&](auto &&qry) {
+			return qry(qry, k, 0, 0, n);
+		}([&](auto &&qry, int k, int rt, int rl, int rr) -> int {
+			if(rr - rl == 1) return rl;
+			int m = (rl + rr) >> 1, ls = rt * 2 + 1, rs = rt * 2 + 2;
+			if(k < s[ls]) return qry(qry, k, ls, rl, m);
+			return qry(qry, k - s[ls], rs, m, rr);
+		});
 	}
 	int size() const {
 		return s[0];
 	}
 	int qcnt(int x) const {
-		return _query(x, x + 1, 0, 0, n);
+		return qrange_cnt(x, x + 1);
 	}
 	int qrange_cnt(int l, int r) const {
-		return _query(l, r, 0, 0, n);
+		return [&](auto &&qry) {
+			return qry(qry, l, r, 0, 0, n);
+		}([&](auto &&qry, int ql, int qr, int rt, int rl, int rr) -> int {
+			if(ql <= rl && qr >= rr) return s[rt];
+			int m = (rl + rr) >> 1, ls = rt * 2 + 1, rs = rt * 2 + 2;
+			int ans = 0;
+			if(ql < m) ans += qry(qry, ql, qr, ls, rl, m);
+			if(qr > m) ans += qry(qry, ql, qr, rs, m, rr);
+			return ans;
+		});
 	}
 
 private:
 	vector<int> s;
 	int n;
-	void _update(int x, int dv, int rt, int rl, int rr) {
-		if(rr - rl == 1) {
-			s[rt] += dv;
-			return;
-		}
-		int m = (rl + rr) >> 1, ls = rt * 2 + 1, rs = rt * 2 + 2;
-		if(x < m) {
-			_update(x, dv, ls, rl, m);
-		} else {
-			_update(x, dv, rs, m, rr);
-		}
-		s[rt] = s[ls] + s[rs];
-	}
-	ll _query(int ql, int qr, int rt, int rl, int rr) const {
-		if(ql <= rl && qr >= rr) return s[rt];
-		int m = (rl + rr) >> 1, ls = rt * 2 + 1, rs = rt * 2 + 2;
-		ll ans = 0;
-		if(ql < m) {
-			ans += _query(ql, qr, ls, rl, m);
-		}
-		if(qr > m) {
-			ans += _query(ql, qr, rs, m, rr);
-		}
-		return ans;
-	}
-	int _qvr(int k, int rt, int rl, int rr) const {
-		if(rr - rl == 1) return rl;
-		int m = (rl + rr) >> 1, ls = rt * 2 + 1, rs = rt * 2 + 2;
-		if(k < s[ls]) {
-			return _qvr(k, ls, rl, m);
-		} else {
-			return _qvr(k - s[ls], rs, m, rr);
-		}
+	void update(int x, int dv) {
+		[&](auto &&upd) {
+			upd(upd, x, dv, 0, 0, n);
+		}([&](auto &&upd, int x, int dv, int rt, int rl, int rr) -> void {
+			if(rr - rl == 1) {
+				s[rt] += dv;
+				return;
+			}
+			int m = (rl + rr) >> 1, ls = rt * 2 + 1, rs = rt * 2 + 2;
+			if(x < m) upd(upd, x, dv, ls, rl, m);
+			else upd(upd, x, dv, rs, m, rr);
+			s[rt] = s[ls] + s[rs];
+		});
 	}
 };

@@ -5,12 +5,29 @@ struct BinaryLift {
 	explicit BinaryLift(int n) : tree(n), anc(n), dep(n) {
 		for(auto &a : anc) a.fill(-1);
 	}
-	void addedge(int u, int v) {
+	void add_edge(int u, int v) {
 		tree[u].push_back(v);
 		tree[v].push_back(u);
 	}
 	void build(int u = 0) {
-		dfs(u, -1);
+		[&](auto &&dfs) {
+			dfs(dfs, u, -1);
+		}([&](auto &&dfs, int u, int fa) -> void {
+			dep[u] = fa != -1 ? dep[fa] + 1 : 0;
+			anc[u][0] = fa;
+			for(int k = 1; k < LOG; ++k) {
+				if(anc[u][k - 1] == -1) {
+					anc[u][k] = -1;
+				} else {
+					anc[u][k] = anc[anc[u][k - 1]][k - 1];
+				}
+			}
+			for(int v : tree[u]) {
+				if(v != fa) {
+					dfs(dfs, v, u);
+				}
+			}
+		});
 	}
 	int lca(int u, int v) const {
 		if(dep[u] < dep[v]) swap(u, v);
@@ -45,20 +62,4 @@ private:
 	static constexpr int LOG = 20;
 	vector<array<int, LOG>> anc;
 	vector<int> dep;
-	void dfs(int u, int fa) {
-		dep[u] = fa != -1 ? dep[fa] + 1 : 0;
-		anc[u][0] = fa;
-		for(int k = 1; k < LOG; ++k) {
-			if(anc[u][k - 1] == -1) {
-				anc[u][k] = -1;
-			} else {
-				anc[u][k] = anc[anc[u][k - 1]][k - 1];
-			}
-		}
-		for(int v : tree[u]) {
-			if(v != fa) {
-				dfs(v, u);
-			}
-		}
-	}
 };

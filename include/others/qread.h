@@ -35,6 +35,26 @@ struct Qread {
 		val = x * f;
 		return *this;
 	}
+	Qread &operator>>(string &val) {
+		val.clear();
+		if(!state) {
+			return *this;
+		}
+		int ch = getc();
+		while(ch != char_traits<char>::eof() && isspace(ch)) {
+			ch = getc();
+		}
+		if(ch == char_traits<char>::eof()) {
+			state = false;
+			cin.setstate(ios_base::eofbit);
+			return *this;
+		}
+		while(ch != char_traits<char>::eof() && !isspace(ch)) {
+			val.push_back(char(ch));
+			ch = getc();
+		}
+		return *this;
+	}
 	explicit operator bool() const {
 		return state;
 	}

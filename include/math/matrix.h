@@ -33,6 +33,12 @@ struct Matrix {
 		*this = *this * r;
 		return *this;
 	}
+	Matrix pow(ll n) const {
+		Matrix ret = Matrix::unit(), now = *this;
+		for(; n; n >>= 1, now = now * now)
+			if(n & 1) ret = ret * now;
+		return ret;
+	}
 	friend Matrix operator+(const Matrix &l, const Matrix &r) {
 		return Matrix(l) += r;
 	}

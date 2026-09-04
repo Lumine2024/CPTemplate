@@ -10,7 +10,7 @@ struct Dinic {
 	};
 	vector<vector<Edge>> g;
 	Dinic(int n, int s = -1, int t = -1) : g(n), lv(n), _s(s), _t(t), n(n) {}
-	void addedge(int u, int v, ll w) {
+	void add_edge(int u, int v, ll w) {
 		int iv = g[v].size(), iu = g[u].size();
 		g[u].push_back({v, iv, w});
 		g[v].push_back({u, iu, 0});
@@ -19,11 +19,29 @@ struct Dinic {
 		if(_s == -1) _s = s;
 		if(_t == -1) _t = t;
 		ll mf = 0;
+		auto dfs = [&](auto &&dfs, int u, ll mf) -> ll {
+			if(u == _t || mf == 0) return mf;
+			ll nf = 0;
+			for(auto &e : g[u]) {
+				if(lv[e.v] == lv[u] + 1 && e.w > 0) {
+					ll min_flow = min(mf, e.w);
+					ll push = dfs(dfs, e.v, min_flow);
+					if(push > 0) {
+						e.w -= push;
+						g[e.v][e.r].w += push;
+						nf += push;
+						mf -= push;
+						if(mf == 0) return nf;
+					}
+				}
+			}
+			return nf;
+		};
 		while(bfs()) {
-			ll flow = dfs(_s, inf);
+			ll flow = dfs(dfs, _s, inf);
 			while(flow > 0) {
 				mf += flow;
-				flow = dfs(_s, inf);
+				flow = dfs(dfs, _s, inf);
 			}
 		}
 		return mf;
@@ -48,23 +66,5 @@ private:
 			}
 		}
 		return lv[_t] != -1;
-	}
-	ll dfs(int u, ll mf) {
-		if(u == _t || mf == 0) return mf;
-		ll nf = 0;
-		for(auto &e : g[u]) {
-			if(lv[e.v] == lv[u] + 1 && e.w > 0) {
-				ll min_flow = min(mf, e.w);
-				ll push = dfs(e.v, min_flow);
-				if(push > 0) {
-					e.w -= push;
-					g[e.v][e.r].w += push;
-					nf += push;
-					mf -= push;
-					if(mf == 0) return nf;
-				}
-			}
-		}
-		return nf;
 	}
 };

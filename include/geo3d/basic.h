@@ -1,6 +1,10 @@
 #pragma once
 #include "common.h"
 
+template<class T>
+using opt = optional<T>;
+constexpr auto nul = nullopt;
+
 constexpr ld eps = 2e-10l, pi = 3.14159265358979323846264338327950288l;
 int sign(ld x) {
 	return x > eps ? 1 : x < -eps ? -1 : 0;
@@ -93,7 +97,7 @@ bool same_plane(const Line &a, const Line &b) {
 bool is_inter(const Line &a, const Line &b) {
 	return same_plane(a, b) && !parallel(a, b);
 }
-optional<Point> inter(const Line &a, const Line &b) {
+opt<Point> inter(const Line &a, const Line &b) {
 	if(!is_inter(a, b)) return nul;
 	Point w = b.p - a.p, v1v2 = cross(a.v, b.v);
 	Point wv2 = cross(w, b.v);

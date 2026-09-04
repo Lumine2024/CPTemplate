@@ -30,7 +30,10 @@ struct LinearBasis {
 		}
 		return 0;
 	}
-	ll kth_xor(ll k) const {}
+	ll kth_xor(ll k) const {
+		// placeholder
+		return 0;
+	}
 	bool can_repr(ll dest) const {
 		for(int i = 60; i >= 0; --i) {
 			if((dest >> i) & 1) {

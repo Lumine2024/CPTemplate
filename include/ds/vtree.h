@@ -1,3 +1,4 @@
+#pragma once
 #include "common.h"
 
 struct VirtualTree {
@@ -6,7 +7,8 @@ struct VirtualTree {
 	vector<array<int, 20>> up;
 	vector<int> iv;
 	int ur = -1, vr = -1;
-	VirtualTree(int n) : tin(n, -1), tout(n, -1), dep(n, -1), siz(n, -1), g(n), vg(n), up(n) {}
+	VirtualTree(int n)
+		: tin(n, -1), tout(n, -1), dep(n, -1), siz(n, -1), g(n), vg(n), up(n) {}
 	void add_edge(int u, int v) {
 		g[u].push_back(v);
 		g[v].push_back(u);
@@ -17,9 +19,7 @@ struct VirtualTree {
 	void o_build(int r = 0) {
 		ur = r;
 		int timer = 0;
-		[&](auto &&f) {
-			f(f, r, -1);
-		}([&](auto &&dfs, int u, int fa) -> void {
+		[&](auto &&f) { f(f, r, -1); }([&](auto &&dfs, int u, int fa) -> void {
 			tin[u] = timer++;
 			dep[u] = fa == -1 ? 0 : dep[fa] + 1;
 			up[u][0] = fa;
@@ -60,17 +60,15 @@ struct VirtualTree {
 	}
 	void v_build(vector<int> imp) {
 		v_clear();
-		sort(imp.begin(), imp.end(), [&](int x, int y) {
-			return tin[x] < tin[y];
-		});
+		sort(imp.begin(), imp.end(),
+			 [&](int x, int y) { return tin[x] < tin[y]; });
 		imp.erase(unique(imp.begin(), imp.end()), imp.end());
 		int n = imp.size();
 		for(int i = 1; i < n; ++i) {
 			imp.push_back(o_lca(imp[i - 1], imp[i]));
 		}
-		sort(imp.begin(), imp.end(), [&](int x, int y) {
-			return tin[x] < tin[y];
-		});
+		sort(imp.begin(), imp.end(),
+			 [&](int x, int y) { return tin[x] < tin[y]; });
 		imp.erase(unique(imp.begin(), imp.end()), imp.end());
 		vector<int> stk;
 		for(int x : imp) {

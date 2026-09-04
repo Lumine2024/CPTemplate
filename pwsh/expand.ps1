@@ -90,4 +90,9 @@ foreach($d in $defaultIncludeDirs) {
     }
 }
 
-Invoke-ExpandOperation -InputFile $inputPath -OutputFile $output -IncludeDirs $allIncludeDirs
+Push-Location (Get-Location)
+try {
+    Invoke-ExpandOperation -InputFile $inputPath -OutputFile $output -IncludeDirs $allIncludeDirs
+} finally {
+    Pop-Location
+}

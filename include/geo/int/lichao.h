@@ -11,10 +11,39 @@ struct LiChaoInt {
 		}
 		int i = raw.size();
 		raw.push_back({x1, x2, y1, y2});
-		_update(i, min(x1, x2), max(x1, x2), 0, 0, n - 1);
+		[&](auto &&upd) {
+			upd(upd, i, min(x1, x2), max(x1, x2), 0, 0, n - 1);
+		}([&](auto &&upd, int i, int ul, int ur, int u, int rl,
+			  int rr) -> void {
+			int mid = (rl + rr) / 2, ls = u * 2 + 1, rs = u * 2 + 2;
+			if(ul <= rl && ur >= rr) {
+				if(id[u] == -1) {
+					id[u] = i;
+					return;
+				}
+				if(_better(i, id[u], mid)) swap(i, id[u]);
+				if(rl == rr) return;
+				if(_better(i, id[u], rl)) upd(upd, i, ul, ur, ls, rl, mid);
+				if(_better(i, id[u], rr)) upd(upd, i, ul, ur, rs, mid + 1, rr);
+			} else {
+				if(rl == rr) return;
+				if(ul <= mid) upd(upd, i, ul, ur, ls, rl, mid);
+				if(mid < ur) upd(upd, i, ul, ur, rs, mid + 1, rr);
+			}
+		});
 	}
 	int query(int k) const {
-		return _query(k, 0, 0, n - 1);
+		return [&](auto &&qry) {
+			return qry(qry, k, 0, 0, n - 1);
+		}([&](auto &&qry, int k, int u, int rl, int rr) -> int {
+			int ret = id[u];
+			if(rl == rr) return ret;
+			int mid = (rl + rr) / 2, ls = u * 2 + 1, rs = u * 2 + 2;
+			int child = (k <= mid) ? qry(qry, k, ls, rl, mid)
+								   : qry(qry, k, rs, mid + 1, rr);
+			if(_better(child, ret, k)) ret = child;
+			return ret;
+		});
 	}
 
 private:
@@ -35,31 +64,5 @@ private:
 		__int128 lhs = na * db, rhs = nb * da;
 		if(lhs != rhs) return lhs > rhs;
 		return a < b;
-	}
-	void _update(int i, int ul, int ur, int u, int rl, int rr) {
-		int mid = (rl + rr) / 2, ls = u * 2 + 1, rs = u * 2 + 2;
-		if(ul <= rl && ur >= rr) {
-			if(id[u] == -1) {
-				id[u] = i;
-				return;
-			}
-			if(_better(i, id[u], mid)) swap(i, id[u]);
-			if(rl == rr) return;
-			if(_better(i, id[u], rl)) _update(i, ul, ur, ls, rl, mid);
-			if(_better(i, id[u], rr)) _update(i, ul, ur, rs, mid + 1, rr);
-		} else {
-			if(rl == rr) return;
-			if(ul <= mid) _update(i, ul, ur, ls, rl, mid);
-			if(mid < ur) _update(i, ul, ur, rs, mid + 1, rr);
-		}
-	}
-	int _query(int k, int u, int rl, int rr) const {
-		int ret = id[u];
-		if(rl == rr) return ret;
-		int mid = (rl + rr) / 2, ls = u * 2 + 1, rs = u * 2 + 2;
-		int child =
-			(k <= mid) ? _query(k, ls, rl, mid) : _query(k, rs, mid + 1, rr);
-		if(_better(child, ret, k)) ret = child;
-		return ret;
 	}
 };

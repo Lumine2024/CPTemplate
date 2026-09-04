@@ -1,8 +1,8 @@
 #pragma once
-#include "common.h"
 #include "ds/valseg.h"
 #include "ds/fenwick.h"
 
+// Lehmer 码：l[i] 代表 #{ j > i | a[j] < a[i] }，其中 a 需要是一个排列
 // 均为0-based排列
 vector<int> lehmer(const vector<int> &a) {
 	int n = a.size();

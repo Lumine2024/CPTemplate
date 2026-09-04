@@ -74,3 +74,25 @@ int is_inter(const LineInt &l1, const LineInt &l2) {
 bool is_on(const PointInt &p, const LineInt &ln) {
 	return cross(ln.v, ln.p - p) == 0;
 }
+
+struct LineSegInt {
+	PointInt a, b;
+	LineSegInt() {}
+	LineSegInt(const PointInt &_a, const PointInt &_b) : a(_a), b(_b) {}
+};
+int is_on(const PointInt &p, const LineSegInt &ls) {
+	if(p == ls.a || p == ls.b) return 2;
+	return to_left(p - ls.a, p - ls.b) == 0 && dot(p - ls.a, p - ls.b) < 0;
+}
+int is_inter(const LineInt &ln, const LineSegInt &ls) {
+	int a = to_left(ln, ls.a), b = to_left(ln, ls.b);
+	if(a == 0 || b == 0) return 2;
+	return a == b ? 0 : 1;
+}
+int is_inter(const LineSegInt &l1, const LineSegInt &l2) {
+	if(is_on(l1.a, l2) || is_on(l1.b, l2) || is_on(l2.a, l1) || is_on(l2.b, l1))
+		return 2;
+	LineInt ln1(l1.a, l1.b - l1.a), ln2(l2.a, l2.b - l2.a);
+	return to_left(ln1, l2.a) * to_left(ln1, l2.b) == -1 &&
+		   to_left(ln2, l1.a) * to_left(ln2, l1.b) == -1;
+}

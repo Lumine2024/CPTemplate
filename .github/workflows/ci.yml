@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        optimize-level: [0, 1, 2]
+        optimize-level: [0, 2] # We never use -O1
         target:
           - os: ubuntu-latest
             compiler: gcc

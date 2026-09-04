@@ -3,6 +3,7 @@ g++ gen.cpp -o gen -std=c++20 -O2 || exit 1
 g++ sol1.cpp -o sol1 -std=c++20 -O2 || exit 1
 g++ sol2.cpp -o sol2 -std=c++20 -O2 || exit 1
 mkdir -p tc
+ulimit -s unlimited
 cnt=1
 while [ $cnt -le 100000 ]; do
 	echo "Running $cnt"

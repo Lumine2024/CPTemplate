@@ -9,14 +9,41 @@ struct HLD {
 		  toc(edges.size()), sz(edges.size()), hs(edges.size(), -1) {
 		build(r);
 	}
-	void addedge(int u, int v) {
+	void add_edge(int u, int v) {
 		tree[u].push_back(v);
 		tree[v].push_back(u);
 	}
 	void build(int r = 0) {
-		dfs1(r, -1);
+		[&](auto &&dfs) {
+			dfs(dfs, r, -1);
+		}([&](auto &&dfs, int x, int f) -> void {
+			dep[x] = f == -1 ? 0 : dep[f] + 1;
+			fa[x] = f;
+			sz[x] = 1;
+			hs[x] = -1;
+			for(int next : tree[x]) {
+				if(next == f) continue;
+				dfs(dfs, next, x);
+				sz[x] += sz[next];
+				if(hs[x] == -1 || sz[hs[x]] < sz[next]) {
+					hs[x] = next;
+				}
+			}
+		});
 		int now = 0;
-		dfs2(r, -1, now, r);
+		[&](auto &&dfs) {
+			dfs(dfs, r, -1, r);
+		}([&](auto &&dfs, int x, int f, int top) -> void {
+			dfn[x] = now++;
+			toc[x] = top;
+			if(hs[x] == -1) return;
+			dfs(dfs, hs[x], x, top);
+			for(int next : tree[x]) {
+				if(next != hs[x] && next != f) {
+					dfs(dfs, next, x, next);
+				}
+			}
+		});
 	}
 	int lca(int u, int v) const {
 		while(toc[u] != toc[v]) {
@@ -59,31 +86,4 @@ struct HLD {
 
 	vector<vector<int>> tree;
 	vector<int> dfn, dep, fa, toc, sz, hs;
-
-private:
-	void dfs1(int x, int f) {
-		dep[x] = f == -1 ? 0 : dep[f] + 1;
-		fa[x] = f;
-		sz[x] = 1;
-		hs[x] = -1;
-		for(int next : tree[x]) {
-			if(next == f) continue;
-			dfs1(next, x);
-			sz[x] += sz[next];
-			if(hs[x] == -1 || sz[hs[x]] < sz[next]) {
-				hs[x] = next;
-			}
-		}
-	}
-	void dfs2(int x, int f, int &t, int top) {
-		dfn[x] = t++;
-		toc[x] = top;
-		if(hs[x] == -1) return;
-		dfs2(hs[x], x, t, top);
-		for(int next : tree[x]) {
-			if(next != hs[x] && next != f) {
-				dfs2(next, x, t, next);
-			}
-		}
-	}
 };

@@ -134,24 +134,29 @@ function Invoke-ExpandOperation {
         return $builder.ToString()
     }
 
-    $inputAbs = Resolve-NormalizedPath -PathValue $InputFile
-    if(-not (Test-Path -LiteralPath $inputAbs -PathType Leaf)) {
-        throw "Error: '$InputFile' is not a file or does not exist."
+    Push-Location (Get-Location)
+    try {
+        $inputAbs = Resolve-NormalizedPath -PathValue $InputFile
+        if(-not (Test-Path -LiteralPath $inputAbs -PathType Leaf)) {
+            throw "Error: '$InputFile' is not a file or does not exist."
+        }
+
+        $expandedText = Expand-FileInternal -FilePath $inputAbs
+
+        if([string]::IsNullOrWhiteSpace($OutputFile)) {
+            Write-Output $expandedText
+            return
+        }
+
+        $outputAbs = Resolve-NormalizedPath -PathValue $OutputFile
+        $outputDir = Split-Path -Parent $outputAbs
+        if(-not [string]::IsNullOrEmpty($outputDir)) {
+            New-Item -ItemType Directory -Path $outputDir -Force | Out-Null
+        }
+
+        [System.IO.File]::WriteAllText($outputAbs, $expandedText, [System.Text.Encoding]::UTF8)
+        Write-Output "Expanded output written to: $outputAbs"
+    } finally {
+        Pop-Location
     }
-
-    $expandedText = Expand-FileInternal -FilePath $inputAbs
-
-    if([string]::IsNullOrWhiteSpace($OutputFile)) {
-        Write-Output $expandedText
-        return
-    }
-
-    $outputAbs = Resolve-NormalizedPath -PathValue $OutputFile
-    $outputDir = Split-Path -Parent $outputAbs
-    if(-not [string]::IsNullOrEmpty($outputDir)) {
-        New-Item -ItemType Directory -Path $outputDir -Force | Out-Null
-    }
-
-    [System.IO.File]::WriteAllText($outputAbs, $expandedText, [System.Text.Encoding]::UTF8)
-    Write-Output "Expanded output written to: $outputAbs"
 }

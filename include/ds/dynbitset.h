@@ -27,27 +27,21 @@ struct DynamicBitSet {
 		return *this;
 	}
 	DynamicBitSet operator&(const DynamicBitSet &other) const {
-		DynamicBitSet ret = *this;
-		ret &= other;
-		return ret;
+		return DynamicBitSet(*this) &= other;
 	}
 	DynamicBitSet &operator|=(const DynamicBitSet &other) {
 		for(int i = 0; i < nums.size(); ++i) nums[i] |= other.nums[i];
 		return *this;
 	}
 	DynamicBitSet operator|(const DynamicBitSet &other) const {
-		DynamicBitSet ret = *this;
-		ret |= other;
-		return ret;
+		return DynamicBitSet(*this) |= other;
 	}
 	DynamicBitSet &operator^=(const DynamicBitSet &other) {
 		for(int i = 0; i < nums.size(); ++i) nums[i] ^= other.nums[i];
 		return *this;
 	}
 	DynamicBitSet operator^(const DynamicBitSet &other) const {
-		DynamicBitSet ret = *this;
-		ret ^= other;
-		return ret;
+		return DynamicBitSet(*this) ^= other;
 	}
 	DynamicBitSet &operator<<=(int z) {
 		int block = z >> 6, rem = z & 63, n = nums.size();
@@ -68,9 +62,7 @@ struct DynamicBitSet {
 		return *this;
 	}
 	DynamicBitSet operator<<(int z) const {
-		DynamicBitSet ret = *this;
-		ret <<= z;
-		return ret;
+		return DynamicBitSet(*this) <<= z;
 	}
 	DynamicBitSet &operator>>=(int z) {
 		int block = z >> 6, rem = z & 63, n = nums.size();
@@ -91,9 +83,7 @@ struct DynamicBitSet {
 		return *this;
 	}
 	DynamicBitSet operator>>(int z) const {
-		DynamicBitSet ret = *this;
-		ret >>= z;
-		return ret;
+		return DynamicBitSet(*this) >>= z;
 	}
 	bool allzero() const {
 		int block = sz >> 6, rem = sz & 63;

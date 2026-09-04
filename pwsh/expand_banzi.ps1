@@ -218,59 +218,64 @@ function Resolve-TargetPath {
     return (Join-Path $BaseDir $PathValue)
 }
 
-$sourceFull = (Resolve-Path -Path $Source).Path
-$sourceDir = Split-Path -Parent $sourceFull
-$content = Get-Content -Path $sourceFull -Raw -Encoding utf8
-$content = Remove-ManualTableOfContents -Text $content
-$tableOfContents = New-TableOfContents -Text $content
-$content = Add-TableOfContents -Text $content -TableOfContents $tableOfContents
+Push-Location (Get-Location)
+try {
+    $sourceFull = (Resolve-Path -Path $Source).Path
+    $sourceDir = Split-Path -Parent $sourceFull
+    $content = Get-Content -Path $sourceFull -Raw -Encoding utf8
+    $content = Remove-ManualTableOfContents -Text $content
+    $tableOfContents = New-TableOfContents -Text $content
+    $content = Add-TableOfContents -Text $content -TableOfContents $tableOfContents
 
-$tagPattern = [regex]'(?is)<file\s+([^>]*)>\s*</file>'
-$expanded = "<!-- THIS FILE IS AUTO GENERATED, DO NOT MODIFY IT MANUALLY -->`n`n" + $tagPattern.Replace($content, {
-    param($m)
+    $tagPattern = [regex]'(?is)<file\s+([^>]*)>\s*</file>'
+    $expanded = "<!-- THIS FILE IS AUTO GENERATED, DO NOT MODIFY IT MANUALLY -->`n`n" + $tagPattern.Replace($content, {
+        param($m)
 
-    $attrs = Convert-Attributes -Text $m.Groups[1].Value
-    if(-not $attrs.ContainsKey("path")) {
-        throw "<file> 标签缺少 path 属性: $($m.Value)"
-    }
-
-    $targetPath = Resolve-TargetPath -PathValue $attrs["path"] -BaseDir $sourceDir
-    if(-not (Test-Path -LiteralPath $targetPath -PathType Leaf)) {
-        throw "引用文件不存在: $targetPath"
-    }
-
-    $lines = Get-Content -Path $targetPath -Encoding utf8
-    $lineCount = $lines.Count
-
-    $start = if($attrs.ContainsKey("rangeBegin")) { [int]$attrs["rangeBegin"] } else { 1 }
-    $end = if($attrs.ContainsKey("rangeEnd")) { [int]$attrs["rangeEnd"] } else { $lineCount }
-
-    if($lineCount -eq 0) {
-        if($start -ne 1 -or $end -ne 0) {
-            throw "文件为空，无法应用范围 $start..${end}: $targetPath"
+        $attrs = Convert-Attributes -Text $m.Groups[1].Value
+        if(-not $attrs.ContainsKey("path")) {
+            throw "<file> 标签缺少 path 属性: $($m.Value)"
         }
-        $snippet = ""
-    }
-    else {
-        if($start -lt 1 -or $end -lt $start -or $end -gt $lineCount) {
-            throw "非法行范围 $start..$end (文件共 $lineCount 行): $targetPath"
+
+        $targetPath = Resolve-TargetPath -PathValue $attrs["path"] -BaseDir $sourceDir
+        if(-not (Test-Path -LiteralPath $targetPath -PathType Leaf)) {
+            throw "引用文件不存在: $targetPath"
         }
-        $selected = $lines[($start - 1)..($end - 1)]
-        $snippet = ($selected -join [Environment]::NewLine)
+
+        $lines = Get-Content -Path $targetPath -Encoding utf8
+        $lineCount = $lines.Count
+
+        $start = if($attrs.ContainsKey("rangeBegin")) { [int]$attrs["rangeBegin"] } else { 1 }
+        $end = if($attrs.ContainsKey("rangeEnd")) { [int]$attrs["rangeEnd"] } else { $lineCount }
+
+        if($lineCount -eq 0) {
+            if($start -ne 1 -or $end -ne 0) {
+                throw "文件为空，无法应用范围 $start..${end}: $targetPath"
+            }
+            $snippet = ""
+        }
+        else {
+            if($start -lt 1 -or $end -lt $start -or $end -gt $lineCount) {
+                throw "非法行范围 $start..$end (文件共 $lineCount 行): $targetPath"
+            }
+            $selected = $lines[($start - 1)..($end - 1)]
+            $snippet = ($selected -join [Environment]::NewLine)
+        }
+
+        $lang = if($attrs.ContainsKey("type")) { $attrs["type"] } else { "" }
+        if([string]::IsNullOrWhiteSpace($lang)) {
+            return $snippet
+        }
+        return ('```{0}{1}{2}{1}```' -f $lang, [Environment]::NewLine, $snippet)
+    })
+
+    $destPath = Resolve-TargetPath -PathValue $Dest -BaseDir $sourceDir
+    $destDir = Split-Path -Parent $destPath
+    if(-not [string]::IsNullOrEmpty($destDir)) {
+        New-Item -ItemType Directory -Path $destDir -Force | Out-Null
     }
 
-    $lang = if($attrs.ContainsKey("type")) { $attrs["type"] } else { "" }
-    if([string]::IsNullOrWhiteSpace($lang)) {
-        return $snippet
-    }
-    return ('```{0}{1}{2}{1}```' -f $lang, [Environment]::NewLine, $snippet)
-})
-
-$destPath = Resolve-TargetPath -PathValue $Dest -BaseDir $sourceDir
-$destDir = Split-Path -Parent $destPath
-if(-not [string]::IsNullOrEmpty($destDir)) {
-    New-Item -ItemType Directory -Path $destDir -Force | Out-Null
+    Set-Content -Path $destPath -Value $expanded -Encoding utf8
+    Write-Host "文件已展开至: $destPath"
+} finally {
+    Pop-Location
 }
-
-Set-Content -Path $destPath -Value $expanded -Encoding utf8
-Write-Host "文件已展开至: $destPath"
